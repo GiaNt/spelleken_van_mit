@@ -1,2 +1,2 @@
-class SpellekenVanMit::Cards::Club
+class SpellekenVanMit::Cards::Club < SpellekenVanMit::Cards::Base
 end

@@ -6,6 +6,10 @@ class SpellekenVanMit::Cards::Base
   end
 
   def type
-    self.class.name
+    self.class.to_s.sub(/([a-z]+::)+/i, '')
+  end
+
+  def inspect
+    "#<#{type} @identifier=#@identifier>"
   end
 end

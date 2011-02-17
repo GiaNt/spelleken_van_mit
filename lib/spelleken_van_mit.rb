@@ -2,6 +2,7 @@ $LOAD_PATH.unshift File.dirname(__FILE__)
 
 module SpellekenVanMit
   # Vitals
+  autoload :CardSet,    'spelleken_van_mit/card_set'
   autoload :Controller, 'spelleken_van_mit/controller'
 
   module Cards
