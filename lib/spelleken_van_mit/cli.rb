@@ -7,6 +7,6 @@ class SpellekenVanMit::CLI
 
   def initialize
     @controller = SpellekenVanMit::Controller.instance
-    puts @controller.card_set.inspect
+    puts @controller.inspect
   end
 end

@@ -1,15 +1,13 @@
 #!/usr/bin/env ruby
 require File.expand_path('../../lib/spelleken_van_mit',     __FILE__)
-require File.expand_path('../../lib/spelleken_van_mit/cli', __FILE__)
+
+window = SpellekenVanMit::Window.new
 
 begin
-  SpellekenVanMit::CLI.start!
-rescue SpellekenVanMit::SpellekenVanMitError => e
-  puts e.message
-  puts e.backtrace.join("\n")
-  exit e.status_code
+  window.show
 rescue Interrupt => e
   puts "\nQuitting..."
-  puts e.backtrace.join("\n")
   exit 1
+ensure
+  window.close
 end

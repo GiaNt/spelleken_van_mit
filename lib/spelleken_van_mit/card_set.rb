@@ -1,25 +1,20 @@
-class SpellekenVanMit::CardSet < Hash
-  CARD_TYPES = [:spades, :hearts, :clubs, :diamonds]
-
-  def initialize(*)
-    super { |h, k| h[k] = [] }
-  end
-
-  CARD_TYPES.each do |card_type|
-    define_method(card_type) { self[card_type] }
-  end
-
+class SpellekenVanMit::CardSet < Array
   def populate!
     clear
 
     13.times do |index|
-      self[:clubs]    << SpellekenVanMit::Cards::Club.new(index)
-      self[:diamonds] << SpellekenVanMit::Cards::Diamond.new(index)
-      self[:hearts]   << SpellekenVanMit::Cards::Heart.new(index)
-      self[:spades]   << SpellekenVanMit::Cards::Spade.new(index)
+      self << SpellekenVanMit::Cards::Club.new(index)
+      self << SpellekenVanMit::Cards::Diamond.new(index)
+      self << SpellekenVanMit::Cards::Heart.new(index)
+      self << SpellekenVanMit::Cards::Spade.new(index)
     end
 
+    self.shuffle!
     self
+  end
+
+  def toggle!
+    each { |card| card.toggle }
   end
 
   def inspect
