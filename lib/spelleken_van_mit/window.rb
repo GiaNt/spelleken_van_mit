@@ -1,9 +1,9 @@
 class SpellekenVanMit::Window < Gosu::Window
-  def initialize(*)
+  def initialize
     super 640, 480, false
     self.caption = 'Spelleken Van Mit'
 
-    init_cards!
+    init_cardsets!
   end
 
   def update
@@ -14,7 +14,7 @@ class SpellekenVanMit::Window < Gosu::Window
 
 private
 
-  def init_cards!
+  def init_cardsets!
     @card_set = SpellekenVanMit::CardSet.new
     @card_set.populate!
     @game_set = @card_set[0..47]
