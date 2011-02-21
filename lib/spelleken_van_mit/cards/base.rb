@@ -18,7 +18,8 @@ class SpellekenVanMit::Cards::Base
     12 => 'King'
   }
 
-  def initialize(identifier)
+  def initialize(window, identifier)
+    @window     = window
     @shown      = false
     @identifier = identifier
   end
@@ -29,6 +30,13 @@ class SpellekenVanMit::Cards::Base
 
   def toggle
     @shown = !@shown
+  end
+
+  def image
+    # TODO
+    if @shown
+    else
+    end
   end
 
   def two?

@@ -1,12 +1,12 @@
 class SpellekenVanMit::CardSet < Array
-  def populate!
+  def populate!(window)
     clear
 
     13.times do |index|
-      self << SpellekenVanMit::Cards::Club.new(index)
-      self << SpellekenVanMit::Cards::Diamond.new(index)
-      self << SpellekenVanMit::Cards::Heart.new(index)
-      self << SpellekenVanMit::Cards::Spade.new(index)
+      self << SpellekenVanMit::Cards::Club.new(window, index)
+      self << SpellekenVanMit::Cards::Diamond.new(window, index)
+      self << SpellekenVanMit::Cards::Heart.new(window, index)
+      self << SpellekenVanMit::Cards::Spade.new(window, index)
     end
 
     self.shuffle!
