@@ -1,8 +1,11 @@
+require 'pathname'
 require 'gosu'
 
 $LOAD_PATH.unshift File.dirname(__FILE__)
 
 module SpellekenVanMit
+  ROOT = Pathname.pwd
+
   autoload :CardSet,    'spelleken_van_mit/card_set'
   autoload :Window,     'spelleken_van_mit/window'
 
@@ -16,4 +19,14 @@ module SpellekenVanMit
   end
 
   autoload :Version, 'spelleken_van_mit/version'
+
+  class << self
+    def root
+      ROOT
+    end
+
+    def image(path)
+      root.join('images', path).to_s
+    end
+  end
 end
