@@ -9,7 +9,7 @@ class SVM::CardSet < Array
       add_card :Spade,   window, identifier
     end
 
-    self.shuffle!
+    shuffle!
     self
   end
 

@@ -24,6 +24,10 @@ module SpellekenVanMit
     Root
   end
 
+  def self.version
+    Version
+  end
+
   def self.image_path(path)
     root.join('images', path).to_s
   end
