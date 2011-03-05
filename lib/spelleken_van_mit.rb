@@ -8,7 +8,7 @@ module ZOrder
 end
 
 module SpellekenVanMit
-  ROOT = Pathname.pwd
+  Root = Pathname.pwd
 
   autoload :CardSet, 'spelleken_van_mit/card_set'
   autoload :Window,  'spelleken_van_mit/window'
@@ -25,7 +25,7 @@ module SpellekenVanMit
   autoload :Version, 'spelleken_van_mit/version'
 
   def self.root
-    ROOT
+    Root
   end
 
   def self.image_path(path)
