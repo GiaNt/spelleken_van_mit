@@ -18,7 +18,7 @@ class SVM::CardSet
   end
 
   def toggle!
-    @set.each &:toggle
+    @set.each &:toggle!
   end
 
   def inspect

@@ -19,8 +19,8 @@ class SVM::Card::Base
 
   def initialize(window, identifier)
     @window     = window
-    @shown      = false
     @identifier = identifier
+    @shown      = false
   end
 
   def name
@@ -30,6 +30,7 @@ class SVM::Card::Base
   def toggle
     @shown = !@shown
   end
+  alias :toggle! :toggle
 
   # TODO: Different image as per @shown
   def image
@@ -38,7 +39,6 @@ class SVM::Card::Base
     end
   end
 
-  # Bad if two!
   def two?
     identifier == 1
   end
