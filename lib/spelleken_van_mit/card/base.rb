@@ -1,4 +1,4 @@
-class SVM::Cards::Base
+class SVM::Card::Base
   attr_reader :identifier, :shown
 
   @@mapping = {

@@ -12,8 +12,8 @@ class SVM::Window < Gosu::Window
   end
 
   def draw
-    @background.draw(0, 0, ZOrder::Background)
-    @font.draw('Spelleken Van Mit', 5, 5, ZOrder::UI, 1.0, 1.0, 0xffffffff)
+    @background.draw 0, 0, ZOrder::Background
+    @font.draw 'Spelleken Van Mit', 5, 5, ZOrder::UI, 1.0, 1.0, 0xffffffff
   end
 
   def button_up(id)
@@ -27,7 +27,7 @@ private
 
   def init_cardsets
     @card_set = SVM::CardSet.new
-    @card_set.populate!(self)
+    @card_set.populate! self
     # TODO: Game set / Hand set
   end
 

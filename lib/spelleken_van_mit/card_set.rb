@@ -3,10 +3,10 @@ class SVM::CardSet < Array
     clear
 
     13.times do |index|
-      self << SpellekenVanMit::Cards::Club.new(window, index)
-      self << SpellekenVanMit::Cards::Diamond.new(window, index)
-      self << SpellekenVanMit::Cards::Heart.new(window, index)
-      self << SpellekenVanMit::Cards::Spade.new(window, index)
+      self << SVM::Card::Club.new(window, index)
+      self << SVM::Card::Diamond.new(window, index)
+      self << SVM::Card::Heart.new(window, index)
+      self << SVM::Card::Spade.new(window, index)
     end
 
     self.shuffle!
