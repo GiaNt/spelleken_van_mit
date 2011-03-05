@@ -1,2 +1,2 @@
-class SpellekenVanMit::Cards::Spade < SpellekenVanMit::Cards::Base
+class SVM::Cards::Spade < SVM::Cards::Base
 end

@@ -1,2 +1,2 @@
-class SpellekenVanMit::Cards::Heart < SpellekenVanMit::Cards::Base
+class SVM::Cards::Heart < SVM::Cards::Base
 end

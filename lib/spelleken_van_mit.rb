@@ -3,10 +3,6 @@ require 'gosu'
 
 $LOAD_PATH.unshift File.dirname(__FILE__)
 
-def image_path(path)
-  SpellekenVanMit.root.join('images', path).to_s
-end
-
 module ZOrder
   Background, Cards, UI = *0..2
 end
@@ -31,4 +27,11 @@ module SpellekenVanMit
   def self.root
     ROOT
   end
+
+  def self.image_path(path)
+    root.join('images', path).to_s
+  end
 end
+
+# Shortcut
+SVM = SpellekenVanMit

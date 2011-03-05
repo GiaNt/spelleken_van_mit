@@ -1,6 +1,5 @@
-class SpellekenVanMit::Cards::Base
-  attr_reader :identifier
-  attr_accessor :shown
+class SVM::Cards::Base
+  attr_reader :identifier, :shown
 
   @@mapping = {
     0  => 'Ace',
@@ -32,13 +31,14 @@ class SpellekenVanMit::Cards::Base
     @shown = !@shown
   end
 
+  # TODO: Different image as per @shown
   def image
-    # TODO
     if @shown
     else
     end
   end
 
+  # Bad if two!
   def two?
     identifier == 1
   end

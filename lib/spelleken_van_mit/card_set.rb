@@ -1,4 +1,4 @@
-class SpellekenVanMit::CardSet < Array
+class SVM::CardSet < Array
   def populate!(window)
     clear
 

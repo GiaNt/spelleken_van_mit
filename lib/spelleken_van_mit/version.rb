@@ -1,1 +1,1 @@
-SpellekenVanMit::Version = '0.0.1'
+SVM::Version = '0.0.1'
