@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require File.expand_path('../../lib/spelleken_van_mit',     __FILE__)
 
-window = SpellekenVanMit::Window.new
+window = SVM::Window.new
 
 begin
   window.show
