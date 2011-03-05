@@ -17,7 +17,7 @@ class SVM::Window < Gosu::Window
   end
 
   def button_up(id)
-    close if id == Gosu::Button::KbEscape
+    close and exit if id == Gosu::Button::KbEscape
   end
 
   #def button_down(id)
