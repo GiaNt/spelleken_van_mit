@@ -5,6 +5,7 @@ class SVM::Window < Gosu::Window
 
     init_cardsets
     init_background
+    init_font
   end
 
   def update
@@ -12,6 +13,7 @@ class SVM::Window < Gosu::Window
 
   def draw
     @background.draw(0, 0, ZOrder::Background)
+    @font.draw('Spelleken Van Mit', 5, 5, ZOrder::UI, 1.0, 1.0, 0xffffffff)
   end
 
   def button_up(id)
@@ -31,5 +33,9 @@ private
 
   def init_background
     @background = Gosu::Image.new(self, SVM.image_path('background.png'), true)
+  end
+
+  def init_font
+    @font = Gosu::Font.new(self, Gosu.default_font_name, 18)
   end
 end

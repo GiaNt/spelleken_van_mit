@@ -5,7 +5,7 @@ window = SVM::Window.new
 
 begin
   window.show
-rescue Interrupt => e
+rescue Interrupt
   puts "\nQuitting..."
   exit 1
 ensure
