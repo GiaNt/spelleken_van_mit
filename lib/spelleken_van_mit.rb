@@ -3,11 +3,13 @@ require 'gosu'
 
 $LOAD_PATH.unshift File.dirname(__FILE__)
 
+### SVM
 module SpellekenVanMit
   autoload :Version, 'spelleken_van_mit/version'
 
   Root = Pathname.pwd
 
+  ### SVM
   class << self
     def root
       Root
@@ -26,6 +28,7 @@ module SpellekenVanMit
     end
   end
 
+  ### SVM::Window
   class Window < Gosu::Window
     def initialize
       super 800, 600, false
@@ -68,6 +71,7 @@ module SpellekenVanMit
     end
   end
 
+  ### SVM::CardSet
   class CardSet
     def initialize(window)
       @window = window
@@ -104,7 +108,9 @@ module SpellekenVanMit
     end
   end
 
+  ### SVM::Card
   module Card
+    ### SVM::Card::Base
     class Base
       attr_reader :identifier, :shown
 
@@ -160,15 +166,19 @@ module SpellekenVanMit
       end
     end
 
+    ### SVM::Card::Club
     class Club < Base
     end
 
+    ### SVM::Card::Diamond
     class Diamond < Base
     end
 
+    ### SVM::Card::Heart
     class Heart < Base
     end
 
+    ### SVM::Card::Spade
     class Spade < Base
     end
   end
