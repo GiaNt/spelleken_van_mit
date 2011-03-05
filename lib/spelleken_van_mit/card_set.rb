@@ -1,12 +1,16 @@
 class SVM::CardSet < Array
-  def populate!(window)
+  def initialize(window)
+    @window = window
+  end
+
+  def populate!
     clear
 
     13.times do |identifier|
-      add_card :Club,    window, identifier
-      add_card :Diamond, window, identifier
-      add_card :Heart,   window, identifier
-      add_card :Spade,   window, identifier
+      add_card :Club,    identifier
+      add_card :Diamond, identifier
+      add_card :Heart,   identifier
+      add_card :Spade,   identifier
     end
 
     shuffle!
@@ -23,7 +27,7 @@ class SVM::CardSet < Array
 
 private
 
-  def add_card(type, window, identifier)
-    self << SVM::Card.const_get(type).new(window, identifier)
+  def add_card(type, identifier)
+    self << SVM::Card.const_get(type).new(@window, identifier)
   end
 end

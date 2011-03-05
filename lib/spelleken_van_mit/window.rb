@@ -26,8 +26,8 @@ class SVM::Window < Gosu::Window
 private
 
   def init_cardsets
-    @card_set = SVM::CardSet.new
-    @card_set.populate! self
+    @card_set = SVM::CardSet.new(self)
+    @card_set.populate!
     # TODO: Game set / Hand set
   end
 
