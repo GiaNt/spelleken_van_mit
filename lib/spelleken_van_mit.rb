@@ -4,36 +4,173 @@ require 'gosu'
 $LOAD_PATH.unshift File.dirname(__FILE__)
 
 module SpellekenVanMit
-  Root = Pathname.pwd
-
-  autoload :CardSet, 'spelleken_van_mit/card_set'
-  autoload :Window,  'spelleken_van_mit/window'
-
-  module Card
-    autoload :Base,    'spelleken_van_mit/card/base'
-
-    autoload :Club,    'spelleken_van_mit/card/club'
-    autoload :Diamond, 'spelleken_van_mit/card/diamond'
-    autoload :Heart,   'spelleken_van_mit/card/heart'
-    autoload :Spade,   'spelleken_van_mit/card/spade'
-  end
-
   autoload :Version, 'spelleken_van_mit/version'
 
-  def self.root
-    Root
+  Root = Pathname.pwd
+
+  class << self
+    def root
+      Root
+    end
+
+    def version
+      Version
+    end
+
+    def image_path(path)
+      root.join('images', path).to_s
+    end
+
+    def z_order
+      @_z_order ||= { background: 0, cards: 1, ui: 2 }
+    end
   end
 
-  def self.version
-    Version
+  class Window < Gosu::Window
+    def initialize
+      super 800, 600, false
+      self.caption = 'Spelleken Van Mit'
+
+      init_cardsets
+      init_background
+      init_font
+    end
+
+    def update
+    end
+
+    def draw
+      @background.draw 0, 0, SVM.z_order[:background]
+      @font.draw 'Spelleken Van Mit', 5, 5, SVM.z_order[:ui], 1.0, 1.0, 0xffffffff
+    end
+
+    def button_up(id)
+      close and exit if id == Gosu::Button::KbEscape
+    end
+
+    #def button_down(id)
+    #end
+
+  private
+
+    def init_cardsets
+      @card_set = SVM::CardSet.new(self)
+      @card_set.populate!
+      # TODO: Game set / Hand set
+    end
+
+    def init_background
+      @background = Gosu::Image.new(self, SVM.image_path('background.png'), true)
+    end
+
+    def init_font
+      @font = Gosu::Font.new(self, Gosu.default_font_name, 18)
+    end
   end
 
-  def self.image_path(path)
-    root.join('images', path).to_s
+  class CardSet
+    def initialize(window)
+      @window = window
+      @set    = []
+    end
+
+    def populate!
+      @set.clear
+
+      13.times do |identifier|
+        add_card :Club,    identifier
+        add_card :Diamond, identifier
+        add_card :Heart,   identifier
+        add_card :Spade,   identifier
+      end
+
+      @set.shuffle!
+    end
+
+    def toggle!
+      @set.each &:toggle!
+    end
+
+    def inspect
+      "#<CardSet #{@set.inspect}>"
+    end
+
+  private
+
+    def add_card(type, identifier)
+      if SVM::Card.const_defined?(type)
+        @set.push SVM::Card.const_get(type).new(@window, identifier)
+      end
+    end
   end
 
-  def self.z_order
-    @_z_order ||= { background: 0, cards: 1, ui: 2 }
+  module Card
+    class Base
+      attr_reader :identifier, :shown
+
+      @@mapping = {
+        0  => 'Ace',
+        1  => '2',
+        2  => '3',
+        3  => '4',
+        4  => '5',
+        5  => '6',
+        6  => '7',
+        7  => '8',
+        8  => '9',
+        9  => '10',
+        10 => 'Jack',
+        11 => 'Queen',
+        12 => 'King'
+      }
+
+      def initialize(window, identifier)
+        @window     = window
+        @identifier = identifier
+        @shown      = false
+      end
+
+      def name
+        @@mapping[identifier]
+      end
+
+      def toggle
+        @shown = !@shown
+      end
+      alias :toggle! :toggle
+
+      # TODO: Different image as per @shown
+      def image
+        if @shown
+        else
+        end
+      end
+
+      def two?
+        identifier == 1
+      end
+      alias :bad? :two?
+
+      def type
+        self.class.to_s.sub(/([a-z]+::)+/i, '')
+      end
+
+      def inspect
+        "#<#{name} of #{type}s @shown=#@shown"
+      end
+    end
+
+    class Club < Base
+    end
+
+    class Diamond < Base
+    end
+
+    class Heart < Base
+    end
+
+    class Spade < Base
+    end
   end
 end
 
