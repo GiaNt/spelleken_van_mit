@@ -42,7 +42,7 @@ class SpellekenVanMit::Cards::Base
   def two?
     identifier == 1
   end
-  alias_method :bad?, :two?
+  alias :bad? :two?
 
   def type
     self.class.to_s.sub(/([a-z]+::)+/i, '')
