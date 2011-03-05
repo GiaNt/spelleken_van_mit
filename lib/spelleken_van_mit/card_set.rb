@@ -28,6 +28,6 @@ class SVM::CardSet < Array
 private
 
   def add_card(type, identifier)
-    self << SVM::Card.const_get(type).new(@window, identifier)
+    push SVM::Card.const_get(type).new(@window, identifier)
   end
 end
