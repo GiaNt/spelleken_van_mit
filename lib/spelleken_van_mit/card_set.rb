@@ -14,7 +14,7 @@ class SVM::CardSet < Array
   end
 
   def toggle!
-    each { |card| card.toggle }
+    each &:toggle
   end
 
   def inspect
