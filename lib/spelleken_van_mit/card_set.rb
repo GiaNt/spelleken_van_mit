@@ -1,10 +1,11 @@
-class SVM::CardSet < Array
+class SVM::CardSet
   def initialize(window)
     @window = window
+    @set    = []
   end
 
   def populate!
-    clear
+    @set.clear
 
     13.times do |identifier|
       add_card :Club,    identifier
@@ -13,21 +14,20 @@ class SVM::CardSet < Array
       add_card :Spade,   identifier
     end
 
-    shuffle!
-    self
+    @set.shuffle!
   end
 
   def toggle!
-    each &:toggle
+    @set.each &:toggle
   end
 
   def inspect
-    "#<CardSet #{super}>"
+    "#<CardSet #{@set.inspect}>"
   end
 
 private
 
   def add_card(type, identifier)
-    push SVM::Card.const_get(type).new(@window, identifier)
+    @set.push SVM::Card.const_get(type).new(@window, identifier)
   end
 end
