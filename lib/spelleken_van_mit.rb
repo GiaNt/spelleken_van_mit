@@ -3,10 +3,6 @@ require 'gosu'
 
 $LOAD_PATH.unshift File.dirname(__FILE__)
 
-module ZOrder
-  Background, Cards, UI = *0..2
-end
-
 module SpellekenVanMit
   Root = Pathname.pwd
 
@@ -30,6 +26,10 @@ module SpellekenVanMit
 
   def self.image_path(path)
     root.join('images', path).to_s
+  end
+
+  def self.z_order
+    @_z_order ||= { background: 0, cards: 1, ui: 2 }
   end
 end
 

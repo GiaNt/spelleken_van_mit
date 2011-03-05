@@ -12,8 +12,8 @@ class SVM::Window < Gosu::Window
   end
 
   def draw
-    @background.draw 0, 0, ZOrder::Background
-    @font.draw 'Spelleken Van Mit', 5, 5, ZOrder::UI, 1.0, 1.0, 0xffffffff
+    @background.draw 0, 0, SVM.z_order[:background]
+    @font.draw 'Spelleken Van Mit', 5, 5, SVM.z_order[:ui], 1.0, 1.0, 0xffffffff
   end
 
   def button_up(id)
