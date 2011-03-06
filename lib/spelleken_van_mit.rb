@@ -3,14 +3,29 @@ require 'gosu'
 
 $LOAD_PATH.unshift File.dirname(__FILE__)
 
+def debug
+  return unless SVM.debug?
+
+  debug_info = yield
+  debug_info = debug_info.inspect unless debug_info.is_a?(String)
+
+  puts debug_info
+end
+
 ### SVM
 module SpellekenVanMit
   autoload :Version, 'spelleken_van_mit/version'
 
   Root = Pathname.pwd
 
+  @z_order = { background: 0, game: 1, ui: 2 }
+  @debug   = true
+
   ### SVM
   class << self
+    attr_reader :z_order
+    attr_accessor :debug
+
     def root
       Root
     end
@@ -23,9 +38,7 @@ module SpellekenVanMit
       root.join('images', path).to_s
     end
 
-    def z_order
-      @_z_order ||= { background: 0, cards: 1, ui: 2 }
-    end
+    alias :debug? :debug
   end
 
   ### SVM::Window
@@ -43,22 +56,35 @@ module SpellekenVanMit
     end
 
     def draw
-      @background.draw 0, 0, SVM.z_order[:background]
-      @font.draw 'Spelleken Van Mit', 5, 5, SVM.z_order[:ui], 1.0, 1.0, 0xffffffff
+      draw_image @background, 0, 0, SVM.z_order[:background]
+      draw_text 'Spelleken Van Mit', 5, 5
     end
 
-    def button_up(id)
-      close and exit if id == Gosu::Button::KbEscape
+    def button_up(button_id)
+      close and exit if button_id == Gosu::Button::KbEscape
     end
 
-    #def button_down(id)
-    #end
+    def button_down(button_id)
+      @last_button = button_id
+      debug { @last_button }
+    end
+
+  protected
+
+    def draw_image(image, pos_x, pos_y, z_order = SVM.z_order[:game])
+      image.draw pos_x, pos_y, z_order
+    end
+
+    def draw_text(text, pos_x, pos_y, color = 0xffffffff, z_order = SVM.z_order[:ui])
+      @font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
+    end
 
   private
 
     def init_cardsets
       @card_set = SVM::CardSet.new(self)
       @card_set.populate!
+      debug { @card_set }
       # TODO: Game set / Hand set
     end
 
@@ -147,7 +173,7 @@ module SpellekenVanMit
 
       # TODO: Different image as per @shown
       def image
-        if @shown
+        if shown
         else
         end
       end
