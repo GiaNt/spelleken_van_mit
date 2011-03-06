@@ -117,7 +117,7 @@ module SpellekenVanMit
 
   ### SVM::CardSet
   class CardSet
-    ### SVM::Card
+    ### SVM::CardSet::Card
     class Card
       attr_reader :type, :identifier, :shown
       attr_accessor :pos_x, :pos_y
