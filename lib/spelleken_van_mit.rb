@@ -49,7 +49,7 @@ module SpellekenVanMit
 
       init_cardsets
       init_background
-      init_font
+      init_font 'Helvetica Neue'
     end
 
     def update
@@ -92,8 +92,8 @@ module SpellekenVanMit
       @background = Gosu::Image.new(self, SVM.image_path('background.png'), true)
     end
 
-    def init_font
-      @font = Gosu::Font.new(self, Gosu.default_font_name, 18)
+    def init_font(font_name = Gosu.default_font_name)
+      @font = Gosu::Font.new(self, font_name, 18)
     end
   end
 
