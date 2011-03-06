@@ -57,7 +57,7 @@ module SpellekenVanMit
 
     def draw
       draw_image @background, 0, 0, ZOrder::Background
-      draw_text 'Spelleken Van Mit', 5, 5
+      draw_text SVM.version, 760, 580
     end
 
     def button_up(button_id)
