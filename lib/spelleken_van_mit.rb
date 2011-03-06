@@ -222,13 +222,16 @@ module SpellekenVanMit
 
       # The card's dimensions on the game board.
       def dimensions
-        @_dimensions ||= { sx: pos_x, ex: pos_x + 71, sy: pos_y, ey: pos_y + 96 }
+        @_dimensions ||= begin
+          h = { sx: pos_x, ex: pos_x + 71, sy: pos_y, ey: pos_y + 96 }
+          h.each { |k, v| h[k] = v.to_f }
+          h
+        end
       end
       alias :dim :dimensions
 
       # Do the given x and y coordinates lie within this card?
       def within_dimension?(x, y)
-        x, y = x.to_i, y.to_i
         dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
       end
 
