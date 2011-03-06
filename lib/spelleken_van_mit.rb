@@ -250,9 +250,13 @@ module SpellekenVanMit
     # First creates a duplicate of this cardset, then adjusts that cardset's
     # actual set to the wanted range.
     #
-    #   +range+: Range
-    def [](range)
-      dup.tap { |d| d.set = @set[range] }
+    #   +cond+: Integer, Range
+    def [](cond)
+      if cond.is_a?(Range)
+        dup.tap { |d| d.set = @set[cond] }
+      else
+        @set[cond]
+      end
     end
 
     # Populates this cardset with all 52 cards.
