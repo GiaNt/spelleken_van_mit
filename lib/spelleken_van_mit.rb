@@ -59,16 +59,10 @@ module SpellekenVanMit
 
     def draw
       draw_image @background, 0, 0, ZOrder::Background
-      draw_text SVM.version, 865, 580
+      draw_text SVM.version, 865, 579
 
-      draw_cards 0...12,  0
-      draw_cards 12...24, 1
-      draw_cards 24...36, 2
-      draw_cards 36...48, 3
-
-      @hand_set.each_with_index do |card, idx|
-        draw_image card.image, 305 + (idx * 75), 450
-      end
+      @game_set.each { |card| draw_image card.image, card.pos_x, card.pos_y }
+      @hand_set.each { |card| draw_image card.image, card.pos_x, card.pos_y }
     end
 
     def button_up(button_id)
@@ -90,20 +84,23 @@ module SpellekenVanMit
       @font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
     end
 
-    def draw_cards(range, row)
-      @game_set[range].each_with_index do |card, idx|
-        draw_image card.image, 5 + (idx * 75), 5 + (row * 100)
-      end
-    end
-
   private
 
     def init_cardsets
-      @card_set = SVM::CardSet.new(self)
-      @card_set.populate!
-      @game_set = @card_set[0...48]
-      @hand_set = @card_set[48...52].tap { |s| s.first.toggle! }
-      debug { @hand_set }
+      card_set = SVM::CardSet.new(self)
+      card_set.populate!
+
+      @game_set = card_set[0...48]
+      @hand_set = card_set[48...52].tap { |s| s.first.toggle! }
+
+      @game_set.each_with_index do |card, idx|
+        card.pos_x = 5 + ((idx % 12) * 75)
+        card.pos_y = 5 + ((idx / 12) * 100)
+      end
+      @hand_set.each_with_index do |card, idx|
+        card.pos_x = 305 + (idx * 75)
+        card.pos_y = 450
+      end
     end
 
     def init_background
@@ -168,6 +165,7 @@ module SpellekenVanMit
     ### SVM::Card::Base
     class Base
       attr_reader :identifier, :shown
+      attr_accessor :pos_x, :pos_y
 
       @@mapping = {
         0  => 'Ace',
