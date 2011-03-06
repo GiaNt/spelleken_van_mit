@@ -134,10 +134,10 @@ module SpellekenVanMit
       @set.clear
 
       13.times do |identifier|
-        add_card :Club,    identifier
-        add_card :Diamond, identifier
-        add_card :Heart,   identifier
-        add_card :Spade,   identifier
+        add_card :club,    identifier
+        add_card :diamond, identifier
+        add_card :heart,   identifier
+        add_card :spade,   identifier
       end
 
       @set.shuffle!
@@ -154,85 +154,69 @@ module SpellekenVanMit
   private
 
     def add_card(type, identifier)
-      if SVM::Card.const_defined?(type)
-        @set.push SVM::Card.const_get(type).new(@window, identifier)
-      end
+      @set.push SVM::Card.new(@window, type, identifier)
     end
   end
 
   ### SVM::Card
-  module Card
-    ### SVM::Card::Base
-    class Base
-      attr_reader :identifier, :shown
-      attr_accessor :pos_x, :pos_y
+  class Card
+    attr_reader :type, :identifier, :shown
+    attr_accessor :pos_x, :pos_y
 
-      @@mapping = {
-        0  => 'Ace',
-        1  => '2',
-        2  => '3',
-        3  => '4',
-        4  => '5',
-        5  => '6',
-        6  => '7',
-        7  => '8',
-        8  => '9',
-        9  => '10',
-        10 => 'Jack',
-        11 => 'Queen',
-        12 => 'King'
-      }
+    @@mapping = {
+      0  => 'Ace',
+      1  => '2',
+      2  => '3',
+      3  => '4',
+      4  => '5',
+      5  => '6',
+      6  => '7',
+      7  => '8',
+      8  => '9',
+      9  => '10',
+      10 => 'Jack',
+      11 => 'Queen',
+      12 => 'King'
+    }
 
-      def initialize(window, identifier)
-        @window     = window
-        @identifier = identifier
-        @shown      = false
-      end
-
-      def name
-        @@mapping[identifier]
-      end
-
-      def toggle
-        @shown = !@shown
-      end
-      alias :toggle! :toggle
-
-      def image
-        file = shown ?
-          SVM.image_path("#{type.downcase}s_#{identifier}.png") :
-          SVM.image_path('default.png')
-        Gosu::Image.new(@window, file, false)
-      end
-
-      def two?
-        identifier == 1
-      end
-      alias :bad? :two?
-
-      def type
-        self.class.to_s.sub(/([a-z]+::)+/i, '')
-      end
-
-      def inspect
-        "#<#{name} of #{type}s @shown=#@shown"
-      end
+    def initialize(window, type, identifier)
+      @window     = window
+      @type       = type
+      @identifier = identifier
+      @shown      = false
     end
 
-    ### SVM::Card::Club
-    class Club < Base
+    def name
+      @@mapping[identifier]
     end
 
-    ### SVM::Card::Diamond
-    class Diamond < Base
+    def toggle
+      @shown = !@shown
+    end
+    alias :toggle! :toggle
+
+    def image
+      file = shown ?
+        SVM.image_path("#{type}s_#{identifier}.png") :
+        SVM.image_path('default.png')
+      Gosu::Image.new(@window, file, false)
     end
 
-    ### SVM::Card::Heart
-    class Heart < Base
+    def dim_x
+      [pos_x, pos_x + 71]
     end
 
-    ### SVM::Card::Spade
-    class Spade < Base
+    def dim_y
+      [pos_y, pos_y + 96]
+    end
+
+    def two?
+      identifier == 1
+    end
+    alias :bad? :two?
+
+    def inspect
+      "#<#{name} of #{type}s @shown=#@shown"
     end
   end
 end
