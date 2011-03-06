@@ -4,7 +4,7 @@ require 'gosu'
 require 'active_support/core_ext/module/delegation'
 
 def debug
-  return unless SVM.debug?
+  return unless block_given? && SVM.debug?
 
   debug_info = yield
   debug_info = debug_info.inspect unless debug_info.is_a?(String)
