@@ -117,6 +117,68 @@ module SpellekenVanMit
 
   ### SVM::CardSet
   class CardSet
+    ### SVM::Card
+    class Card
+      attr_reader :type, :identifier, :shown
+      attr_accessor :pos_x, :pos_y
+
+      @@mapping = {
+        0  => 'Ace',
+        1  => '2',
+        2  => '3',
+        3  => '4',
+        4  => '5',
+        5  => '6',
+        6  => '7',
+        7  => '8',
+        8  => '9',
+        9  => '10',
+        10 => 'Jack',
+        11 => 'Queen',
+        12 => 'King'
+      }
+
+      def initialize(window, type, identifier)
+        @window     = window
+        @type       = type
+        @identifier = identifier
+        @shown      = false
+      end
+
+      def name
+        @@mapping[identifier]
+      end
+
+      def toggle
+        @shown = !@shown
+      end
+      alias :toggle! :toggle
+
+      def image
+        file = shown ?
+          SVM.image_path("#{type}s_#{identifier}.png") :
+          SVM.image_path('default.png')
+        Gosu::Image.new(@window, file, false)
+      end
+
+      def dim_x
+        [pos_x, pos_x + 71]
+      end
+
+      def dim_y
+        [pos_y, pos_y + 96]
+      end
+
+      def two?
+        identifier == 1
+      end
+      alias :bad? :two?
+
+      def inspect
+        "#<#{name} of #{type}s @shown=#@shown"
+      end
+    end
+
     attr_accessor :set
 
     delegate :each, :each_with_index, :first, :last, :group_by, to: :set
@@ -154,69 +216,7 @@ module SpellekenVanMit
   private
 
     def add_card(type, identifier)
-      @set.push SVM::Card.new(@window, type, identifier)
-    end
-  end
-
-  ### SVM::Card
-  class Card
-    attr_reader :type, :identifier, :shown
-    attr_accessor :pos_x, :pos_y
-
-    @@mapping = {
-      0  => 'Ace',
-      1  => '2',
-      2  => '3',
-      3  => '4',
-      4  => '5',
-      5  => '6',
-      6  => '7',
-      7  => '8',
-      8  => '9',
-      9  => '10',
-      10 => 'Jack',
-      11 => 'Queen',
-      12 => 'King'
-    }
-
-    def initialize(window, type, identifier)
-      @window     = window
-      @type       = type
-      @identifier = identifier
-      @shown      = false
-    end
-
-    def name
-      @@mapping[identifier]
-    end
-
-    def toggle
-      @shown = !@shown
-    end
-    alias :toggle! :toggle
-
-    def image
-      file = shown ?
-        SVM.image_path("#{type}s_#{identifier}.png") :
-        SVM.image_path('default.png')
-      Gosu::Image.new(@window, file, false)
-    end
-
-    def dim_x
-      [pos_x, pos_x + 71]
-    end
-
-    def dim_y
-      [pos_y, pos_y + 96]
-    end
-
-    def two?
-      identifier == 1
-    end
-    alias :bad? :two?
-
-    def inspect
-      "#<#{name} of #{type}s @shown=#@shown"
+      @set.push Card.new(@window, type, identifier)
     end
   end
 end
