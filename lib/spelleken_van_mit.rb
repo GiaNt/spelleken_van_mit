@@ -26,18 +26,24 @@ module SpellekenVanMit
 
   ### SVM
   class << self
+    # Debug mode boolean.
     attr_accessor :debug
 
+    # Root directory.
     def root
       Root
     end
 
+    # Game version.
     def version
       Version
     end
 
-    def image_path(path)
-      root.join('images', path).to_s
+    # Returns the path to an image's filename, based on the root directory.
+    #
+    #   +file+: String
+    def image_path(file)
+      root.join('images', file).to_s
     end
 
     alias :debug? :debug
@@ -54,9 +60,11 @@ module SpellekenVanMit
       init_cardsets
     end
 
+    # Contains game logic. Called 60 times every second.
     def update
     end
 
+    # Called after update, draws images and text.
     def draw
       draw_image @background, 0, 0, ZOrder::Background
       draw_text SVM.version, 865, 579
@@ -65,10 +73,16 @@ module SpellekenVanMit
       @hand_set.each { |card| draw_image card.image, card.pos_x, card.pos_y }
     end
 
+    # Called on button up.
+    #
+    #   +button_id+: Integer
     def button_up(button_id)
       close and exit if button_id == Gosu::Button::KbEscape
     end
 
+    # Called on button down.
+    #
+    #   +button_id+: Integer
     def button_down(button_id)
       @last_button = button_id
       debug { @last_button }
@@ -76,16 +90,31 @@ module SpellekenVanMit
 
   protected
 
+    # Draws an image
+    #
+    #   +image+:   Gosu::Image
+    #   +pos_x+:   Integer
+    #   +pos_y+:   Integer
+    #   +z_order+: Integer
     def draw_image(image, pos_x, pos_y, z_order = ZOrder::Game)
       image.draw pos_x, pos_y, z_order
     end
 
+    # Draws text using @font.
+    #
+    #   +text+:    String
+    #   +pos_x+:   Integer
+    #   +pos_y+:   Integer
+    #   +color+:   Gosu::Color
+    #   +z_order+: Integer
     def draw_text(text, pos_x, pos_y, color = 0xffeeeeee, z_order = ZOrder::UI)
       @font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
     end
 
   private
 
+    # Initializes the CardSet for this game, splits it, and sets its cards'
+    # positions.
     def init_cardsets
       card_set = SVM::CardSet.new(self)
       card_set.populate!
@@ -103,6 +132,7 @@ module SpellekenVanMit
       end
     end
 
+    # Initializes the background image.
     def init_background
       @background = Gosu::Image.new(
       # window filename                          tileable posX posY srcX srcY
@@ -110,6 +140,9 @@ module SpellekenVanMit
       )
     end
 
+    # Initializes the global font.
+    #
+    #   +font_name+: String
     def init_font(font_name = Gosu.default_font_name)
       @font = Gosu::Font.new(self, font_name, 18)
     end
@@ -119,9 +152,22 @@ module SpellekenVanMit
   class CardSet
     ### SVM::CardSet::Card
     class Card
-      attr_reader :type, :identifier, :shown
-      attr_accessor :pos_x, :pos_y
+      # The card's type. [:club, :diamond, :heart, :spade]
+      attr_reader :type
 
+      # The card's internal identifier.
+      attr_reader :identifier
+
+      # The card's visibility on the game board.
+      attr_reader :shown
+
+      # The card's x position on the game board.
+      attr_accessor :pos_x
+
+      # The card's y position on the game board.
+      attr_accessor :pos_y
+
+      # Mapping of card identifiers to their names.
       @@mapping = {
         0  => 'Ace',
         1  => '2',
@@ -138,6 +184,11 @@ module SpellekenVanMit
         12 => 'King'
       }
 
+      # Initializes a new card.
+      #
+      #   +window+:     Gosu::Window
+      #   +type+:       Symbol
+      #   +identifier+: Integer
       def initialize(window, type, identifier)
         @window     = window
         @type       = type
@@ -145,15 +196,18 @@ module SpellekenVanMit
         @shown      = false
       end
 
+      # Card name, mapped by its identifier.
       def name
         @@mapping[identifier]
       end
 
+      # Toggle the card's visibility status.
       def toggle
         @shown = !@shown
       end
       alias :toggle! :toggle
 
+      # The card's ready-to-draw image object.
       def image
         file = shown ?
           SVM.image_path("#{type}s_#{identifier}.png") :
@@ -161,14 +215,12 @@ module SpellekenVanMit
         Gosu::Image.new(@window, file, false)
       end
 
-      def dim_x
-        [pos_x, pos_x + 71]
+      # The card's dimensions on the game board.
+      def dimensions
+        { start_x: pos_x, end_x: pos_x + 71, start_y: pos_y, end_y: pos_y + 96 }
       end
 
-      def dim_y
-        [pos_y, pos_y + 96]
-      end
-
+      # Is the card a game breaker?
       def two?
         identifier == 1
       end
@@ -179,19 +231,34 @@ module SpellekenVanMit
       end
     end
 
+    # The cardset's actual cardset.
     attr_accessor :set
 
+    # Array methods are to be called upon the set itself.
     delegate :each, :each_with_index, :first, :last, :group_by, to: :set
 
+    # Initializes the cardset.
+    #
+    #   +window+: Gosu::Window
     def initialize(window)
       @window = window
       @set    = []
     end
 
-    def [](idx)
-      dup.tap { |d| d.set = @set[idx] }
+    # Retrieve a specific range of cards.
+    #
+    # First creates a duplicate of this cardset, then adjusts that cardset's
+    # actual set to the wanted range.
+    #
+    #   +range+: Range
+    def [](range)
+      dup.tap { |d| d.set = @set[range] }
     end
 
+    # Populates this cardset with all 52 cards.
+    #
+    # First clears any existing cards, then adds 13 cards of all 4 types.
+    # Finally, shuffles the whole set around to randomize it.
     def populate!
       @set.clear
 
@@ -205,6 +272,7 @@ module SpellekenVanMit
       @set.shuffle!
     end
 
+    # Toggles each of this cardset's cards visibility status.
     def toggle!
       each &:toggle!
     end
@@ -215,6 +283,10 @@ module SpellekenVanMit
 
   private
 
+    # Adds a card to the set.
+    #
+    #  +type+:       Symbol
+    #  +identifier+: Integer
     def add_card(type, identifier)
       @set.push Card.new(@window, type, identifier)
     end
