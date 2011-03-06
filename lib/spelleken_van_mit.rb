@@ -106,7 +106,7 @@ module SpellekenVanMit
     def init_background
       @background = Gosu::Image.new(
       # window filename                          tileable posX posY srcX  srcY
-        self,  SVM.image_path('background.png'), true,    0,   0,   1000, 600
+        self,  SVM.image_path('background.png'), true,    0,   0,   905, 600
       )
     end
 
