@@ -51,7 +51,7 @@ module SpellekenVanMit
   ### SVM::Window
   class Window < Gosu::Window
     def initialize
-      super 905, 600, false
+      super 905, 600, false, 33.333333
       self.caption = 'Spelleken Van Mit'
 
       init_background
@@ -64,6 +64,7 @@ module SpellekenVanMit
       if button_down?(Gosu::Button::MsLeft)
         if card = @game_set.detect { |c| c.within_dimension?(@mouse_x, @mouse_y) }
           card.toggle!
+          debug { card }
         end
       end
     end
@@ -92,6 +93,11 @@ module SpellekenVanMit
       @last_button = button_id
       @mouse_x     = mouse_x
       @mouse_y     = mouse_y
+    end
+
+    # This game needs a cursor.
+    def needs_cursor?
+      true
     end
 
   protected
@@ -175,7 +181,7 @@ module SpellekenVanMit
 
       # Mapping of card identifiers to their names.
       @@mapping = {
-        0  => 'Ace',
+        0  => 'ace',
         1  => '2',
         2  => '3',
         3  => '4',
@@ -185,9 +191,9 @@ module SpellekenVanMit
         7  => '8',
         8  => '9',
         9  => '10',
-        10 => 'Jack',
-        11 => 'Queen',
-        12 => 'King'
+        10 => 'jack',
+        11 => 'queen',
+        12 => 'king'
       }
 
       # Initializes a new card.
@@ -243,7 +249,7 @@ module SpellekenVanMit
       alias :bad? :two?
 
       def inspect
-        "#<#{name} of #{type}s @shown=#@shown"
+        "#<#{name} of #{type}s @shown=#@shown>"
       end
     end
 
