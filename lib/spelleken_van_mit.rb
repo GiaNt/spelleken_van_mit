@@ -75,7 +75,7 @@ module SpellekenVanMit
       image.draw pos_x, pos_y, z_order
     end
 
-    def draw_text(text, pos_x, pos_y, color = 0xffffffff, z_order = ZOrder::UI)
+    def draw_text(text, pos_x, pos_y, color = 0xffeeeeee, z_order = ZOrder::UI)
       @font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
     end
 
