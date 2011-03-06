@@ -12,18 +12,21 @@ def debug
   puts debug_info
 end
 
+### ZOrder
+module ZOrder
+  Background, Game, UI = *0..2
+end
+
 ### SVM
 module SpellekenVanMit
   autoload :Version, 'spelleken_van_mit/version'
 
   Root = Pathname.pwd
 
-  @z_order = { background: 0, game: 1, ui: 2 }
-  @debug   = true
+  @debug = true
 
   ### SVM
   class << self
-    attr_reader :z_order
     attr_accessor :debug
 
     def root
@@ -56,7 +59,7 @@ module SpellekenVanMit
     end
 
     def draw
-      draw_image @background, 0, 0, SVM.z_order[:background]
+      draw_image @background, 0, 0, ZOrder::Background
       draw_text 'Spelleken Van Mit', 5, 5
     end
 
@@ -71,11 +74,11 @@ module SpellekenVanMit
 
   protected
 
-    def draw_image(image, pos_x, pos_y, z_order = SVM.z_order[:game])
+    def draw_image(image, pos_x, pos_y, z_order = ZOrder::Game)
       image.draw pos_x, pos_y, z_order
     end
 
-    def draw_text(text, pos_x, pos_y, color = 0xffffffff, z_order = SVM.z_order[:ui])
+    def draw_text(text, pos_x, pos_y, color = 0xffffffff, z_order = ZOrder::UI)
       @font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
     end
 
