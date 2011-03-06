@@ -104,6 +104,18 @@ module SpellekenVanMit
       @set    = []
     end
 
+    def first
+      @set.first
+    end
+
+    def last
+      @set.last
+    end
+
+    def [](idx)
+      @set[idx]
+    end
+
     def populate!
       @set.clear
 
@@ -171,11 +183,11 @@ module SpellekenVanMit
       end
       alias :toggle! :toggle
 
-      # TODO: Different image as per @shown
       def image
-        if shown
-        else
-        end
+        file = shown ?
+          SVM.image_path("#{type.downcase}s_#{identifier}.png") :
+          SVM.image_path('default.png')
+        Gosu::Image.new(@window, file, false)
       end
 
       def two?
