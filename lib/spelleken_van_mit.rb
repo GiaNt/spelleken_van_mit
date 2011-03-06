@@ -62,6 +62,11 @@ module SpellekenVanMit
 
     # Contains game logic. Called 60 times every second.
     def update
+      if button_down?(Gosu::Button::MsLeft)
+        if card = @game_set.detect { |c| c.within_dimension?(mouse_x, mouse_y) }
+          card.toggle!
+        end
+      end
     end
 
     # Called after update, draws images and text.
@@ -217,7 +222,14 @@ module SpellekenVanMit
 
       # The card's dimensions on the game board.
       def dimensions
-        { start_x: pos_x, end_x: pos_x + 71, start_y: pos_y, end_y: pos_y + 96 }
+        @_dimensions ||= { sx: pos_x, ex: pos_x + 71, sy: pos_y, ey: pos_y + 96 }
+      end
+      alias :dim :dimensions
+
+      # Do the given x and y coordinates lie within this card?
+      def within_dimension?(x, y)
+        x, y = x.to_i, y.to_i
+        dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
       end
 
       # Is the card a game breaker?
@@ -235,7 +247,7 @@ module SpellekenVanMit
     attr_accessor :set
 
     # Array methods are to be called upon the set itself.
-    delegate :each, :each_with_index, :first, :last, :group_by, to: :set
+    delegate :each, :each_with_index, :first, :last, :detect, to: :set
 
     # Initializes the cardset.
     #
