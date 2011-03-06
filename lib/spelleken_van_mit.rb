@@ -72,6 +72,7 @@ module SpellekenVanMit
     def draw
       draw_image @background, 0, 0, ZOrder::Background
       draw_text SVM.version, 865, 579
+      draw_text "Cards left: #{@game_set.hidden.size}" , 5, 579
 
       @game_set.each { |card| draw_image card.image, card.pos_x, card.pos_y }
       @hand_set.each { |card| draw_image card.image, card.pos_x, card.pos_y }
@@ -250,7 +251,8 @@ module SpellekenVanMit
     attr_accessor :set
 
     # Array methods are to be called upon the set itself.
-    delegate :each, :each_with_index, :first, :last, :detect, to: :set
+    delegate :each, :each_with_index, :first, :last,
+             :detect, :select, :reject, to: :set
 
     # Initializes the cardset.
     #
@@ -294,6 +296,16 @@ module SpellekenVanMit
     # Toggles each of this cardset's cards visibility status.
     def toggle!
       each &:toggle!
+    end
+
+    # All hidden cards.
+    def hidden
+      reject &:shown
+    end
+
+    # All shown cards.
+    def shown
+      select &:shown
     end
 
     def inspect
