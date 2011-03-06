@@ -1,8 +1,6 @@
 require 'pathname'
 require 'gosu'
 
-$LOAD_PATH.unshift File.dirname(__FILE__)
-
 def debug
   return unless SVM.debug?
 
@@ -19,9 +17,8 @@ end
 
 ### SVM
 module SpellekenVanMit
-  autoload :Version, 'spelleken_van_mit/version'
-
-  Root = Pathname.pwd
+  Root    = Pathname.pwd
+  Version = '0.0.1'
 
   @debug = true
 
