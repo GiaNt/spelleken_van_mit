@@ -49,9 +49,9 @@ module SpellekenVanMit
       super 905, 600, false
       self.caption = 'Spelleken Van Mit'
 
-      init_cardsets
       init_background
       init_font 'Helvetica Neue'
+      init_cardsets
     end
 
     def update
