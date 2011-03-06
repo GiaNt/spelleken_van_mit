@@ -1,5 +1,7 @@
 require 'pathname'
 require 'gosu'
+#require 'active_support/core_ext/enumerable'
+require 'active_support/core_ext/module/delegation'
 
 def debug
   return unless SVM.debug?
@@ -44,7 +46,7 @@ module SpellekenVanMit
   ### SVM::Window
   class Window < Gosu::Window
     def initialize
-      super 800, 600, false
+      super 905, 600, false
       self.caption = 'Spelleken Van Mit'
 
       init_cardsets
@@ -57,7 +59,16 @@ module SpellekenVanMit
 
     def draw
       draw_image @background, 0, 0, ZOrder::Background
-      draw_text SVM.version, 760, 580
+      draw_text SVM.version, 865, 580
+
+      draw_cards 0...12,  0
+      draw_cards 12...24, 1
+      draw_cards 24...36, 2
+      draw_cards 36...48, 3
+
+      @hand_set.each_with_index do |card, idx|
+        draw_image card.image, 305 + (idx * 75), 450
+      end
     end
 
     def button_up(button_id)
@@ -79,17 +90,27 @@ module SpellekenVanMit
       @font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
     end
 
+    def draw_cards(range, row)
+      @game_set[range].each_with_index do |card, idx|
+        draw_image card.image, 5 + (idx * 75), 5 + (row * 100)
+      end
+    end
+
   private
 
     def init_cardsets
       @card_set = SVM::CardSet.new(self)
       @card_set.populate!
-      debug { @card_set }
-      # TODO: Game set / Hand set
+      @game_set = @card_set[0...48]
+      @hand_set = @card_set[48...52].tap { |s| s.first.toggle! }
+      debug { @hand_set }
     end
 
     def init_background
-      @background = Gosu::Image.new(self, SVM.image_path('background.png'), true)
+      @background = Gosu::Image.new(
+      # window, filename,                         tileable, posX, posY, srcX, srcY
+        self,   SVM.image_path('background.png'), true,     0,    0,    1000, 600
+      )
     end
 
     def init_font(font_name = Gosu.default_font_name)
@@ -99,21 +120,17 @@ module SpellekenVanMit
 
   ### SVM::CardSet
   class CardSet
+    attr_accessor :set
+
+    delegate :each, :each_with_index, :first, :last, :group_by, to: :set
+
     def initialize(window)
       @window = window
       @set    = []
     end
 
-    def first
-      @set.first
-    end
-
-    def last
-      @set.last
-    end
-
     def [](idx)
-      @set[idx]
+      dup.tap { |d| d.set = @set[idx] }
     end
 
     def populate!
@@ -130,7 +147,7 @@ module SpellekenVanMit
     end
 
     def toggle!
-      @set.each &:toggle!
+      each &:toggle!
     end
 
     def inspect
