@@ -229,11 +229,7 @@ module SpellekenVanMit
 
       # The card's dimensions on the game board.
       def dimensions
-        @_dimensions ||= begin
-          h = { sx: pos_x, ex: pos_x + 71, sy: pos_y, ey: pos_y + 96 }
-          h.each { |k, v| h[k] = v.to_f }
-          h
-        end
+        { sx: pos_x, ex: pos_x + 71, sy: pos_y, ey: pos_y + 96 }
       end
       alias :dim :dimensions
 
