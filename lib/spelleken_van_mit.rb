@@ -62,12 +62,8 @@ module SpellekenVanMit
 
     # Contains game logic. Called 60 times every second.
     def update
-      if button_down?(Gosu::Button::MsLeft)
-        if card = @game_set.detect { |c| c.within_dimension?(@mouse_x, @mouse_y) }
-          card.toggle!
-          debug { card }
-        end
-      end
+      @mouse_x = mouse_x
+      @mouse_y = mouse_y
     end
 
     # Called after update, draws images and text.
@@ -94,8 +90,16 @@ module SpellekenVanMit
     #   +button_id+: Integer
     def button_down(button_id)
       @last_button = button_id
-      @mouse_x     = mouse_x
-      @mouse_y     = mouse_y
+
+      case @last_button
+      when Gosu::Button::MsLeft
+        if card = @game_set.detect { |c| c.within_dimension?(@mouse_x, @mouse_y) }
+          card.toggle!
+          debug { card }
+        else
+          @game_over = true
+        end
+      end
     end
 
     # This game needs a cursor.
