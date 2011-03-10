@@ -75,8 +75,8 @@ module SpellekenVanMit
       draw_text SVM.version, 865, 579
       draw_text "Cards left: #{@game_set.hidden.size}" , 5, 579
 
-      @game_set.each { |card| card.draw }
-      @hand_set.each { |card| card.draw }
+      @game_set.each &:draw
+      @hand_set.each &:draw
     end
 
     # Called on button up.
