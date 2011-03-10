@@ -74,6 +74,7 @@ module SpellekenVanMit
     # Called after update, draws images and text.
     def draw
       draw_background
+
       unless @game_over
         draw_ui
         draw_cards
