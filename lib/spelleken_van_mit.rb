@@ -123,7 +123,7 @@ module SpellekenVanMit
     end
 
     def draw_score
-      # TODO
+      draw_text "There were #{@game_set.hidden.size} cards left", 350, 270
     end
 
   private
