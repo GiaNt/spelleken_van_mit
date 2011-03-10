@@ -54,11 +54,10 @@ module SpellekenVanMit
       super 905, 600, false, 33.333333
       self.caption = 'Spelleken Van Mit'
 
+      init_game_values
       init_background
       init_font 'Helvetica Neue'
       init_cardsets
-
-      @game_over = false
     end
 
     # Contains game logic. Called 60 times every second.
@@ -169,6 +168,11 @@ module SpellekenVanMit
     #   +font_name+: String
     def init_font(font_name = Gosu.default_font_name)
       @font = Gosu::Font.new(self, font_name, 18)
+    end
+
+    # Initializes standard values.
+    def init_game_values
+      @game_over = false
     end
   end
 
