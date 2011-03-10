@@ -57,6 +57,8 @@ module SpellekenVanMit
       init_background
       init_font 'Helvetica Neue'
       init_cardsets
+
+      @game_over = false
     end
 
     # Contains game logic. Called 60 times every second.
@@ -71,12 +73,13 @@ module SpellekenVanMit
 
     # Called after update, draws images and text.
     def draw
-      @background.draw 0, 0, ZOrder::Background
-      draw_text SVM.version, 865, 579
-      draw_text "Cards left: #{@game_set.hidden.size}" , 5, 579
-
-      @game_set.each &:draw
-      @hand_set.each &:draw
+      draw_background
+      unless @game_over
+        draw_ui
+        draw_cards
+      else
+        draw_score
+      end
     end
 
     # Called on button up.
@@ -102,6 +105,26 @@ module SpellekenVanMit
 
   protected
 
+    def draw_background
+      @background.draw 0, 0, ZOrder::Background
+    end
+
+    def draw_ui
+      draw_text SVM.version, 865, 579
+      draw_text "Cards left: #{@game_set.hidden.size}" , 5, 579
+    end
+
+    def draw_cards
+      @game_set.each &:draw
+      @hand_set.each &:draw
+    end
+
+    def draw_score
+      # TODO
+    end
+
+  private
+
     # Draws text using @font.
     #
     #   +text+:    String
@@ -112,8 +135,6 @@ module SpellekenVanMit
     def draw_text(text, pos_x, pos_y, color = 0xffeeeeee, z_order = ZOrder::UI)
       @font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
     end
-
-  private
 
     # Initializes the CardSet for this game, splits it, and sets its cards'
     # positions.
