@@ -62,8 +62,7 @@ module SpellekenVanMit
 
     # Contains game logic. Called 60 times every second.
     def update
-      @mouse_x = mouse_x
-      @mouse_y = mouse_y
+      # TODO
     end
 
     # Called after update, draws images and text.
@@ -93,7 +92,7 @@ module SpellekenVanMit
 
       case @last_button
       when Gosu::Button::MsLeft
-        if card = @game_set.detect { |c| c.within_dimension?(@mouse_x, @mouse_y) }
+        if card = @game_set.detect { |c| c.within_dimension?(mouse_x, mouse_y) }
           card.toggle!
           debug { card }
         else
