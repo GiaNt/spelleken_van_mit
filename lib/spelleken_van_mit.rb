@@ -71,12 +71,12 @@ module SpellekenVanMit
 
     # Called after update, draws images and text.
     def draw
-      draw_image @background, 0, 0, ZOrder::Background
+      @background.draw 0, 0, ZOrder::Background
       draw_text SVM.version, 865, 579
       draw_text "Cards left: #{@game_set.hidden.size}" , 5, 579
 
-      @game_set.each { |card| draw_image card.image, card.pos_x, card.pos_y }
-      @hand_set.each { |card| draw_image card.image, card.pos_x, card.pos_y }
+      @game_set.each { |card| card.draw }
+      @hand_set.each { |card| card.draw }
     end
 
     # Called on button up.
@@ -101,16 +101,6 @@ module SpellekenVanMit
     end
 
   protected
-
-    # Draws an image
-    #
-    #   +image+:   Gosu::Image
-    #   +pos_x+:   Integer
-    #   +pos_y+:   Integer
-    #   +z_order+: Integer
-    def draw_image(image, pos_x, pos_y, z_order = ZOrder::Game)
-      image.draw pos_x, pos_y, z_order
-    end
 
     # Draws text using @font.
     #
@@ -219,12 +209,16 @@ module SpellekenVanMit
       end
       alias :toggle! :toggle
 
-      # The card's ready-to-draw image object.
-      def image
-        file = shown ?
-          SVM.image_path("#{type}s_#{identifier}.png") :
-          SVM.image_path('default.png')
-        Gosu::Image.new(@window, file, false)
+      # Draw this card to the game board.
+      def draw
+        image = begin
+          file = shown ?
+            SVM.image_path("#{type}s_#{identifier}.png") :
+            SVM.image_path('default.png')
+          Gosu::Image.new(@window, file, false)
+        end
+
+        image.draw pos_x, pos_y, ZOrder::Game
       end
 
       # The card's dimensions on the game board.
