@@ -103,9 +103,7 @@ module SpellekenVanMit
     end
 
     # This game needs a cursor.
-    def needs_cursor?
-      true
-    end
+    def needs_cursor?() true end
 
   protected
 
