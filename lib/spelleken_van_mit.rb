@@ -51,7 +51,7 @@ module SpellekenVanMit
   ### SVM::Window
   class Window < Gosu::Window
     def initialize
-      super 905, 600, false, 33.333333
+      super 905, 600, false, 1000 / 30
       self.caption = 'Spelleken Van Mit'
 
       init_game_values
