@@ -236,18 +236,20 @@ module SpellekenVanMit
 
       # Toggle the card's visibility status.
       def toggle
+        @image = nil
         @shown = !@shown
       end
       alias :toggle! :toggle
 
       # Draw this card to the game board.
       def draw
-        begin
+        @image ||= begin
           file = shown ?
             SVM.image_path("#{type}s_#{identifier}.png") :
             SVM.image_path('default.png')
           Gosu::Image.new(@window, file, false)
-        end.draw pos_x, pos_y, ZOrder::Game
+        end
+        @image.draw pos_x, pos_y, ZOrder::Game
       end
 
       # The card's dimensions on the game board.
