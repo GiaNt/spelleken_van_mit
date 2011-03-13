@@ -240,14 +240,12 @@ module SpellekenVanMit
 
       # Draw this card to the game board.
       def draw
-        image = begin
+        begin
           file = shown ?
             SVM.image_path("#{type}s_#{identifier}.png") :
             SVM.image_path('default.png')
           Gosu::Image.new(@window, file, false)
-        end
-
-        image.draw pos_x, pos_y, ZOrder::Game
+        end.draw pos_x, pos_y, ZOrder::Game
       end
 
       # The card's dimensions on the game board.
