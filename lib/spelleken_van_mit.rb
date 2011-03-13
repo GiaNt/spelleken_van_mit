@@ -124,7 +124,7 @@ module SpellekenVanMit
     end
 
     def draw_score
-      draw_text "There were #{@game_set.hidden.size} cards left", 350, 270
+      draw_text "There were #{@game_set.hidden.size} cards left", 365, 290
     end
 
   private
