@@ -51,7 +51,8 @@ module SpellekenVanMit
   ### SVM::Window
   class Window < Gosu::Window
     def initialize
-      super 905, 600, false, 1000.to_f / 30.to_f
+      #     resX resY fullscreen fps
+      super 905, 600, false,     1000.to_f / 30.to_f
       self.caption = 'Spelleken Van Mit'
 
       init_game_values
