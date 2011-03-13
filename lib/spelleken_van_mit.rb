@@ -22,8 +22,8 @@ module SpellekenVanMit
   Root    = Pathname.pwd
   Version = '0.0.1'
 
-  @debug      = true
-  @file_paths = {}
+  @debug       = true
+  @image_paths = {}
 
   ### SVM
   class << self
@@ -44,7 +44,7 @@ module SpellekenVanMit
     #
     #   +file+: String
     def image_path(file)
-      @file_paths[file] ||= root.join('images', file).to_s
+      @image_paths[file] ||= root.join('images', file).to_s
     end
 
     alias :debug? :debug
