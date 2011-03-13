@@ -93,7 +93,7 @@ module SpellekenVanMit
 
       case @last_button
       when Gosu::Button::MsLeft
-        if card = @game_set.detect { |c| c.within_dimension?(mouse_x, mouse_y) }
+        if card = @game_set.detect(&:within_dimension?)
           card.toggle!
           debug { card }
         else
@@ -254,7 +254,9 @@ module SpellekenVanMit
       alias :dim :dimensions
 
       # Do the given x and y coordinates lie within this card?
-      def within_dimension?(x, y)
+      def within_dimension?(x = nil, y = nil)
+        x ||= @window.mouse_x
+        y ||= @window.mouse_y
         dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
       end
 
