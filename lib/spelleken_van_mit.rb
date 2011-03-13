@@ -49,7 +49,7 @@ module SpellekenVanMit
   end
 
   ### SVM::Window
-  class Window < Gosu::Window
+  class GameWindow < Gosu::Window
     def initialize
       #     resX resY fullscreen fps
       super 905, 600, false,     1000.to_f / 30.to_f
