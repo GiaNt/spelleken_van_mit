@@ -21,7 +21,9 @@ end
 module SpellekenVanMit
   Root    = Pathname.pwd
   Version = '0.0.1'
-  @debug  = true
+
+  @debug      = true
+  @file_paths = {}
 
   ### SVM
   class << self
@@ -42,7 +44,7 @@ module SpellekenVanMit
     #
     #   +file+: String
     def image_path(file)
-      root.join('images', file).to_s
+      @file_paths[file] ||= root.join('images', file).to_s
     end
 
     alias :debug? :debug
@@ -53,6 +55,7 @@ module SpellekenVanMit
     def initialize
       #     resX resY fullscreen fps
       super 905, 600, false,     1000.to_f / 30.to_f
+
       self.caption = 'Spelleken Van Mit'
 
       init_game_values
