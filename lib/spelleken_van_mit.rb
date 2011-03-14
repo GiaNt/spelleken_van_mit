@@ -201,21 +201,7 @@ module SpellekenVanMit
       attr_accessor :pos_y
 
       # Mapping of card identifiers to their names.
-      @@mapping = {
-        0  => 'ace',
-        1  => '2',
-        2  => '3',
-        3  => '4',
-        4  => '5',
-        5  => '6',
-        6  => '7',
-        7  => '8',
-        8  => '9',
-        9  => '10',
-        10 => 'jack',
-        11 => 'queen',
-        12 => 'king'
-      }
+      @@mapping = %w'ace 2 3 4 5 6 7 8 9 10 jack queen king'
 
       # Initializes a new card.
       #
