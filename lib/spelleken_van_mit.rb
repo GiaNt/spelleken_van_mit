@@ -47,7 +47,7 @@ module SpellekenVanMit
       @_image_paths[file] ||= root.join('images', file).to_s
     end
 
-    alias :debug? :debug
+    alias debug? debug
   end
 
   ### SVM::Window
@@ -225,7 +225,7 @@ module SpellekenVanMit
         @_image = nil
         @shown  = !@shown
       end
-      alias :toggle! :toggle
+      alias toggle! toggle
 
       # Draw this card to the game board.
       def draw
@@ -242,7 +242,7 @@ module SpellekenVanMit
       def dimensions
         { sx: pos_x, ex: pos_x + 71, sy: pos_y, ey: pos_y + 96 }
       end
-      alias :dim :dimensions
+      alias dim dimensions
 
       # Do the given x and y coordinates lie within this card?
       def within_dimension?(x = nil, y = nil)
@@ -255,7 +255,7 @@ module SpellekenVanMit
       def two?
         identifier == 1
       end
-      alias :bad? :two?
+      alias bad? two?
 
       def inspect
         "#<#{name} of #{type}s @shown=#@shown>"
