@@ -54,13 +54,14 @@ module SpellekenVanMit
     def frames_per_second(frames)
       1000.to_f / frames.to_f
     end
+    alias fps frames_per_second
   end
 
   ### SVM::Window
   class GameWindow < Gosu::Window
     def initialize
       #     resX resY fullscreen fps
-      super 905, 600, false,     SVM.frames_per_second(30)
+      super 905, 600, false,     SVM.fps(30)
 
       self.caption = 'Spelleken Van Mit'
 
