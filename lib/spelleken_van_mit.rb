@@ -98,9 +98,7 @@ module SpellekenVanMit
     #
     #   +button_id+: Integer
     def button_down(button_id)
-      @last_button = button_id
-
-      case @last_button
+      case @last_button = button_id
       when Gosu::Button::MsLeft
         card = @game_set.detect(&:within_mouseclick?)
         debug { card }
