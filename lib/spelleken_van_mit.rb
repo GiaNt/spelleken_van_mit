@@ -102,12 +102,13 @@ module SpellekenVanMit
 
       case @last_button
       when Gosu::Button::MsLeft
-        if card = @game_set.detect(&:within_mouseclick?)
-          card.toggle!
-          debug { card }
+        card = @game_set.detect(&:within_mouseclick?)
+        debug { card }
+
+        if card.nil? or card.bad?
+          @game_over = true
         else
-          #@game_over = true
-          @game_over = !@game_over
+          card.toggle!
         end
       end
     end
