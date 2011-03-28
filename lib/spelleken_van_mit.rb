@@ -29,6 +29,7 @@ module SpellekenVanMit
   class << self
     # Debug mode boolean.
     attr_accessor :debug
+    alias debug? debug
 
     # Root directory.
     def root
@@ -47,14 +48,19 @@ module SpellekenVanMit
       @_image_paths[file] ||= root.join('images', file).to_s
     end
 
-    alias debug? debug
+    # Returns the correct float for the given frames per second.
+    #
+    #   +frames+: Integer
+    def frames_per_second(frames)
+      1000.to_f / frames.to_f
+    end
   end
 
   ### SVM::Window
   class GameWindow < Gosu::Window
     def initialize
       #     resX resY fullscreen fps
-      super 905, 600, false,     1000.to_f / 30.to_f
+      super 905, 600, false,     SVM.frames_per_second(30)
 
       self.caption = 'Spelleken Van Mit'
 
@@ -96,11 +102,12 @@ module SpellekenVanMit
 
       case @last_button
       when Gosu::Button::MsLeft
-        if card = @game_set.detect(&:within_dimension?)
+        if card = @game_set.detect(&:within_mouseclick?)
           card.toggle!
           debug { card }
         else
-          @game_over = true
+          #@game_over = true
+          @game_over = !@game_over
         end
       end
     end
@@ -125,7 +132,7 @@ module SpellekenVanMit
     end
 
     def draw_score
-      draw_text "There were #{@game_set.hidden.size} cards left", 365, 290
+      draw_text "There were #{@game_set.hidden.size} cards remaining", 350, 290
     end
 
   private
@@ -245,9 +252,8 @@ module SpellekenVanMit
       alias dim dimensions
 
       # Do the given x and y coordinates lie within this card?
-      def within_dimension?(x = nil, y = nil)
-        x ||= @window.mouse_x
-        y ||= @window.mouse_y
+      def within_mouseclick?
+        x, y = @window.mouse_x, @window.mouse_y
         dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
       end
 
