@@ -123,7 +123,7 @@ module SpellekenVanMit
 
     def draw_ui
       draw_text SVM.version, 865, 579
-      draw_text "Cards left: #{@game_set.hidden.size}" , 5, 579
+      draw_text "Cards left: #{@game_set.hidden.size}", 5, 579
     end
 
     def draw_cards
