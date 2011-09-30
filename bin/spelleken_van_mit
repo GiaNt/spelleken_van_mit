@@ -2,8 +2,8 @@
 require File.expand_path('../../lib/spelleken_van_mit', __FILE__)
 
 window = SVM::GameWindow.new
-
 begin
+  puts "Welkom bij het Spelleken Van Mit v#{SVM::VERSION}. Enjoy!"
   window.show
 rescue Interrupt
   puts "\nQuitting..."

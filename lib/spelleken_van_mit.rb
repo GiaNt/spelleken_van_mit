@@ -3,7 +3,7 @@ require 'gosu'
 #require 'active_support/core_ext/enumerable'
 require 'active_support/core_ext/module/delegation'
 
-def debug
+def d
   return unless block_given? && SVM.debug?
 
   debug_info = yield
@@ -19,8 +19,8 @@ end
 
 ### SVM
 module SpellekenVanMit
-  Root    = Pathname.pwd
-  Version = '0.0.1'
+  ROOT    = Pathname.pwd
+  VERSION = '0.0.1'
 
   @debug        = true
   @_image_paths = {}
@@ -33,12 +33,12 @@ module SpellekenVanMit
 
     # Root directory.
     def root
-      Root
+      ROOT
     end
 
     # Game version.
     def version
-      Version
+      VERSION
     end
 
     # Returns the path to an image's filename, based on the root directory.
@@ -63,7 +63,7 @@ module SpellekenVanMit
       #     resX resY fullscreen fps
       super 905, 600, false,     SVM.fps(30)
 
-      self.caption = 'Spelleken Van Mit'
+      self.caption = 'Spelleken van Mit'
 
       init_game_values
       init_background
@@ -102,7 +102,7 @@ module SpellekenVanMit
       case @last_button = button_id
       when Gosu::Button::MsLeft
         card = @game_set.detect(&:within_mouseclick?)
-        debug { card }
+        d { card }
 
         if card.nil? or card.bad?
           @game_over = true
@@ -112,8 +112,10 @@ module SpellekenVanMit
       end
     end
 
-    # This game needs a cursor.
-    def needs_cursor?() true end
+    # This game needs a visible cursor.
+    def needs_cursor?
+      true
+    end
 
   protected
 
@@ -122,7 +124,7 @@ module SpellekenVanMit
     end
 
     def draw_ui
-      draw_text SVM.version, 865, 579
+      draw_text "Spelleken van Mit v#{SVM.version}", 725, 579
       draw_text "Cards left: #{@game_set.hidden.size}", 5, 579
     end
 
@@ -207,8 +209,14 @@ module SpellekenVanMit
       # The card's y position on the game board.
       attr_accessor :pos_y
 
+      # The default image to show. The back of a card most likely.
+      attr_reader :hidden_image
+
+      # The shown image of this card. Corresponds with its identifier.
+      attr_reader :shown_image
+
       # Mapping of card identifiers to their names.
-      @@mapping = %w.ace 2 3 4 5 6 7 8 9 10 jack queen king.
+      MAPPING = %w.ace 2 3 4 5 6 7 8 9 10 jack queen king.
 
       # Initializes a new card.
       #
@@ -216,15 +224,17 @@ module SpellekenVanMit
       #   +type+:       Symbol
       #   +identifier+: Integer
       def initialize(window, type, identifier)
-        @window     = window
-        @type       = type
-        @identifier = identifier
-        @shown      = false
+        @window       = window
+        @type         = type
+        @identifier   = identifier
+        @shown        = false
+        @hidden_image = Gosu::Image.new(@window, SVM.image_path('default.png'), false)
+        @shown_image  = Gosu::Image.new(@window, SVM.image_path("#{type}s_#{identifier}.png"), false)
       end
 
       # Card name, mapped by its identifier.
       def name
-        @@mapping[identifier]
+        MAPPING[identifier]
       end
 
       # Toggle the card's visibility status.
@@ -236,13 +246,7 @@ module SpellekenVanMit
 
       # Draw this card to the game board.
       def draw
-        @_image ||= begin
-          file = shown ?
-            SVM.image_path("#{type}s_#{identifier}.png") :
-            SVM.image_path('default.png')
-          Gosu::Image.new(@window, file, false)
-        end
-        @_image.draw pos_x, pos_y, ZOrder::Game
+        (shown ? @shown_image : @hidden_image).draw pos_x, pos_y, ZOrder::Game
       end
 
       # The card's dimensions on the game board.
