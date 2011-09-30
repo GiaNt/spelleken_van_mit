@@ -3,6 +3,9 @@ require 'gosu'
 #require 'active_support/core_ext/enumerable'
 require 'active_support/core_ext/module/delegation'
 
+# The game window. Needs to be set externally!
+$window = nil
+
 def d
   return unless block_given? && SVM.debug?
 
@@ -10,6 +13,13 @@ def d
   debug_info = debug_info.inspect unless debug_info.is_a?(String)
 
   puts debug_info
+end
+
+class Integer #:nodoc:
+  def to_fps
+    1000.to_f / self.to_f
+  end
+  alias to_frames_per_second to_fps
 end
 
 ### ZOrder
@@ -47,24 +57,13 @@ module SpellekenVanMit
     def image_path(file)
       @_image_paths[file] ||= root.join('images', file).to_s
     end
-
-    # Returns the correct float for the given frames per second.
-    #
-    #   +frames+: Integer
-    def frames_per_second(frames)
-      1000.to_f / frames.to_f
-    end
-    alias fps frames_per_second
   end
 
   ### SVM::Window
   class GameWindow < Gosu::Window
-    def initialize
-      #     resX resY fullscreen fps
-      super 905, 600, false,     SVM.fps(30)
-
+    # Set up the basic interface and generate the necessary objects.
+    def bootstrap
       self.caption = 'Spelleken van Mit'
-
       init_game_values
       init_background
       init_font 'Helvetica Neue'
@@ -153,7 +152,7 @@ module SpellekenVanMit
     # Initializes the CardSet for this game, splits it, and sets its cards'
     # positions.
     def init_cardsets
-      card_set = SVM::CardSet.new(self)
+      card_set = SVM::CardSet.new
       card_set.populate!
 
       @game_set = card_set[0...48]
@@ -220,16 +219,14 @@ module SpellekenVanMit
 
       # Initializes a new card.
       #
-      #   +window+:     Gosu::Window
       #   +type+:       Symbol
       #   +identifier+: Integer
-      def initialize(window, type, identifier)
-        @window       = window
+      def initialize(type, identifier)
         @type         = type
         @identifier   = identifier
         @shown        = false
-        @hidden_image = Gosu::Image.new(@window, SVM.image_path('default.png'), false)
-        @shown_image  = Gosu::Image.new(@window, SVM.image_path("#{type}s_#{identifier}.png"), false)
+        @hidden_image = Gosu::Image.new(window, SVM.image_path('default.png'), false)
+        @shown_image  = Gosu::Image.new(window, SVM.image_path("#{type}s_#{identifier}.png"), false)
       end
 
       # Card name, mapped by its identifier.
@@ -257,7 +254,7 @@ module SpellekenVanMit
 
       # Do the given x and y coordinates lie within this card?
       def within_mouseclick?
-        x, y = @window.mouse_x, @window.mouse_y
+        x, y = window.mouse_x, window.mouse_y
         dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
       end
 
@@ -270,6 +267,12 @@ module SpellekenVanMit
       def inspect
         "#<#{name} of #{type}s @shown=#@shown>"
       end
+
+    private
+
+      def window
+        $window or raise 'No game window initialized!'
+      end
     end
 
     # The cardset's actual cardset.
@@ -280,11 +283,8 @@ module SpellekenVanMit
              :detect, :select, :reject, to: :set
 
     # Initializes the cardset.
-    #
-    #   +window+: Gosu::Window
-    def initialize(window)
-      @window = window
-      @set    = []
+    def initialize
+      @set = []
     end
 
     # Retrieve a specific range of cards.
@@ -344,7 +344,7 @@ module SpellekenVanMit
     #  +type+:       Symbol
     #  +identifier+: Integer
     def add_card(type, identifier)
-      @set.push Card.new(@window, type, identifier)
+      @set.push Card.new(type, identifier)
     end
   end
 end
