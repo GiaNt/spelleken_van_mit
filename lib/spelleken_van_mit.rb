@@ -14,7 +14,7 @@ end
 
 ### ZOrder
 module ZOrder
-  Background, Game, UI = *0..2
+  BACKGROUND, GAME, UI = *0..2
 end
 
 ### SVM
@@ -120,7 +120,7 @@ module SpellekenVanMit
   protected
 
     def draw_background
-      @background.draw 0, 0, ZOrder::Background
+      @background.draw 0, 0, ZOrder::BACKGROUND
     end
 
     def draw_ui
@@ -246,7 +246,7 @@ module SpellekenVanMit
 
       # Draw this card to the game board.
       def draw
-        (shown ? @shown_image : @hidden_image).draw pos_x, pos_y, ZOrder::Game
+        (shown ? @shown_image : @hidden_image).draw pos_x, pos_y, ZOrder::GAME
       end
 
       # The card's dimensions on the game board.
