@@ -199,8 +199,7 @@ module SpellekenVanMit
 
     def draw_score
       if @game_set.hidden.size > 0
-        draw_text 'Game over!', 410, 270
-        draw_text "There were #{@game_set.hidden.size} cards remaining!", 350, 290
+        draw_text "Game over! There were #{@game_set.hidden.size} cards remaining.", 320, 290
       else
         draw_text 'You won!', 420, 270
       end
