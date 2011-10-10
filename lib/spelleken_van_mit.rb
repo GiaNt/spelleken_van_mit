@@ -230,7 +230,7 @@ module SpellekenVanMit
 
     # Initializes standard values.
     def init_game_values
-      @game_over         = false
+      @game_over = false
     end
   end
 
