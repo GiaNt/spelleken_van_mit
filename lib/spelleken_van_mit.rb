@@ -73,7 +73,7 @@ module SpellekenVanMit
     # Contains game logic. Called 60 times every second.
     def update
       # 4 bad cards flipped == game over!
-      @game_over = true unless @bad_cards_flipped < 4
+      @game_over = true if @hand_set.empty?
 
       # If the current hand card is a 2, also swap to next.
       if @hand_card and @hand_card.bad?
@@ -120,6 +120,9 @@ module SpellekenVanMit
         # If no card was found, or this card is already shown, return.
         return if card.nil? or card.shown?
 
+        # Make sure the player makes a valid swap.
+        return unless @hand_card.can_be_swapped_with?(card)
+
         # Swap the cards' position with the card in hand if
         # this card was not already shown.
         card.swap_position_with @hand_card
@@ -128,9 +131,8 @@ module SpellekenVanMit
         @hand_set.delete(@hand_card)
         @hand_set.push(card)
 
-        # A bad card was flipped! Increase the counter.
+        # A bad card was flipped!
         if card.bad?
-          @bad_cards_flipped += 1
           # Remove this card from the game set.
           @hand_set.delete(card)
 
@@ -229,7 +231,6 @@ module SpellekenVanMit
     # Initializes standard values.
     def init_game_values
       @game_over         = false
-      @bad_cards_flipped = 0
     end
   end
 
@@ -237,6 +238,9 @@ module SpellekenVanMit
   class CardSet
     ### SVM::CardSet::Card
     class Card
+      # All four card types.
+      TYPES = [:club, :diamond, :heart, :spade]
+
       # The card's type. [:club, :diamond, :heart, :spade]
       attr_reader :type
 
@@ -259,7 +263,7 @@ module SpellekenVanMit
       attr_reader :shown_image
 
       # Mapping of card identifiers to their names.
-      MAPPING = %w.ace 2 3 4 5 6 7 8 9 10 jack queen king.
+      MAPPING = %w.2 3 4 5 6 7 8 9 10 jack queen king ace.
 
       # Initializes a new card.
       #
@@ -270,7 +274,7 @@ module SpellekenVanMit
         @identifier   = identifier
         @shown        = false
         @hidden_image = Gosu::Image.new(window, SVM.image_path('default.png'), false)
-        @shown_image  = Gosu::Image.new(window, SVM.image_path("#{type}s_#{identifier}.png"), false)
+        @shown_image  = Gosu::Image.new(window, SVM.image_path("#{type}_#{identifier}.png"), false)
       end
 
       # Card name, mapped by its identifier.
@@ -300,10 +304,15 @@ module SpellekenVanMit
         (shown ? @shown_image : @hidden_image).draw pos_x, pos_y, ZOrder::GAME
       end
 
+      # Can this card be swapped with another?
+      def can_be_swapped_with?(other)
+        other.within?((identifier - 1) * 75, (TYPES.index(type) + 1) * 100)
+      end
+
       # Swap position with another card.
       def swap_position_with(other)
-        this_pos_x, self.pos_x = self.pos_x, other.pos_x
-        this_pos_y, self.pos_y = self.pos_y, other.pos_y
+        this_pos_x, self.pos_x = pos_x, other.pos_x
+        this_pos_y, self.pos_y = pos_y, other.pos_y
         other.pos_x = this_pos_x
         other.pos_y = this_pos_y
 
@@ -318,18 +327,22 @@ module SpellekenVanMit
 
       # Do the given x and y coordinates lie within this card?
       def within_mouseclick?
-        x, y = window.mouse_x, window.mouse_y
+        within?(window.mouse_x, window.mouse_y)
+      end
+
+      # Is this card within the given x and y positions?
+      def within?(x, y)
         dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
       end
 
       # Is the card a game breaker?
       def two?
-        identifier == 1
+        identifier == 0
       end
       alias bad? two?
 
       def inspect
-        "#<#{name} of #{type}s @shown=#@shown>"
+        "#<#{name} of #{type}s @identifier=#@identifier"
       end
 
     private
@@ -343,7 +356,7 @@ module SpellekenVanMit
     attr_accessor :set
 
     # Array methods are to be called upon the set itself.
-    delegate :each, :each_with_index, :first, :last, :shift,
+    delegate :each, :each_with_index, :first, :last, :shift, :empty?,
              :detect, :select, :reject, :delete, :push, to: :set
 
     # Initializes the cardset.
