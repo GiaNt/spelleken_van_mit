@@ -121,7 +121,7 @@ module SpellekenVanMit
         return if card.nil? or card.shown?
 
         # Make sure the player makes a valid swap.
-        return unless @hand_card.can_be_swapped_with?(card)
+        return unless @hand_card and @hand_card.can_be_swapped_with?(card)
 
         # Swap the cards' position with the card in hand if
         # this card was not already shown.
