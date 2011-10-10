@@ -63,10 +63,10 @@ module SpellekenVanMit
   class GameWindow < Gosu::Window
     # Set up the basic interface and generate the necessary objects.
     def bootstrap
-      self.caption = 'Spelleken van Mit'
+      self.caption = 'Spelleken van mit'
       init_game_values
       init_background
-      init_font 'Helvetica Neue'
+      init_fonts 'Helvetica Neue'
       init_cardsets
     end
 
@@ -166,8 +166,13 @@ module SpellekenVanMit
     end
 
     def draw_ui
-      draw_text "Spelleken van Mit v#{SVM.version}", 725, 579
+      draw_small_text "#{caption} v#{SVM.version}", 760, 579
       draw_text "Cards left: #{@game_set.hidden.size}", 5, 579
+      draw_text 'Type order:', 95, 445
+      draw_small_text '* Clubs', 105, 470
+      draw_small_text '* Diamonds', 105, 490
+      draw_small_text '* Hearts', 105, 510
+      draw_small_text '* Spades', 105, 530
     end
 
     def draw_cards
@@ -191,6 +196,17 @@ module SpellekenVanMit
     #   +z_order+: Integer
     def draw_text(text, pos_x, pos_y, color = 0xffeeeeee, z_order = ZOrder::UI)
       @font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
+    end
+
+    # Draws text using @small_font.
+    #
+    #   +text+:    String
+    #   +pos_x+:   Integer
+    #   +pos_y+:   Integer
+    #   +color+:   Gosu::Color
+    #   +z_order+: Integer
+    def draw_small_text(text, pos_x, pos_y, color = 0xffcccccc, z_order = ZOrder::UI)
+      @small_font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
     end
 
     # Initializes the CardSet for this game, splits it, and sets its cards'
@@ -224,8 +240,9 @@ module SpellekenVanMit
     # Initializes the global font.
     #
     #   +font_name+: String
-    def init_font(font_name = Gosu.default_font_name)
-      @font = Gosu::Font.new(self, font_name, 18)
+    def init_fonts(font_name = Gosu.default_font_name)
+      @font       = Gosu::Font.new(self, font_name, 18)
+      @small_font = Gosu::Font.new(self, font_name, 14)
     end
 
     # Initializes standard values.
