@@ -177,7 +177,7 @@ module SpellekenVanMit
 
     def draw_score
       draw_text "There were #{@game_set.hidden.size} cards remaining!", 350, 290
-      draw_text 'Press ESC to exit, or F2 to play again.', 320, 310
+      draw_text 'Press ESC to exit, or F2 to play again.', 330, 310
     end
 
   private
@@ -274,7 +274,7 @@ module SpellekenVanMit
         @identifier   = identifier
         @shown        = false
         @hidden_image = Gosu::Image.new(window, SVM.image_path('default.png'), false)
-        @shown_image  = Gosu::Image.new(window, SVM.image_path("#{type}_#{identifier}.png"), false)
+        @shown_image  = Gosu::Image.new(window, SVM.image_path("#{type}s_#{identifier + 1}.png"), false)
       end
 
       # Card name, mapped by its identifier.
@@ -306,7 +306,7 @@ module SpellekenVanMit
 
       # Can this card be swapped with another?
       def can_be_swapped_with?(other)
-        other.within?((identifier - 1) * 75, (TYPES.index(type) + 1) * 100)
+        other.within?(identifier  * 75, (TYPES.index(type) + 1) * 100)
       end
 
       # Swap position with another card.
