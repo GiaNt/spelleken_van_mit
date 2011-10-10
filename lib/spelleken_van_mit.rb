@@ -108,9 +108,11 @@ module SpellekenVanMit
     #   +button_id+: Integer
     def button_down(button_id)
       case @last_button = button_id
-      when Gosu::Button::KbSpace
-        d { 'space pressed, restarting!' }
+      # F2 pressed.
+      when Gosu::Button::KbF2
+        d { 'F2 pressed, restarting!' }
         restart_game!
+      # Left mouse clicked.
       when Gosu::Button::MsLeft
         card = @game_set.detect(&:within_mouseclick?)
         d { card }
@@ -173,7 +175,7 @@ module SpellekenVanMit
 
     def draw_score
       draw_text "There were #{@game_set.hidden.size} cards remaining!", 350, 290
-      draw_text 'Press ESC to exit, or SPACE to play again.', 320, 310
+      draw_text 'Press ESC to exit, or F2 to play again.', 320, 310
     end
 
   private
