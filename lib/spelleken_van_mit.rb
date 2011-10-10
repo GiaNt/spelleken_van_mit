@@ -7,7 +7,10 @@ require 'active_support/core_ext/module/delegation'
 $window = nil
 
 def d
-  $stdout.puts yield.inspect if block_given? && SVM.debug?
+  if block_given? && SVM.debug?
+    $stdout.print yield
+    $stdout.flush
+  end
 end
 
 class Integer #:nodoc:
@@ -16,6 +19,8 @@ class Integer #:nodoc:
   end
   alias to_frames_per_second to_fps
 end
+
+String::EOL = "\r\n"
 
 ### ZOrder
 module ZOrder
@@ -77,7 +82,7 @@ module SpellekenVanMit
         # Unveil the next card in the hand row.
         @hand_set.shift
         @hand_card = @hand_set.first
-        @hand_card.show!
+        @hand_card.show! if @hand_card
       end
     end
 
@@ -113,13 +118,15 @@ module SpellekenVanMit
       # Left mouse clicked.
       when Gosu::Button::MsLeft
         card = @game_set.detect(&:within_mouseclick?)
-        d { card }
+        d { "\n#{card} " }
 
         # If no card was found, or this card is already shown, return.
         return if card.nil? or card.shown?
+        d { 'was found and not already shown..' }
 
         # Make sure the player makes a valid swap.
         return unless @hand_card and @hand_card.can_be_swapped_with?(card)
+        d { 'can be swapped..' }
 
         # Swap the cards' position with the card in hand if
         # this card was not already shown.
@@ -128,9 +135,12 @@ module SpellekenVanMit
         @game_set.push(@hand_card)
         @hand_set.delete(@hand_card)
         @hand_set.push(card)
+        d { 'was swapped..' }
 
         # A bad card was flipped!
         if card.bad?
+          d { 'was bad!' }
+
           # Show a message :D.
           @bad_card_drawn_at = Time.now
 
@@ -188,7 +198,12 @@ module SpellekenVanMit
     end
 
     def draw_score
-      draw_text "There were #{@game_set.hidden.size} cards remaining!", 350, 290
+      if @game_set.hidden.size > 0
+        draw_text 'Game over!', 410, 270
+        draw_text "There were #{@game_set.hidden.size} cards remaining!", 350, 290
+      else
+        draw_text 'You won!', 420, 270
+      end
       draw_text 'Press ESC to exit, or F2 to play again.', 330, 310
     end
 
@@ -366,8 +381,8 @@ module SpellekenVanMit
       end
       alias bad? two?
 
-      def inspect
-        "#<#{name} of #{type}s @identifier=#@identifier"
+      def to_s
+        "<#{identifier}>#{name} of #{type}s"
       end
 
     private

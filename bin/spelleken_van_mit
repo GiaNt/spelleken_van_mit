@@ -13,4 +13,5 @@ rescue Interrupt
   exit 1
 ensure
   $window.close
+  $stdout.puts
 end
