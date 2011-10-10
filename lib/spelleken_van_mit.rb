@@ -72,7 +72,16 @@ module SpellekenVanMit
 
     # Contains game logic. Called 60 times every second.
     def update
-      # TODO
+      # 4 bad cards flipped == game over!
+      @game_over = true unless @bad_cards_flipped < 4
+
+      # If the current hand card is a 2, also swap to next.
+      if @hand_card and @hand_card.bad?
+        # Unveil the next card in the hand row.
+        @hand_set.shift
+        @hand_card = @hand_set.first
+        @hand_card.show!
+      end
     end
 
     # Called after update, draws images and text.
@@ -103,10 +112,37 @@ module SpellekenVanMit
         card = @game_set.detect(&:within_mouseclick?)
         d { card }
 
-        if card.nil? or card.bad?
+        # If no card was found, exit.
+        if card.nil?
           @game_over = true
+          return
+        # Also don't do anything if this card is already shown.
+        elsif card.shown?
+          return
+        end
+
+        # Swap the cards' position with the card in hand if
+        # this card was not already shown.
+        card.swap_position_with @hand_card
+        @game_set.delete(card)
+        @game_set.push(@hand_card)
+        @hand_set.delete(@hand_card)
+        @hand_set.push(card)
+
+        # A bad card was flipped! Increase the counter.
+        if card.bad?
+          @bad_cards_flipped += 1
+          # Remove this card from the game set.
+          @hand_set.delete(card)
+
+          # Unveil the next card in the hand row.
+          @hand_card = @hand_set.first
+          @hand_card.show! if @hand_card
         else
-          card.toggle!
+          # Show the card.
+          card.show!
+          # The current card in hand is now this card.
+          @hand_card = card
         end
       end
     end
@@ -133,7 +169,8 @@ module SpellekenVanMit
     end
 
     def draw_score
-      draw_text "There were #{@game_set.hidden.size} cards remaining", 350, 290
+      draw_text "There were #{@game_set.hidden.size} cards remaining!", 350, 290
+      draw_text 'Press ESC to exit', 405, 310
     end
 
   private
@@ -166,6 +203,7 @@ module SpellekenVanMit
         card.pos_x = 305 + (idx * 75)
         card.pos_y = 450
       end
+      @hand_card = @hand_set.first
     end
 
     # Initializes the background image.
@@ -185,7 +223,8 @@ module SpellekenVanMit
 
     # Initializes standard values.
     def init_game_values
-      @game_over = false
+      @game_over         = false
+      @bad_cards_flipped = 0
     end
   end
 
@@ -236,14 +275,34 @@ module SpellekenVanMit
 
       # Toggle the card's visibility status.
       def toggle
-        @_image = nil
-        @shown  = !@shown
+        @shown = !@shown
       end
       alias toggle! toggle
+
+      # Show this card.
+      def show
+        @shown = true
+      end
+      alias show! show
+
+      # Is this card shown?
+      def shown?
+        !!shown
+      end
 
       # Draw this card to the game board.
       def draw
         (shown ? @shown_image : @hidden_image).draw pos_x, pos_y, ZOrder::GAME
+      end
+
+      # Swap position with another card.
+      def swap_position_with(other)
+        this_pos_x, self.pos_x = self.pos_x, other.pos_x
+        this_pos_y, self.pos_y = self.pos_y, other.pos_y
+        other.pos_x = this_pos_x
+        other.pos_y = this_pos_y
+
+        other
       end
 
       # The card's dimensions on the game board.
@@ -279,8 +338,8 @@ module SpellekenVanMit
     attr_accessor :set
 
     # Array methods are to be called upon the set itself.
-    delegate :each, :each_with_index, :first, :last,
-             :detect, :select, :reject, to: :set
+    delegate :each, :each_with_index, :first, :last, :shift,
+             :detect, :select, :reject, :delete, :push, to: :set
 
     # Initializes the cardset.
     def initialize
@@ -321,6 +380,11 @@ module SpellekenVanMit
     # Toggles each of this cardset's cards visibility status.
     def toggle!
       each &:toggle!
+    end
+
+    # Set each of this cardset's cards visibility status to shown.
+    def show!
+      each &:show!
     end
 
     # All hidden cards.
