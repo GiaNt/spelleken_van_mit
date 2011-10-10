@@ -93,7 +93,6 @@ module SpellekenVanMit
       unless @game_over
         draw_ui
         draw_cards
-        draw_status
       else
         draw_score
       end
@@ -184,9 +183,6 @@ module SpellekenVanMit
       draw_small_text '* Diamonds', 105, 490
       draw_small_text '* Hearts', 105, 510
       draw_small_text '* Spades', 105, 530
-    end
-
-    def draw_status
       if @bad_card_drawn_at && (@bad_card_drawn_at + 4) >= Time.now.to_i
         draw_small_text "You've drawn a bad card! #{@hand_set.size} playable cards remain.", 308, 420
       end
