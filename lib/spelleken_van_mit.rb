@@ -238,7 +238,7 @@ module SpellekenVanMit
       card_set.populate!
 
       @game_set = card_set[0...48]
-      @hand_set = card_set[48...52].tap { |s| s.first.toggle! }
+      @hand_set = card_set[48...52]
 
       @game_set.each_with_index do |card, idx|
         card.pos_x = 5 + ((idx % 12) * 75)
@@ -248,7 +248,9 @@ module SpellekenVanMit
         card.pos_x = 305 + (idx * 75)
         card.pos_y = 450
       end
+
       @hand_card = @hand_set.first
+      @hand_card.show!
     end
 
     # Initializes the background image.
