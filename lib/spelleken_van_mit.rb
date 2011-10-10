@@ -77,7 +77,7 @@ module SpellekenVanMit
 
       # If the current hand card is a 2, also swap to next.
       if @hand_card and @hand_card.bad?
-        @bad_card_drawn_at = Time.now
+        @bad_card_drawn_at = Time.now.to_i
 
         # Unveil the next card in the hand row.
         @hand_set.shift
@@ -142,7 +142,7 @@ module SpellekenVanMit
           d { 'was bad!' }
 
           # Show a message :D.
-          @bad_card_drawn_at = Time.now
+          @bad_card_drawn_at = Time.now.to_i
 
           # Remove this card from the game set.
           @hand_set.delete(card)
@@ -187,7 +187,7 @@ module SpellekenVanMit
     end
 
     def draw_status
-      if @bad_card_drawn_at && (@bad_card_drawn_at.to_i + 4) >= Time.now.to_i
+      if @bad_card_drawn_at && (@bad_card_drawn_at + 4) >= Time.now.to_i
         draw_small_text "You've drawn a bad card! #{@hand_set.size} playable cards remain.", 308, 420
       end
     end
