@@ -12,4 +12,4 @@ Enjoy!
 
 ### Screenshots
 
-![Winning](https://github.com/GiaNt/spelleken_van_mit/raw/master/preview.png)](#)
+![Winning](https://github.com/GiaNt/spelleken_van_mit/raw/master/preview.png)
