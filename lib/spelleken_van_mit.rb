@@ -7,12 +7,7 @@ require 'active_support/core_ext/module/delegation'
 $window = nil
 
 def d
-  return unless block_given? && SVM.debug?
-
-  debug_info = yield
-  debug_info = debug_info.inspect unless debug_info.is_a?(String)
-
-  puts debug_info
+  $stdout.puts yield.inspect if block_given? && SVM.debug?
 end
 
 class Integer #:nodoc:
@@ -77,6 +72,8 @@ module SpellekenVanMit
 
       # If the current hand card is a 2, also swap to next.
       if @hand_card and @hand_card.bad?
+        @bad_card_drawn_at = Time.now
+
         # Unveil the next card in the hand row.
         @hand_set.shift
         @hand_card = @hand_set.first
@@ -91,6 +88,7 @@ module SpellekenVanMit
       unless @game_over
         draw_ui
         draw_cards
+        draw_status
       else
         draw_score
       end
@@ -133,6 +131,9 @@ module SpellekenVanMit
 
         # A bad card was flipped!
         if card.bad?
+          # Show a message :D.
+          @bad_card_drawn_at = Time.now
+
           # Remove this card from the game set.
           @hand_set.delete(card)
 
@@ -173,6 +174,12 @@ module SpellekenVanMit
       draw_small_text '* Diamonds', 105, 490
       draw_small_text '* Hearts', 105, 510
       draw_small_text '* Spades', 105, 530
+    end
+
+    def draw_status
+      if @bad_card_drawn_at && (@bad_card_drawn_at.to_i + 4) >= Time.now.to_i
+        draw_small_text "You've drawn a bad card! #{@hand_set.size} playable cards remain.", 308, 420
+      end
     end
 
     def draw_cards
@@ -247,7 +254,8 @@ module SpellekenVanMit
 
     # Initializes standard values.
     def init_game_values
-      @game_over = false
+      @game_over         = false
+      @bad_card_drawn_at = nil
     end
   end
 
@@ -374,7 +382,7 @@ module SpellekenVanMit
 
     # Array methods are to be called upon the set itself.
     delegate :each, :each_with_index, :first, :last, :shift, :empty?,
-             :detect, :select, :reject, :delete, :push, to: :set
+             :detect, :select, :reject, :delete, :push, :size, to: :set
 
     # Initializes the cardset.
     def initialize

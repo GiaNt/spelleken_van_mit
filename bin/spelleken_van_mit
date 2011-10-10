@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 require File.expand_path('../../lib/spelleken_van_mit', __FILE__)
+SVM.debug = ARGV.include?('--debug')
 
 #                             resX resY fullscreen fps
 $window = SVM::GameWindow.new(905, 600, false,     30.to_fps)
 begin
-  $stdout.puts "Welkom bij het Spelleken van Mit v#{SVM::VERSION}. Enjoy!"
+  $stdout.puts "Welkom bij het Spelleken van mit v#{SVM.version}. Enjoy!"
   $window.bootstrap
   $window.show
 rescue Interrupt
