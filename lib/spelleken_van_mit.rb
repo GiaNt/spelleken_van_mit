@@ -31,7 +31,7 @@ end
 ### SVM
 module SpellekenVanMit
   ROOT    = Pathname.pwd
-  VERSION = '0.0.2'
+  VERSION = '0.0.3'
 
   @_image_paths = {}
   @_settings    = OpenStruct.new
@@ -65,6 +65,13 @@ module SpellekenVanMit
     def image_path(file)
       @_image_paths[file] ||= root.join('images', file).to_s
     end
+
+    # Returns the path to a media file's filename, based on the root directory.
+    #
+    #   +file+: String
+    def media_path(file)
+      root.join('media', file).to_s
+    end
   end
 
   ### SVM::Window
@@ -74,6 +81,7 @@ module SpellekenVanMit
       self.caption = 'Spelleken van mit'
       init_game_values
       init_background
+      init_sounds
       init_fonts 'Helvetica Neue'
       init_cardsets
     end
@@ -92,6 +100,9 @@ module SpellekenVanMit
         @hand_card = @hand_set.first
         @hand_card.show! if @hand_card
       end
+
+      # Don't keep lingering sounds in memory.
+      @sounds.reject! { |sound| !sound.playing? && !sound.paused? }
     end
 
     # Called after update, draws images and text.
@@ -131,6 +142,10 @@ module SpellekenVanMit
         # NOTE: This is pretty haxy. Should probably remove.
         d { "F4 pressed, toggling all cards\n" }
         @game_set.toggle!
+      # F5 pressed.
+      when Gosu::Button::KbF5
+        d { "F5 pressed, toggling background music\n" }
+        @backmusic.playing? ? @backmusic.pause : @backmusic.play(true)
       # Left mouse clicked.
       when Gosu::Button::MsLeft
         card = @game_set.detect(&:within_mouseclick?)
@@ -155,6 +170,8 @@ module SpellekenVanMit
 
           # Show a message :D.
           @bad_card_drawn_at = Time.now.to_i
+          # And also play a sound.
+          play_sound @bad_card_sound
 
           # Remove this card from the game set.
           @hand_set.delete(card)
@@ -175,6 +192,21 @@ module SpellekenVanMit
     def restart_game!
       init_game_values
       init_cardsets
+    end
+
+    # Plays a given Gosu::Sample instance.
+    def play_sound(sound, frequency = 1.0, volume = SVM.config.sound_volume)
+      @sounds << sound.play(frequency, volume)
+    end
+
+    # Pauses all registered sounds.
+    def pause_sounds!
+      @sounds.each { |sound| sound.pause if sound.playing? }
+    end
+
+    # Resumes all registered sounds.
+    def resume_sounds
+      @sounds.each { |sound| sound.resume if sound.paused? }
     end
 
     # This game needs a visible cursor.
@@ -281,6 +313,15 @@ module SpellekenVanMit
       )
     end
 
+    # Sets up soothing music.
+    def init_sounds
+      @backmusic = Gosu::Song.new(self, SVM.media_path('backmusic.m4a'))
+      @backmusic.volume = SVM.config.background_volume
+      @backmusic.play(true) if SVM.config.background_music
+
+      @bad_card_sound = Gosu::Sample.new(self, SVM.media_path('beep.wav'))
+    end
+
     # Initializes the global font.
     #
     #   +font_name+: String
@@ -294,6 +335,7 @@ module SpellekenVanMit
       @game_over         = false
       @bad_card_drawn_at = nil
       @ui_enabled        = SVM.config.ui_enabled
+      @sounds            = []
     end
   end
 
