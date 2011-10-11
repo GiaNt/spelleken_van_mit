@@ -92,6 +92,8 @@ module SpellekenVanMit
       if @hand_card
         if SVM.config.shake_target_cards
           # Make the next swappable card shake.
+          # TODO: Fix the target card click detection in this case.
+          #       Targets can't always be clicked because of the position change.
           if @target_card ||= @game_set.detect { |c| @hand_card.can_be_swapped_with?(c) }
             Time.now.sec % 2 == 0 ? (@target_card.pos_x += 0.1) : (@target_card.pos_x -= 0.1)
           end
