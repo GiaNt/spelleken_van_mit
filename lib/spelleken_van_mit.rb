@@ -112,16 +112,16 @@ module SpellekenVanMit
       case @last_button = button_id
       # F2 pressed.
       when Gosu::Button::KbF2
-        d { 'F2 pressed, restarting!' }
+        d { "F2 pressed, restarting!\n" }
         restart_game!
       # F3 pressed.
       when Gosu::Button::KbF3
-        d { 'F3 pressed, toggling ui' }
+        d { "F3 pressed, toggling ui\n" }
         @ui_enabled = !@ui_enabled
       # F4 pressed.
       when Gosu::Button::KbF4
         # NOTE: This is pretty haxy. Should probably remove.
-        d { 'F4 pressed, toggling all cards' }
+        d { "F4 pressed, toggling all cards\n" }
         @game_set.toggle!
       # Left mouse clicked.
       when Gosu::Button::MsLeft
