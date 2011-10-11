@@ -365,10 +365,13 @@ module SpellekenVanMit
       attr_reader :shown
 
       # The card's x position on the game board.
-      attr_accessor :pos_x
+      attr_reader :pos_x
 
       # The card's y position on the game board.
-      attr_accessor :pos_y
+      attr_reader :pos_y
+
+      # This card's dimensions. Requires pos_y and pos_x to be set.
+      attr_reader :dimensions
 
       # The shown image of this card. Corresponds with its identifier.
       attr_reader :shown_image
@@ -387,9 +390,12 @@ module SpellekenVanMit
       def initialize(type, identifier)
         @type        = type
         @identifier  = identifier
+        @dimensions  = {}
         @shown       = false
         @shown_image = Gosu::Image.new($window, SVM.image_path("#{type}s_#{identifier + 1}.png"), false)
       end
+
+      alias dim dimensions
 
       # Card name, mapped by its identifier.
       def name
@@ -424,11 +430,17 @@ module SpellekenVanMit
         other.within?(identifier * 75, (TYPES.index(type) + 1) * 100)
       end
 
-      # The card's dimensions on the game board.
-      def dimensions
-        { sx: pos_x, ex: pos_x + 71, sy: pos_y, ey: pos_y + 96 }
+      def pos_x=(new_x)
+        @pos_x = new_x
+        dimensions[:sx] = new_x
+        dimensions[:ex] = new_x + 71
       end
-      alias dim dimensions
+
+      def pos_y=(new_y)
+        @pos_y = new_y
+        dimensions[:sy] = new_y
+        dimensions[:ey] = new_y + 96
+      end
 
       # Do the given x and y coordinates lie within this card?
       def within_mouseclick?
@@ -438,6 +450,8 @@ module SpellekenVanMit
       # Is this card within the given x and y positions?
       def within?(x, y)
         dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
+      rescue NoMethodError
+        raise "Positions for this card (#{self}) need to be set manually first!"
       end
 
       # Is the card a game breaker?
