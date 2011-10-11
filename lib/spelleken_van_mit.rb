@@ -388,7 +388,7 @@ module SpellekenVanMit
         @type        = type
         @identifier  = identifier
         @shown       = false
-        @shown_image = Gosu::Image.new(window, SVM.image_path("#{type}s_#{identifier + 1}.png"), false)
+        @shown_image = Gosu::Image.new($window, SVM.image_path("#{type}s_#{identifier + 1}.png"), false)
       end
 
       # Card name, mapped by its identifier.
@@ -432,7 +432,7 @@ module SpellekenVanMit
 
       # Do the given x and y coordinates lie within this card?
       def within_mouseclick?
-        within?(window.mouse_x, window.mouse_y)
+        within?($window.mouse_x, $window.mouse_y)
       end
 
       # Is this card within the given x and y positions?
@@ -448,12 +448,6 @@ module SpellekenVanMit
 
       def to_s
         "<#{identifier}>#{name} of #{type}s"
-      end
-
-    private
-
-      def window
-        $window or raise 'No game window initialized!'
       end
     end
 
