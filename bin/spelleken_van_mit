@@ -2,7 +2,7 @@
 require File.expand_path('../../lib/spelleken_van_mit', __FILE__)
 
 #                             resX resY fullscreen fps
-$window = SVM::GameWindow.new(905, 600, false,     30.to_fps)
+$window = SVM::GameWindow.new(905, 600, false,     24.to_fps)
 begin
   SVM.configure do |c|
     # Print debug messages?
@@ -22,6 +22,10 @@ begin
     # Text colors
     c.text_color       = 0xffeeeeee
     c.small_text_color = 0xffcccccc
+
+    # Shake target cards?
+    # WARNING: experimental
+    c.shake_target_cards = false
 
     # Draw UI at all?
     c.ui_enabled = true

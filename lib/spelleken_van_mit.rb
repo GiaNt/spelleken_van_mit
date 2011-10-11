@@ -31,7 +31,7 @@ end
 ### SVM
 module SpellekenVanMit
   ROOT       = Pathname.pwd
-  VERSION    = '0.0.4'
+  VERSION    = '0.0.5'
   @_settings = OpenStruct.new
 
   ### SVM
@@ -89,14 +89,23 @@ module SpellekenVanMit
       # 4 bad cards flipped == game over!
       @game_over = true if @hand_set.empty?
 
-      # If the current hand card is a 2, also swap to next.
-      if @hand_card and @hand_card.bad?
-        @bad_card_drawn_at = Time.now.to_i
+      if @hand_card
+        if SVM.config.shake_target_cards
+          # Make the next swappable card shake.
+          if @target_card ||= @game_set.detect { |c| @hand_card.can_be_swapped_with?(c) }
+            Time.now.sec % 2 == 0 ? (@target_card.pos_x += 0.1) : (@target_card.pos_x -= 0.1)
+          end
+        end
 
-        # Unveil the next card in the hand row.
-        @hand_set.shift
-        @hand_card = @hand_set.first
-        @hand_card.show! if @hand_card
+        # If the current hand card is a 2, also swap to next hand card.
+        if @hand_card.bad?
+          @bad_card_drawn_at = Time.now.to_i
+
+          # Unveil the next card in the hand row.
+          @hand_set.shift
+          @hand_card = @hand_set.first
+          @hand_card.show! if @hand_card
+        end
       end
 
       # Don't keep lingering sounds in memory.
@@ -183,6 +192,7 @@ module SpellekenVanMit
           # The current card in hand is now this card.
           @hand_card = card
         end
+        @target_card = nil
       end
     end
 
@@ -377,10 +387,10 @@ module SpellekenVanMit
       #   +type+:       Symbol
       #   +identifier+: Integer
       def initialize(type, identifier)
-        @type         = type
-        @identifier   = identifier
-        @shown        = false
-        @shown_image  = Gosu::Image.new(window, SVM.image_path("#{type}s_#{identifier + 1}.png"), false)
+        @type        = type
+        @identifier  = identifier
+        @shown       = false
+        @shown_image = Gosu::Image.new(window, SVM.image_path("#{type}s_#{identifier + 1}.png"), false)
       end
 
       # Card name, mapped by its identifier.
@@ -411,8 +421,9 @@ module SpellekenVanMit
       end
 
       # Can this card be swapped with another?
+      # TODO: Improve this algorithm.
       def can_be_swapped_with?(other)
-        other.within?(identifier  * 75, (TYPES.index(type) + 1) * 100)
+        other.within?(identifier * 75, (TYPES.index(type) + 1) * 100)
       end
 
       # The card's dimensions on the game board.
