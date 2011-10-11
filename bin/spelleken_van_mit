@@ -19,10 +19,8 @@ begin
     c.font_name       = 'Helvetica Neue'
     c.small_font_name = 'Helvetica Neue'
 
-    # Main text color
-    c.text_color = 0xffeeeeee
-
-    # Small text color
+    # Text colors
+    c.text_color       = 0xffeeeeee
     c.small_text_color = 0xffcccccc
 
     # Draw UI at all?
