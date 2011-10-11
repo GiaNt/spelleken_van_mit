@@ -30,11 +30,9 @@ end
 
 ### SVM
 module SpellekenVanMit
-  ROOT    = Pathname.pwd
-  VERSION = '0.0.3'
-
-  @_image_paths = {}
-  @_settings    = OpenStruct.new
+  ROOT       = Pathname.pwd
+  VERSION    = '0.0.3'
+  @_settings = OpenStruct.new
 
   ### SVM
   class << self
@@ -63,7 +61,7 @@ module SpellekenVanMit
     #
     #   +file+: String
     def image_path(file)
-      @_image_paths[file] ||= root.join('images', file).to_s
+      root.join('images', file).to_s
     end
 
     # Returns the path to a media file's filename, based on the root directory.
@@ -363,14 +361,15 @@ module SpellekenVanMit
       # The card's y position on the game board.
       attr_accessor :pos_y
 
-      # The default image to show. The back of a card most likely.
-      attr_reader :hidden_image
-
       # The shown image of this card. Corresponds with its identifier.
       attr_reader :shown_image
 
       # Mapping of card identifiers to their names.
       MAPPING = %w.2 3 4 5 6 7 8 9 10 jack queen king ace.
+
+      def self.hidden_image
+        @_hidden_image ||= Gosu::Image.new($window, SVM.image_path('default.png'), false)
+      end
 
       # Initializes a new card.
       #
@@ -380,7 +379,6 @@ module SpellekenVanMit
         @type         = type
         @identifier   = identifier
         @shown        = false
-        @hidden_image = Gosu::Image.new(window, SVM.image_path('default.png'), false)
         @shown_image  = Gosu::Image.new(window, SVM.image_path("#{type}s_#{identifier + 1}.png"), false)
       end
 
@@ -408,7 +406,7 @@ module SpellekenVanMit
 
       # Draw this card to the game board.
       def draw
-        (shown ? @shown_image : @hidden_image).draw pos_x, pos_y, ZOrder::GAME
+        (shown ? shown_image : self.class.hidden_image).draw pos_x, pos_y, ZOrder::GAME
       end
 
       # Can this card be swapped with another?
