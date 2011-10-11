@@ -325,10 +325,10 @@ module SpellekenVanMit
     # Initializes the global font.
     #
     #   +font_name+: String
-    def init_fonts(font_name = SVM.config.font_name)
+    def init_fonts
       default     = Gosu.default_font_name
-      @font       = Gosu::Font.new(self, font_name || default, 18)
-      @small_font = Gosu::Font.new(self, font_name || default, 14)
+      @font       = Gosu::Font.new(self, SVM.config.font_name || default, 18)
+      @small_font = Gosu::Font.new(self, SVM.config.small_font_name || default, 14)
     end
 
     # Initializes standard values.
