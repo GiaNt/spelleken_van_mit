@@ -80,7 +80,7 @@ module SpellekenVanMit
       init_game_values
       init_background
       init_sounds
-      init_fonts 'Helvetica Neue'
+      init_fonts
       init_cardsets
     end
 
@@ -325,9 +325,10 @@ module SpellekenVanMit
     # Initializes the global font.
     #
     #   +font_name+: String
-    def init_fonts(font_name = Gosu.default_font_name)
-      @font       = Gosu::Font.new(self, font_name, 18)
-      @small_font = Gosu::Font.new(self, font_name, 14)
+    def init_fonts(font_name = SVM.config.font_name)
+      default     = Gosu.default_font_name
+      @font       = Gosu::Font.new(self, font_name || default, 18)
+      @small_font = Gosu::Font.new(self, font_name || default, 14)
     end
 
     # Initializes standard values.
