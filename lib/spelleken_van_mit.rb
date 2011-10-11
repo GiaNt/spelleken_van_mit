@@ -138,11 +138,7 @@ module SpellekenVanMit
 
         # Swap the cards' position with the card in hand if
         # this card was not already shown.
-        card.swap_position_with @hand_card
-        @game_set.delete(card)
-        @game_set.push(@hand_card)
-        @hand_set.delete(@hand_card)
-        @hand_set.push(card)
+        swap_card_with_hand(card)
         d { 'was swapped..' }
 
         # A bad card was flipped!
@@ -179,6 +175,18 @@ module SpellekenVanMit
     end
 
   protected
+
+    def swap_card_with_hand(card)
+      this_pos_x, card.pos_x = card.pos_x, @hand_card.pos_x
+      this_pos_y, card.pos_y = card.pos_y, @hand_card.pos_y
+      @hand_card.pos_x = this_pos_x
+      @hand_card.pos_y = this_pos_y
+
+      @game_set.delete(card)
+      @game_set.push(@hand_card)
+      @hand_set.delete(@hand_card)
+      @hand_set.push(card)
+    end
 
     def draw_background
       @background.draw 0, 0, ZOrder::BACKGROUND
@@ -354,16 +362,6 @@ module SpellekenVanMit
       # Can this card be swapped with another?
       def can_be_swapped_with?(other)
         other.within?(identifier  * 75, (TYPES.index(type) + 1) * 100)
-      end
-
-      # Swap position with another card.
-      def swap_position_with(other)
-        this_pos_x, self.pos_x = pos_x, other.pos_x
-        this_pos_y, self.pos_y = pos_y, other.pos_y
-        other.pos_x = this_pos_x
-        other.pos_y = this_pos_y
-
-        other
       end
 
       # The card's dimensions on the game board.
