@@ -1,5 +1,6 @@
 require 'pathname'
 require 'gosu'
+require 'ostruct'
 #require 'active_support/core_ext/enumerable'
 require 'active_support/core_ext/module/delegation'
 
@@ -7,7 +8,7 @@ require 'active_support/core_ext/module/delegation'
 $window = nil
 
 def d
-  if block_given? && SVM.debug?
+  if block_given? && SVM.config.debug
     $stdout.print yield
     $stdout.flush
   end
@@ -32,15 +33,11 @@ module SpellekenVanMit
   ROOT    = Pathname.pwd
   VERSION = '0.0.2'
 
-  @debug        = true
   @_image_paths = {}
+  @_settings    = OpenStruct.new
 
   ### SVM
   class << self
-    # Debug mode boolean.
-    attr_accessor :debug
-    alias debug? debug
-
     # Root directory.
     def root
       ROOT
@@ -50,6 +47,17 @@ module SpellekenVanMit
     def version
       VERSION
     end
+
+    # Configuration values.
+    def config
+      if block_given?
+        blk = Proc.new # Proc.new refers to the given block in this context; saves performance
+        blk.arity == 0 ? @_settings.instance_eval(&blk) : blk.call(@_settings)
+      else
+        @_settings
+      end
+    end
+    alias configure config
 
     # Returns the path to an image's filename, based on the root directory.
     #
@@ -228,7 +236,7 @@ module SpellekenVanMit
     #   +pos_y+:   Integer
     #   +color+:   Gosu::Color
     #   +z_order+: Integer
-    def draw_text(text, pos_x, pos_y, color = 0xffeeeeee, z_order = ZOrder::UI)
+    def draw_text(text, pos_x, pos_y, color = SVM.config.text_color, z_order = ZOrder::UI)
       @font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
     end
 
@@ -239,7 +247,7 @@ module SpellekenVanMit
     #   +pos_y+:   Integer
     #   +color+:   Gosu::Color
     #   +z_order+: Integer
-    def draw_small_text(text, pos_x, pos_y, color = 0xffcccccc, z_order = ZOrder::UI)
+    def draw_small_text(text, pos_x, pos_y, color = SVM.config.small_text_color, z_order = ZOrder::UI)
       @small_font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
     end
 
@@ -285,7 +293,7 @@ module SpellekenVanMit
     def init_game_values
       @game_over         = false
       @bad_card_drawn_at = nil
-      @ui_enabled        = true
+      @ui_enabled        = SVM.config.ui_enabled
     end
   end
 

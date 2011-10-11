@@ -1,10 +1,16 @@
 #!/usr/bin/env ruby
 require File.expand_path('../../lib/spelleken_van_mit', __FILE__)
-SVM.debug = ARGV.include?('--debug')
 
 #                             resX resY fullscreen fps
 $window = SVM::GameWindow.new(905, 600, false,     30.to_fps)
 begin
+  SVM.configure do |c|
+    c.debug            = ARGV.include?('--debug')
+    c.text_color       = 0xffeeeeee
+    c.small_text_color = 0xffcccccc
+    c.ui_enabled       = true
+  end
+
   $stdout.puts "Welkom bij het Spelleken van mit v#{SVM.version}. Enjoy!"
   $window.bootstrap
   $window.show
