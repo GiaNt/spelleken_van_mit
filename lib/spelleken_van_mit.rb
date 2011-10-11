@@ -118,6 +118,11 @@ module SpellekenVanMit
       when Gosu::Button::KbF3
         d { 'F3 pressed, toggling ui' }
         @ui_enabled = !@ui_enabled
+      # F4 pressed.
+      when Gosu::Button::KbF4
+        # NOTE: This is pretty haxy. Should probably remove.
+        d { 'F4 pressed, toggling all cards' }
+        @game_set.toggle!
       # Left mouse clicked.
       when Gosu::Button::MsLeft
         card = @game_set.detect(&:within_mouseclick?)
