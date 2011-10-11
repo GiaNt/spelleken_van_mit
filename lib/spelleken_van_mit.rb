@@ -91,7 +91,7 @@ module SpellekenVanMit
       draw_background
 
       unless @game_over
-        draw_ui
+        draw_ui if @ui_enabled
         draw_cards
       else
         draw_score
@@ -114,6 +114,10 @@ module SpellekenVanMit
       when Gosu::Button::KbF2
         d { 'F2 pressed, restarting!' }
         restart_game!
+      # F3 pressed.
+      when Gosu::Button::KbF3
+        d { 'F3 pressed, toggling ui' }
+        @ui_enabled = !@ui_enabled
       # Left mouse clicked.
       when Gosu::Button::MsLeft
         card = @game_set.detect(&:within_mouseclick?)
@@ -268,6 +272,7 @@ module SpellekenVanMit
     def init_game_values
       @game_over         = false
       @bad_card_drawn_at = nil
+      @ui_enabled        = true
     end
   end
 
