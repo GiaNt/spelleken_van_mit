@@ -190,7 +190,9 @@ module SpellekenVanMit
 
     # Reset everything.
     def restart_game!
+      @backmusic.stop
       init_game_values
+      init_sounds
       init_cardsets
     end
 
@@ -315,11 +317,11 @@ module SpellekenVanMit
 
     # Sets up soothing music.
     def init_sounds
-      @backmusic = Gosu::Song.new(self, SVM.media_path('backmusic.m4a'))
+      @backmusic ||= Gosu::Song.new(self, SVM.media_path('backmusic.m4a'))
       @backmusic.volume = SVM.config.background_volume
       @backmusic.play(true) if SVM.config.background_music
 
-      @bad_card_sound = Gosu::Sample.new(self, SVM.media_path('beep.wav'))
+      @bad_card_sound ||= Gosu::Sample.new(self, SVM.media_path('beep.wav'))
     end
 
     # Initializes the global font.
