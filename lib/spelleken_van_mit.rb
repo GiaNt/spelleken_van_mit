@@ -139,7 +139,11 @@ module SpellekenVanMit
       # F2 pressed.
       when Gosu::Button::KbF2
         d { "F2 pressed, restarting!\n" }
-        restart_game!
+        # Reset everything.
+        @backmusic.stop
+        init_game_values
+        init_sounds
+        init_cardsets
       # F3 pressed.
       when Gosu::Button::KbF3
         d { "F3 pressed, toggling ui\n" }
@@ -194,14 +198,6 @@ module SpellekenVanMit
         end
         @target_card = nil
       end
-    end
-
-    # Reset everything.
-    def restart_game!
-      @backmusic.stop
-      init_game_values
-      init_sounds
-      init_cardsets
     end
 
     # Plays a given Gosu::Sample instance.
