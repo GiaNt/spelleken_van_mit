@@ -255,8 +255,8 @@ module SpellekenVanMit
       draw_text 'Type order:', 95, 445
       draw_small_text '* Clubs', 105, 470
       draw_small_text '* Diamonds', 105, 490
-      draw_small_text '* Hearts', 105, 510
-      draw_small_text '* Spades', 105, 530
+      draw_small_text '* Spades', 105, 510
+      draw_small_text '* Hearts', 105, 530
       if @bad_card_drawn_at && (@bad_card_drawn_at + 4) >= Time.now.to_i
         draw_small_text "You've drawn a bad card! #{@hand_set.size} playable cards remain.", 308, 420
       end
@@ -362,7 +362,7 @@ module SpellekenVanMit
     ### SVM::CardSet::Card
     class Card
       # All four card types.
-      TYPES = [:club, :diamond, :heart, :spade]
+      TYPES = [:club, :diamond, :spade, :heart]
 
       # The card's type. [:club, :diamond, :heart, :spade]
       attr_reader :type
