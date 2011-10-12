@@ -203,6 +203,10 @@ module SpellekenVanMit
     end
 
     # Plays a given Gosu::Sample instance.
+    #
+    #   +sound+:     Gosu::Sample
+    #   +frequency+: Float
+    #   +volume+:    Float
     def play_sound(sound, frequency = 1.0, volume = SVM.config.sound_volume)
       @sounds << sound.play(frequency, volume)
     end
@@ -224,6 +228,9 @@ module SpellekenVanMit
 
   protected
 
+    # Swap a card's positions with another, and change them around in the sets.
+    #
+    #   +card+: SVM::CardSet::Card
     def swap_card_with_hand(card)
       this_pos_x, card.pos_x = card.pos_x, @hand_card.pos_x
       this_pos_y, card.pos_y = card.pos_y, @hand_card.pos_y
@@ -236,10 +243,12 @@ module SpellekenVanMit
       @hand_set.push(card)
     end
 
+    # Draw the game's background image.
     def draw_background
       @background.draw 0, 0, ZOrder::BACKGROUND
     end
 
+    # Draw the game's UI.
     def draw_ui
       draw_small_text "#{caption} v#{SVM.version}", 760, 579
       draw_text "Cards left: #{@game_set.hidden.size}", 5, 579
@@ -253,11 +262,13 @@ module SpellekenVanMit
       end
     end
 
+    # Draw all the cards.
     def draw_cards
       @game_set.each &:draw
       @hand_set.each &:draw
     end
 
+    # Draw the score upon game over.
     def draw_score
       if @game_set.hidden.size > 0
         draw_text "Game over! There were #{@game_set.hidden.size} cards remaining.", 320, 290
@@ -426,16 +437,24 @@ module SpellekenVanMit
 
       # Can this card be swapped with another?
       # TODO: Improve this algorithm.
+      #
+      #   +other+: SVM::CardSet::Card
       def can_be_swapped_with?(other)
         other.within?(identifier * 75, (TYPES.index(type) + 1) * 100)
       end
 
+      # Set this card's x position and also store its dimensions in the hash.
+      #
+      #   +new_x+: Integer
       def pos_x=(new_x)
         @pos_x   = new_x
         dim[:sx] = new_x
         dim[:ex] = new_x + 71
       end
 
+      # Set this card's y position and also store its dimensions in the hash.
+      #
+      #   +new_y+: Integer
       def pos_y=(new_y)
         @pos_y   = new_y
         dim[:sy] = new_y
@@ -448,6 +467,9 @@ module SpellekenVanMit
       end
 
       # Is this card within the given x and y positions?
+      #
+      #   +x+: Integer
+      #   +y+: Integer
       def within?(x, y)
         dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
       rescue NoMethodError
