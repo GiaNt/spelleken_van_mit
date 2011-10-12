@@ -431,15 +431,15 @@ module SpellekenVanMit
       end
 
       def pos_x=(new_x)
-        @pos_x = new_x
-        dimensions[:sx] = new_x
-        dimensions[:ex] = new_x + 71
+        @pos_x   = new_x
+        dim[:sx] = new_x
+        dim[:ex] = new_x + 71
       end
 
       def pos_y=(new_y)
-        @pos_y = new_y
-        dimensions[:sy] = new_y
-        dimensions[:ey] = new_y + 96
+        @pos_y   = new_y
+        dim[:sy] = new_y
+        dim[:ey] = new_y + 96
       end
 
       # Do the given x and y coordinates lie within this card?
