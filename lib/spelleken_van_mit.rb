@@ -342,8 +342,6 @@ module SpellekenVanMit
     end
 
     # Initializes the global font.
-    #
-    #   +font_name+: String
     def init_fonts
       default     = Gosu.default_font_name
       @font       = Gosu::Font.new(self, SVM.config.font_name || default, 18)
@@ -390,6 +388,7 @@ module SpellekenVanMit
       # Mapping of card identifiers to their names.
       MAPPING = %w.2 3 4 5 6 7 8 9 10 jack queen king ace.
 
+      # The image for the back of a card.
       def self.hidden_image
         @_hidden_image ||= Gosu::Image.new($window, SVM.image_path('default.png'), false)
       end
@@ -482,6 +481,7 @@ module SpellekenVanMit
       end
       alias bad? two?
 
+      # How to represent this object in String form.
       def to_s
         "<#{identifier}>#{name} of #{type}s"
       end
