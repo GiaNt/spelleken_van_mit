@@ -30,7 +30,7 @@ end
 
 ### SVM
 module SpellekenVanMit
-  ROOT       = Pathname.pwd
+  ROOT       = Pathname.new(__FILE__).parent.dirname
   VERSION    = '0.0.5'
   @_settings = OpenStruct.new
 
