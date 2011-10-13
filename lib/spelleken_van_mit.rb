@@ -391,6 +391,7 @@ module SpellekenVanMit
         @type        = type
         @identifier  = identifier
         @dimensions  = {}
+        @final_pos   = [identifier * 75, (TYPES.index(type) + 1) * 100]
         @shown       = false
         @shown_image = Gosu::Image.new($window, SVM.image_path("#{type}s_#{identifier + 1}.png"), false)
       end
@@ -429,7 +430,7 @@ module SpellekenVanMit
       #
       #   +other+: SVM::CardSet::Card
       def can_be_swapped_with?(other)
-        other.within?(identifier * 75, (TYPES.index(type) + 1) * 100)
+        other.within?(*@final_pos)
       end
 
       # Set this card's x position and also store its dimensions in the hash.
