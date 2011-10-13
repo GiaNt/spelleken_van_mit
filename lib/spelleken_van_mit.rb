@@ -211,16 +211,6 @@ module SpellekenVanMit
       @sounds << sound.play(frequency, volume)
     end
 
-    # Pauses all registered sounds.
-    def pause_sounds!
-      @sounds.each { |sound| sound.pause if sound.playing? }
-    end
-
-    # Resumes all registered sounds.
-    def resume_sounds
-      @sounds.each { |sound| sound.resume if sound.paused? }
-    end
-
     # This game needs a visible cursor.
     def needs_cursor?
       true
