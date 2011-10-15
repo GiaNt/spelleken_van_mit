@@ -1,4 +1,3 @@
-require 'pathname'
 require 'gosu'
 require 'ostruct'
 
@@ -28,8 +27,8 @@ end
 
 ### SVM
 module SpellekenVanMit
-  ROOT       = Pathname.new(__FILE__).parent.dirname
-  VERSION    = '0.0.6'
+  ROOT       = File.expand_path('../../', __FILE__)
+  VERSION    = '0.0.7'
   @_settings = OpenStruct.new
 
   ### SVM
@@ -59,14 +58,14 @@ module SpellekenVanMit
     #
     #   +file+: String
     def image_path(file)
-      root.join('images', file).to_s
+      File.join(root, 'images', file)
     end
 
     # Returns the path to a media file's filename, based on the root directory.
     #
     #   +file+: String
     def media_path(file)
-      root.join('media', file).to_s
+      File.join(root, 'media', file)
     end
   end
 
