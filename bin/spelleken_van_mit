@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 require File.expand_path('../../lib/spelleken_van_mit', __FILE__)
 begin
-  require File.expand_path('../../config', __FILE__)
+  require File.join(SVM::ROOT, 'config')
 rescue LoadError
-  require File.expand_path('../../config.example', __FILE__)
+  require File.join(SVM::ROOT, 'config.example')
 end
 
 #                             resX resY fullscreen fps
