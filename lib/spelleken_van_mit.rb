@@ -29,6 +29,7 @@ end
 module SpellekenVanMit
   ROOT       = File.expand_path('../../', __FILE__)
   VERSION    = '0.0.8'
+  CAPTION    = 'Spelleken van mit'
   @_settings = OpenStruct.new
 
   ### SVM
@@ -63,7 +64,7 @@ module SpellekenVanMit
   class GameWindow < Gosu::Window
     # Set up the basic interface and generate the necessary objects.
     def bootstrap
-      self.caption = 'Spelleken van mit'
+      self.caption = SVM::CAPTION
       init_game_values
       init_background
       init_sounds
