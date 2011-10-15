@@ -430,8 +430,8 @@ module SpellekenVanMit
       #   +new_x+: Integer
       def pos_x=(new_x)
         @pos_x   = new_x
-        dim[:sx] = new_x
-        dim[:ex] = new_x + 71
+        dim[:sx] = new_x - 1
+        dim[:ex] = new_x + 72
       end
 
       # Set this card's y position and also store its dimensions in the hash.
@@ -439,8 +439,8 @@ module SpellekenVanMit
       #   +new_y+: Integer
       def pos_y=(new_y)
         @pos_y   = new_y
-        dim[:sy] = new_y
-        dim[:ey] = new_y + 96
+        dim[:sy] = new_y - 1
+        dim[:ey] = new_y + 97
       end
 
       # Do the given x and y coordinates lie within this card?
