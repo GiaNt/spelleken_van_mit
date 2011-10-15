@@ -48,14 +48,14 @@ module SpellekenVanMit
     #
     #   +file+: String
     def image_path(file)
-      File.join(SVM::ROOT, 'images', file)
+      File.join(ROOT, 'images', file)
     end
 
     # Returns the path to a media file's filename, based on the root directory.
     #
     #   +file+: String
     def media_path(file)
-      File.join(SVM::ROOT, 'media', file)
+      File.join(ROOT, 'media', file)
     end
   end
 
