@@ -421,6 +421,7 @@ module SpellekenVanMit
       #
       #   +other+: SVM::CardSet::Card
       def can_be_swapped_with?(other)
+        return false unless other.is_a?(Card)
         other.within?(*@final_pos)
       end
 
