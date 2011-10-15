@@ -429,7 +429,6 @@ module SpellekenVanMit
       #
       #   +new_x+: Integer
       def pos_x=(new_x)
-        return if [Integer, Float].none? { |num| new_x.is_a?(num) }
         @pos_x   = new_x
         dim[:sx] = new_x
         dim[:ex] = new_x + 71
@@ -439,7 +438,6 @@ module SpellekenVanMit
       #
       #   +new_y+: Integer
       def pos_y=(new_y)
-        return if [Integer, Float].none? { |num| new_y.is_a?(num) }
         @pos_y   = new_y
         dim[:sy] = new_y
         dim[:ey] = new_y + 96
