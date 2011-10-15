@@ -1,8 +1,6 @@
 require 'pathname'
 require 'gosu'
 require 'ostruct'
-#require 'active_support/core_ext/enumerable'
-require 'active_support/core_ext/module/delegation'
 
 # The game window. Needs to be set externally!
 $window = nil
@@ -380,7 +378,9 @@ module SpellekenVanMit
 
       # The image for the back of a card.
       def self.hidden_image
-        @_hidden_image ||= Gosu::Image.new($window, SVM.image_path('default.png'), false)
+        @_hidden_image ||= Gosu::Image.new(
+          $window, SVM.image_path('default.png'), false
+        )
       end
 
       # Initializes a new card.
@@ -393,7 +393,9 @@ module SpellekenVanMit
         @dimensions  = {}
         @final_pos   = [identifier * 75, (TYPES.index(type) + 1) * 100]
         @shown       = false
-        @shown_image = Gosu::Image.new($window, SVM.image_path("#{type}s_#{identifier + 1}.png"), false)
+        @shown_image = Gosu::Image.new(
+          $window, SVM.image_path("#{type}s_#{identifier + 1}.png"), false
+        )
       end
 
       alias dim dimensions
@@ -474,7 +476,7 @@ module SpellekenVanMit
 
       # How to represent this object in String form.
       def to_s
-        "<#{identifier}>#{name} of #{type}s"
+        "#<Card #{name} of #{type}s>"
       end
     end
 
@@ -482,8 +484,10 @@ module SpellekenVanMit
     attr_accessor :set
 
     # Array methods are to be called upon the set itself.
-    delegate :each, :each_with_index, :first, :last, :shift, :empty?,
-             :detect, :select, :reject, :delete, :push, :size, to: :set
+    [:each, :each_with_index, :first, :last, :shift, :empty?,
+     :detect, :select, :reject, :delete, :push, :size].each do |set_method|
+      define_method(set_method) { |*a, &b| @set.send(set_method, *a, &b) }
+    end
 
     # Initializes the cardset.
     def initialize
