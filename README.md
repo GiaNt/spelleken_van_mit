@@ -1,7 +1,7 @@
 Het spelleken van mit
 =====================
 
-### Instructions
+### Installation and running
 
 ``` sh
 $ gem install gosu
