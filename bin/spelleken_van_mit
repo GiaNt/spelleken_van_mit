@@ -31,7 +31,7 @@ begin
     c.ui_enabled = true
   end
 
-  $stdout.puts "Welkom bij het Spelleken van mit v#{SVM.version}. Enjoy!"
+  $stdout.puts "Welkom bij het Spelleken van mit v#{SVM::VERSION}. Enjoy!"
   $window.bootstrap
   $window.show
 rescue Interrupt

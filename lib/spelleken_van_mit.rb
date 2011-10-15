@@ -33,16 +33,6 @@ module SpellekenVanMit
 
   ### SVM
   class << self
-    # Root directory.
-    def root
-      ROOT
-    end
-
-    # Game version.
-    def version
-      VERSION
-    end
-
     # Configuration values.
     def config
       if block_given?
@@ -58,14 +48,14 @@ module SpellekenVanMit
     #
     #   +file+: String
     def image_path(file)
-      File.join(root, 'images', file)
+      File.join(SVM::ROOT, 'images', file)
     end
 
     # Returns the path to a media file's filename, based on the root directory.
     #
     #   +file+: String
     def media_path(file)
-      File.join(root, 'media', file)
+      File.join(SVM::ROOT, 'media', file)
     end
   end
 
@@ -237,7 +227,7 @@ module SpellekenVanMit
 
     # Draw the game's UI.
     def draw_ui
-      draw_small_text "#{caption} v#{SVM.version}", 760, 579
+      draw_small_text "#{caption} v#{SVM::VERSION}", 760, 579
       draw_text "Cards left: #{@game_set.hidden.size}", 5, 579
       draw_text 'Type order:', 95, 445
       draw_small_text '* Clubs', 105, 470
