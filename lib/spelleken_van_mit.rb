@@ -90,6 +90,7 @@ module SpellekenVanMit
         # If the current hand card is a 2, also swap to next hand card.
         if @hand_card.bad?
           @bad_card_drawn_at = Time.now.to_i
+          play_sound @bad_card_sound
 
           # Unveil the next card in the hand row.
           @hand_set.shift
