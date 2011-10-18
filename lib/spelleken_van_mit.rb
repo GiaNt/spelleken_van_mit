@@ -27,10 +27,10 @@ end
 
 ### SVM
 module SpellekenVanMit
-  ROOT       = File.expand_path('../../', __FILE__)
-  VERSION    = '0.1.0'
-  CAPTION    = 'Spelleken van mit'
-  @_settings = OpenStruct.new
+  ROOT    = File.expand_path('../../', __FILE__)
+  VERSION = '0.1.0'
+  CAPTION = 'Spelleken van mit'
+  @config = OpenStruct.new
 
   ### SVM
   class << self
@@ -38,9 +38,9 @@ module SpellekenVanMit
     def config
       if block_given?
         blk = Proc.new # Proc.new refers to the given block in this context; saves performance
-        blk.arity == 0 ? @_settings.instance_eval(&blk) : blk.call(@_settings)
+        blk.arity == 0 ? @config.instance_eval(&blk) : blk.call(@config)
       else
-        @_settings
+        @config
       end
     end
     alias configure config
