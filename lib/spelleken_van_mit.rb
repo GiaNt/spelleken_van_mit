@@ -31,7 +31,7 @@ module SpellekenVanMit
   VERSION    = '0.1.0'
   CAPTION    = 'Spelleken van mit'
   @_settings = OpenStruct.new
-
+  
   ### SVM
   class << self
     # Configuration values.
