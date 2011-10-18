@@ -200,7 +200,7 @@ module SpellekenVanMit
       select &:shown
     end
 
-    def inspect
+    def to_s
       "#<CardSet #{@set.inspect}>"
     end
 
