@@ -104,8 +104,8 @@ module SpellekenVanMit
       #   +new_y+: Integer
       def pos_y=(new_y)
         @pos_y   = new_y
-        dim[:sy] = new_y - 1
-        dim[:ey] = new_y + 97
+        dim[:sy] = new_y
+        dim[:ey] = new_y + 96
       end
 
       # Is this card within the given x and y positions?
