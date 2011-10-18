@@ -1,4 +1,4 @@
-SVM.configure do |c|
+SpellekenVanMit.configure do |c|
   # Print debug messages?
   c.debug = ARGV.include?('--debug')
 
