@@ -71,7 +71,7 @@ module SpellekenVanMit
         @backmusic.playing? ? @backmusic.pause : @backmusic.play(true)
       # Left mouse clicked.
       when Gosu::Button::MsLeft
-        card = @game_set.detect(&:within_mouseclick?)
+        card = @game_set.detect { |c| c.within?(mouse_x, mouse_y) }
         d { "\n#{card} " }
 
         # If no card was found, or this card is already shown, return.

@@ -108,11 +108,6 @@ module SpellekenVanMit
         dim[:ey] = new_y + 97
       end
 
-      # Do the given x and y coordinates lie within this card?
-      def within_mouseclick?
-        within?($window.mouse_x, $window.mouse_y)
-      end
-
       # Is this card within the given x and y positions?
       #
       #   +x+: Integer
