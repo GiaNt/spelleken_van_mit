@@ -28,7 +28,7 @@ end
 ### SVM
 module SpellekenVanMit
   ROOT       = File.expand_path('../../', __FILE__)
-  VERSION    = '0.0.8'
+  VERSION    = '0.0.9'
   CAPTION    = 'Spelleken van mit'
   @_settings = OpenStruct.new
 
