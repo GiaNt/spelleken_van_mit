@@ -61,8 +61,8 @@ module SpellekenVanMit
   end
 end
 
-require File.expand_path('../spelleken_van_mit/game_window', __FILE__)
-require File.expand_path('../spelleken_van_mit/card_set',    __FILE__)
-
 # Shortcut
 SVM = SpellekenVanMit
+
+require File.expand_path('../spelleken_van_mit/game_window', __FILE__)
+require File.expand_path('../spelleken_van_mit/card_set',    __FILE__)
