@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require File.expand_path('../../lib/spelleken_van_mit', __FILE__)
+require_relative '../lib/spelleken_van_mit'
 begin
   require File.join(SVM::ROOT, 'config')
 rescue LoadError
