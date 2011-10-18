@@ -17,29 +17,11 @@ module SpellekenVanMit
       @game_over = true if @hand_set.empty?
 
       if @hand_card
-        if SVM.config.shake_target_cards
-          # Make the next swappable card shake.
-          # TODO: Fix the target card click detection in this case.
-          #       Targets can't always be clicked because of the position change.
-          if @target_card ||= @game_set.detect { |c| @hand_card.can_be_swapped_with?(c) }
-            Time.now.sec % 2 == 0 ? (@target_card.pos_x += 0.1) : (@target_card.pos_x -= 0.1)
-          end
-        end
-
-        # If the current hand card is a 2, also swap to next hand card.
-        if @hand_card.bad?
-          @bad_card_drawn_at = Time.now.to_i
-          play_sound @bad_card_sound
-
-          # Unveil the next card in the hand row.
-          @hand_set.shift
-          @hand_card = @hand_set.first
-          @hand_card.show! if @hand_card
-        end
+        shake_target_cards if SVM.config.shake_target_cards
+        draw_next_hand_card if @hand_card.bad?
       end
 
-      # Don't keep lingering sounds in memory.
-      @sounds.reject! { |sound| !sound.playing? && !sound.paused? }
+      cleanse_sounds
     end
 
     # Called after update, draws images and text.
@@ -108,18 +90,7 @@ module SpellekenVanMit
         # A bad card was flipped!
         if card.bad?
           d { 'was bad!' }
-
-          # Show a message :D.
-          @bad_card_drawn_at = Time.now.to_i
-          # And also play a sound.
-          play_sound @bad_card_sound
-
-          # Remove this card from the game set.
-          @hand_set.delete(card)
-
-          # Unveil the next card in the hand row.
-          @hand_card = @hand_set.first
-          @hand_card.show! if @hand_card
+          draw_next_hand_card(card)
         else
           # Show the card.
           card.show!
@@ -145,6 +116,33 @@ module SpellekenVanMit
     end
 
   protected
+
+    # Make the next swappable card shake.
+    # TODO: Fix the target card click detection in this case.
+    #       Targets can't always be clicked because of the position change.
+    def shake_target_cards
+      if @target_card ||= @game_set.detect { |c| @hand_card.can_be_swapped_with?(c) }
+        Time.now.sec % 2 == 0 ? (@target_card.pos_x += 0.1) : (@target_card.pos_x -= 0.1)
+      end
+    end
+
+    # Remove lingering sounds from memory.
+    def cleanse_sounds
+      @sounds.reject! { |sound| !sound.playing? && !sound.paused? }
+    end
+
+    # Swap to next hand card.
+    #
+    #   +card+: SVM::CardSet::Card
+    def draw_next_hand_card(card = nil)
+      @bad_card_drawn_at = Time.now.to_i
+      play_sound @bad_card_sound
+
+      # Unveil the next card in the hand row.
+      card ? @hand_set.delete(card) : @hand_set.shift
+      @hand_card = @hand_set.first
+      @hand_card.show! if @hand_card
+    end
 
     # Swap a card's positions with another, and change them around in the sets.
     #
