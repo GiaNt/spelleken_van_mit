@@ -268,6 +268,7 @@ module SpellekenVanMit
       @bad_card_drawn_at = nil
       @ui_enabled        = SVM.config.ui_enabled
       @sounds            = []
+      @target_card       = nil
     end
   end
 end
