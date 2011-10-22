@@ -50,27 +50,27 @@ module SpellekenVanMit
       case @last_button = button_id
       # F2 pressed.
       when Gosu::Button::KbF2
-        d { "F2 pressed, restarting!\n" }
+        d { 'F2 pressed, restarting!' + String::EOL }
         # Reset everything.
         init_game_values
         init_cardsets
       # F3 pressed.
       when Gosu::Button::KbF3
-        d { "F3 pressed, toggling ui\n" }
+        d { 'F3 pressed, toggling ui' + String::EOL }
         @ui_enabled = !@ui_enabled
       # F4 pressed.
       when Gosu::Button::KbF4
         # NOTE: This is pretty haxy. Should probably remove.
-        d { "F4 pressed, toggling all cards\n" }
+        d { 'F4 pressed, toggling all cards' + String::EOL }
         @game_set.toggle!
       # F5 pressed.
       when Gosu::Button::KbF5
-        d { "F5 pressed, toggling background music\n" }
+        d { 'F5 pressed, toggling background music' + String::EOL }
         @backmusic.playing? ? @backmusic.pause : @backmusic.play(true)
       # Left mouse clicked.
       when Gosu::Button::MsLeft
         card = @game_set.detect { |c| c.within?(mouse_x, mouse_y) }
-        d { "\n#{card} " }
+        d { String::EOL + card.to_s }
 
         # If no card was found, or this card is already shown, return.
         return if card.nil? or card.shown?

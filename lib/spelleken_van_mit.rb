@@ -32,6 +32,16 @@ module SpellekenVanMit
   CAPTION = 'Spelleken van mit'
   @config = OpenStruct.new
 
+  class << @config
+    def to_s
+      str = 'SVM.config: ' + String::EOL
+      @table.each do |option, value|
+        str << "  #{option} => #{value}" + String::EOL
+      end
+      str
+    end
+  end
+
   ### SVM
   class << self
     # Configuration values.

@@ -10,10 +10,11 @@ end
 $window = SVM::GameWindow.new(905, 600, false,     24.to_fps)
 begin
   $stdout.puts "Welkom bij het #{SVM::CAPTION} v#{SVM::VERSION}. Enjoy!"
+  $stdout.puts SVM.config if SVM.config.debug
   $window.bootstrap
   $window.show
 rescue Interrupt
-  $stderr.puts "\nQuitting..."
+  $stderr.puts String::EOL + 'Quitting...'
   exit 1
 ensure
   $window.close
