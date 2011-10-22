@@ -70,24 +70,24 @@ module SpellekenVanMit
       # Left mouse clicked.
       when Gosu::Button::MsLeft
         card = @game_set.detect { |c| c.within?(mouse_x, mouse_y) }
-        d { String::EOL + card.to_s }
+        d { String::EOL + (card || 'no card was clicked').to_s }
 
         # If no card was found, or this card is already shown, return.
         return if card.nil? or card.shown?
-        d { 'was found and not already shown..' }
+        d { ' was found and not already shown..' }
 
         # Make sure the player makes a valid swap.
         return unless @hand_card and @hand_card.can_be_swapped_with?(card)
-        d { 'can be swapped..' }
+        d { ' can be swapped..' }
 
         # Swap the cards' position with the card in hand if
         # this card was not already shown.
         swap_card_with_hand(card)
-        d { 'was swapped..' }
+        d { ' was swapped..' }
 
         # A bad card was flipped!
         if card.bad?
-          d { 'was bad!' }
+          d { ' was bad!' }
           draw_next_hand_card(card)
         else
           # Show the card.
