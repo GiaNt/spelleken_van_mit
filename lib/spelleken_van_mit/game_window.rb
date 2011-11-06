@@ -157,22 +157,39 @@ module SpellekenVanMit
       @hand_set.push(card)
     end
 
+    # XY positions of UI elements.
+    POSITIONS = {
+      background:      [0,   0  ],
+      caption:         [760, 579],
+      card_status:     [5,   579],
+      order_title:     [95,  445],
+      order_clubs:     [105, 470],
+      order_diamonds:  [105, 490],
+      order_spades:    [105, 510],
+      order_hearts:    [105, 530],
+      bad_card:        [308, 420],
+      game_over:       [310, 290],
+      you_won:         [420, 270],
+      quit_or_restart: [330, 310]
+    }
+
     # Draw the game's background image.
     def draw_background
-      @background.draw 0, 0, ZOrder::BACKGROUND
+      @background.draw *POSITIONS[:background], ZOrder::BACKGROUND
     end
 
     # Draw the game's UI.
     def draw_ui
-      draw_small_text "#{caption} v#{SVM::VERSION}", 760, 579
-      draw_text "Cards left: #{@game_set.hidden.size}", 5, 579
-      draw_text 'Type order:', 95, 445
-      draw_small_text '* Clubs', 105, 470
-      draw_small_text '* Diamonds', 105, 490
-      draw_small_text '* Spades', 105, 510
-      draw_small_text '* Hearts', 105, 530
+      draw_small_text "#{caption} v#{SVM::VERSION}",          *POSITIONS[:caption]
+      draw_text       "Cards left: #{@game_set.hidden.size}", *POSITIONS[:card_status]
+      draw_text       'Type order:', *POSITIONS[:order_title]
+      draw_small_text '* Clubs',     *POSITIONS[:order_clubs]
+      draw_small_text '* Diamonds',  *POSITIONS[:order_diamonds]
+      draw_small_text '* Spades',    *POSITIONS[:order_spades]
+      draw_small_text '* Hearts',    *POSITIONS[:order_hearts]
       if @bad_card_drawn_at && (@bad_card_drawn_at + 4) >= Time.now.to_i
-        draw_small_text "You've drawn a bad card! #{@hand_set.size} playable cards remain.", 308, 420
+        draw_small_text "You've drawn a bad card! #{@hand_set.size} " \
+          'playable cards remain.',  *POSITIONS[:bad_card]
       end
     end
 
@@ -185,11 +202,12 @@ module SpellekenVanMit
     # Draw the score upon game over.
     def draw_score
       if @game_set.hidden.size > 0
-        draw_text "Game over! There were #{@game_set.hidden.size} cards remaining.", 310, 290
+        draw_text "Game over! There were #{@game_set.hidden.size} cards remaining.",
+          *POSITIONS[:game_over]
       else
-        draw_text 'You won!', 420, 270
+        draw_text 'You won!', *POSITIONS[:you_won]
       end
-      draw_text 'Press ESC to exit, or F2 to play again.', 330, 310
+      draw_text 'Press ESC to exit, or F2 to play again.', *POSITIONS[:quit_or_restart]
     end
 
   private
