@@ -1,11 +1,11 @@
 require 'gosu'
-require 'ostruct'
+require 'yaml'
 
 # The game window. Needs to be set externally!
 $window = nil
 
 def d
-  if block_given? && SVM.config.debug
+  if block_given? && SVM::Config['debug']
     $stdout.print yield
     $stdout.flush
   end
@@ -27,16 +27,21 @@ end
 
 ### SVM
 module SpellekenVanMit
-  ROOT    = File.expand_path('../../', __FILE__)
-  VERSION = '0.1.0'
-  CAPTION = 'Spelleken van mit'
-  @config = OpenStruct.new
+  ROOT        = File.expand_path('../../', __FILE__)
+  VERSION     = '0.1.0'
+  CAPTION     = 'Spelleken van mit'
+  IMAGE_DIR   = 'images'
+  MEDIA_DIR   = 'media'
+  CONFIG_FILE = 'config.yml'
 
-  class << @config
+  # Configuration values.
+  Config      = YAML::load_file(File.join(ROOT, CONFIG_FILE))
+
+  class << Config
     def to_s
-      str = 'SVM.config: ' + String::EOL
-      @table.each do |option, value|
-        str << "  #{option} => #{value}" + String::EOL
+      str = '-- SVM::Config' + String::EOL
+      each do |option, value|
+        str << "   #{option} => #{value}" + String::EOL
       end
       str
     end
@@ -44,30 +49,17 @@ module SpellekenVanMit
 
   ### SVM
   class << self
-    # Configuration values.
-    def config
-      if block_given?
-        blk = Proc.new # Proc.new refers to the given block in this context; saves performance
-        blk.arity == 0 ? @config.instance_eval(&blk) : blk.call(@config)
-      else
-        @config
-      end
-    end
-    alias configure config
-
     # Returns the path to an image's filename, based on the root directory.
     #
     #   +file+: String
-    IMAGE_DIR = 'images'
-    def image_path(file)
+    def image(file)
       File.join(ROOT, IMAGE_DIR, file)
     end
 
     # Returns the path to a media file's filename, based on the root directory.
     #
     #   +file+: String
-    MEDIA_DIR = 'media'
-    def media_path(file)
+    def media(file)
       File.join(ROOT, MEDIA_DIR, file)
     end
   end

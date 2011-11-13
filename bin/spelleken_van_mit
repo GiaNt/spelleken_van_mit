@@ -1,16 +1,11 @@
 #!/usr/bin/env ruby
 require_relative '../lib/spelleken_van_mit'
-begin
-  require File.join(SVM::ROOT, 'config')
-rescue LoadError
-  require File.join(SVM::ROOT, 'config.example')
-end
 
 #                             resX resY fullscreen fps
 $window = SVM::GameWindow.new(905, 600, false,     24.to_fps)
 begin
   $stdout.puts "Welkom bij het #{SVM::CAPTION} v#{SVM::VERSION}. Enjoy!"
-  $stdout.puts SVM.config if SVM.config.debug
+  $stdout.puts SVM::Config if SVM::Config['debug']
   $window.bootstrap
   $window.show
 rescue Interrupt

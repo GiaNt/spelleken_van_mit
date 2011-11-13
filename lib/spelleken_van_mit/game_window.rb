@@ -17,7 +17,7 @@ module SpellekenVanMit
       @game_over = true if @hand_set.empty?
 
       if @hand_card
-        shake_target_cards if SVM.config.shake_target_cards
+        shake_target_cards if SVM::Config['shake_target_cards']
         draw_next_hand_card if @hand_card.bad?
       end
 
@@ -104,7 +104,7 @@ module SpellekenVanMit
     #   +sound+:     Gosu::Sample
     #   +frequency+: Float
     #   +volume+:    Float
-    def play_sound(sound, frequency = 1.0, volume = SVM.config.sound_volume)
+    def play_sound(sound, frequency = 1.0, volume = SVM::Config['sound_volume'])
       @sounds << sound.play(frequency, volume)
     end
 
@@ -142,7 +142,7 @@ module SpellekenVanMit
       @hand_card.show! if @hand_card
     end
 
-    # Swap a card's positions with another, and change them around in the sets.
+    # Swap a card's SVM::Config['positions'] with another, and change them around in the sets.
     #
     #   +card+: SVM::CardSet::Card
     def swap_card_with_hand(card)
@@ -157,39 +157,23 @@ module SpellekenVanMit
       @hand_set.push(card)
     end
 
-    # XY positions of UI elements.
-    POSITIONS = {
-      background:      [0,   0  ],
-      caption:         [760, 579],
-      card_status:     [5,   579],
-      order_title:     [95,  445],
-      order_clubs:     [105, 470],
-      order_diamonds:  [105, 490],
-      order_spades:    [105, 510],
-      order_hearts:    [105, 530],
-      bad_card:        [308, 420],
-      game_over:       [310, 290],
-      you_won:         [420, 270],
-      quit_or_restart: [330, 310]
-    }
-
     # Draw the game's background image.
     def draw_background
-      @background.draw *POSITIONS[:background], ZOrder::BACKGROUND
+      @background.draw *SVM::Config['positions']['background'], ZOrder::BACKGROUND
     end
 
     # Draw the game's UI.
     def draw_ui
-      draw_small_text "#{caption} v#{SVM::VERSION}",          *POSITIONS[:caption]
-      draw_text       "Cards left: #{@game_set.hidden.size}", *POSITIONS[:card_status]
-      draw_text       'Type order:', *POSITIONS[:order_title]
-      draw_small_text '* Clubs',     *POSITIONS[:order_clubs]
-      draw_small_text '* Diamonds',  *POSITIONS[:order_diamonds]
-      draw_small_text '* Spades',    *POSITIONS[:order_spades]
-      draw_small_text '* Hearts',    *POSITIONS[:order_hearts]
+      draw_small_text "#{caption} v#{SVM::VERSION}",          *SVM::Config['positions']['caption']
+      draw_text       "Cards left: #{@game_set.hidden.size}", *SVM::Config['positions']['card_status']
+      draw_text       'Type order:', *SVM::Config['positions']['order_title']
+      draw_small_text '* Clubs',     *SVM::Config['positions']['order_clubs']
+      draw_small_text '* Diamonds',  *SVM::Config['positions']['order_diamonds']
+      draw_small_text '* Spades',    *SVM::Config['positions']['order_spades']
+      draw_small_text '* Hearts',    *SVM::Config['positions']['order_hearts']
       if @bad_card_drawn_at && (@bad_card_drawn_at + 4) >= Time.now.to_i
         draw_small_text "You've drawn a bad card! #{@hand_set.size} " \
-          'playable cards remain.',  *POSITIONS[:bad_card]
+          'playable cards remain.',  *SVM::Config['positions']['bad_card']
       end
     end
 
@@ -203,11 +187,11 @@ module SpellekenVanMit
     def draw_score
       if @game_set.hidden.size > 0
         draw_text "Game over! There were #{@game_set.hidden.size} cards remaining.",
-          *POSITIONS[:game_over]
+          *SVM::Config['positions']['game_over']
       else
-        draw_text 'You won!', *POSITIONS[:you_won]
+        draw_text 'You won!', *SVM::Config['positions']['you_won']
       end
-      draw_text 'Press ESC to exit, or F2 to play again.', *POSITIONS[:quit_or_restart]
+      draw_text 'Press ESC to exit, or F2 to play again.', *SVM::Config['positions']['quit_or_restart']
     end
 
   private
@@ -219,7 +203,7 @@ module SpellekenVanMit
     #   +pos_y+:   Integer
     #   +color+:   Gosu::Color
     #   +z_order+: Integer
-    def draw_text(text, pos_x, pos_y, color = SVM.config.text_color, z_order = ZOrder::UI)
+    def draw_text(text, pos_x, pos_y, color = SVM::Config['text_color'], z_order = ZOrder::UI)
       @font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
     end
 
@@ -230,7 +214,7 @@ module SpellekenVanMit
     #   +pos_y+:   Integer
     #   +color+:   Gosu::Color
     #   +z_order+: Integer
-    def draw_small_text(text, pos_x, pos_y, color = SVM.config.small_text_color, z_order = ZOrder::UI)
+    def draw_small_text(text, pos_x, pos_y, color = SVM::Config['small_text_color'], z_order = ZOrder::UI)
       @small_font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
     end
 
@@ -260,31 +244,31 @@ module SpellekenVanMit
     def init_background
       @background = Gosu::Image.new(
       # window filename                          tileable posX posY srcX srcY
-        self,  SVM.image_path('background.png'), true,    0,   0,   905, 600
+        self,  SVM.image('background.png'), true,    0,   0,   905, 600
       )
     end
 
     # Sets up soothing music.
     def init_sounds
-      @backmusic ||= Gosu::Song.new(self, SVM.media_path('backmusic.m4a'))
-      @backmusic.volume = SVM.config.background_volume
-      @backmusic.play(true) if SVM.config.background_music
+      @backmusic ||= Gosu::Song.new(self, SVM.media('backmusic.m4a'))
+      @backmusic.volume = SVM::Config['background_volume']
+      @backmusic.play(true) if SVM::Config['background_music']
 
-      @bad_card_sound ||= Gosu::Sample.new(self, SVM.media_path('beep.wav'))
+      @bad_card_sound ||= Gosu::Sample.new(self, SVM.media('beep.wav'))
     end
 
     # Initializes the global font.
     def init_fonts
       default     = Gosu.default_font_name
-      @font       = Gosu::Font.new(self, SVM.config.font_name || default, 18)
-      @small_font = Gosu::Font.new(self, SVM.config.small_font_name || default, 14)
+      @font       = Gosu::Font.new(self, SVM::Config['font_name'] || default, 18)
+      @small_font = Gosu::Font.new(self, SVM::Config['small_font_name'] || default, 14)
     end
 
     # Initializes standard values.
     def init_game_values
       @game_over         = false
       @bad_card_drawn_at = nil
-      @ui_enabled        = SVM.config.ui_enabled
+      @ui_enabled        = SVM::Config['ui_enabled']
       @sounds            = []
       @target_card       = nil
     end

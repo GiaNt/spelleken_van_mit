@@ -1,0 +1,67 @@
+##### General
+# Print debug messages?
+debug: false
+
+##### Sound
+# General sound volume. 0.0 -> 1.0
+sound_volume: 0.25
+
+# Background music volume. 0.0 -> 1.0
+background_volume: 0.025
+background_music: false
+
+##### Gameplay
+# Shake target cards?
+# WARNING: experimental
+shake_target_cards: false
+
+##### UI
+# Draw UI at all?
+ui_enabled: true
+
+# Fonts to use
+font_name: 'Helvetica Neue'
+small_font_name: 'Helvetica Neue'
+
+# Text colors
+text_color: 0xffeeeeee
+small_text_color: 0xffcccccc
+
+# XY positions of UI elements.
+positions:
+  background:
+  - 0
+  - 0
+  caption:
+  - 760
+  - 579
+  card_status:
+  - 5
+  - 579
+  order_title:
+  - 95
+  - 445
+  order_clubs:
+  - 105
+  - 470
+  order_diamonds:
+  - 105
+  - 490
+  order_spades:
+  - 105
+  - 510
+  order_hearts:
+  - 105
+  - 530
+  bad_card:
+  - 308
+  - 420
+  game_over:
+  - 310
+  - 290
+  you_won:
+  - 420
+  - 270
+  quit_or_restart:
+  - 330
+  - 310

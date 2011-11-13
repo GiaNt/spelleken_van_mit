@@ -33,7 +33,7 @@ module SpellekenVanMit
       # The image for the back of a card.
       def self.hidden_image
         @_hidden_image ||= Gosu::Image.new(
-          $window, SVM.image_path('default.png'), false
+          $window, SVM.image('default.png'), false
         )
       end
 
@@ -48,7 +48,7 @@ module SpellekenVanMit
         @final_pos   = [identifier * 75, (TYPES.index(type) + 1) * 100]
         @shown       = false
         @shown_image = Gosu::Image.new(
-          $window, SVM.image_path("#{type}s_#{identifier + 1}.png"), false
+          $window, SVM.image("#{type}s_#{identifier + 1}.png"), false
         )
       end
 
