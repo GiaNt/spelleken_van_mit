@@ -4,8 +4,8 @@ module SpellekenVanMit
     # Set up the basic interface and generate the necessary objects.
     def bootstrap
       self.caption = SVM::CAPTION
+      #init_background
       init_game_values
-      init_background
       init_sounds
       init_fonts
       init_cardsets
@@ -14,7 +14,10 @@ module SpellekenVanMit
     # Contains game logic. Called 60 times every second.
     def update
       # 4 bad cards flipped == game over!
-      @game_over = true if @hand_set.empty?
+      if @hand_set.empty?
+        @game_over       = true
+        @game_ended_at ||= Time.now
+      end
 
       if @hand_card
         shake_target_cards if SVM::Config['shake_target_cards']
@@ -26,7 +29,7 @@ module SpellekenVanMit
 
     # Called after update, draws images and text.
     def draw
-      draw_background
+      #draw_background
 
       unless @game_over
         draw_ui if @ui_enabled
@@ -77,7 +80,10 @@ module SpellekenVanMit
         d { ' was found and not already shown..' }
 
         # Make sure the player makes a valid swap.
-        return unless @hand_card and @hand_card.can_be_swapped_with?(card)
+        unless @hand_card and @hand_card.can_be_swapped_with?(card)
+          @wrong_cards_clicked += 1
+          return
+        end
         d { ' can be swapped..' }
 
         # Swap the cards' position with the card in hand if
@@ -114,6 +120,12 @@ module SpellekenVanMit
     end
 
   protected
+
+    # Time elapsed since start.
+    def time_elapsed
+      ended = @game_ended_at || Time.now
+      ended.to_i - @game_started_at.to_i
+    end
 
     # Make the next swappable card shake.
     # TODO: Fix the target card click detection in this case.
@@ -167,7 +179,9 @@ module SpellekenVanMit
       positions = SVM::Config['positions']
 
       draw_small_text "#{caption} v#{SVM::VERSION}", *positions['caption']
-      draw_text       "Resterende kaarten: #{@game_set.hidden.size}", *positions['card_status']
+      draw_text       "Resterende kaarten: #{@game_set.hidden.size}. Tijd: " \
+        "#{time_elapsed} seconden. Foute clicks: #{@wrong_cards_clicked}",
+        *positions['card_status']
       draw_text       'Volgorde:', *positions['order_title']
       draw_small_text '* Klavers', *positions['order_clubs']
       draw_small_text '* Koeken',  *positions['order_diamonds']
@@ -191,7 +205,8 @@ module SpellekenVanMit
         draw_text "Game over! Er bleven nog #{@game_set.hidden.size} kaarten over.",
           *SVM::Config['positions']['game_over']
       else
-        draw_text 'Gewonnen!', *SVM::Config['positions']['you_won']
+        draw_text "Gewonnen! Tijd: #{time_elapsed} seconden. Aantal foute clicks: " \
+          "#{@wrong_cards_clicked}.", *SVM::Config['positions']['you_won']
       end
       draw_text 'Duw ESC om het spel te verlaten, of F2 om opnieuw te spelen.',
         *SVM::Config['positions']['quit_or_restart']
@@ -269,11 +284,14 @@ module SpellekenVanMit
 
     # Initializes standard values.
     def init_game_values
-      @game_over         = false
-      @bad_card_drawn_at = nil
-      @ui_enabled        = SVM::Config['ui_enabled']
-      @sounds            = []
-      @target_card       = nil
+      @game_over           = false
+      @bad_card_drawn_at   = nil
+      @wrong_cards_clicked = 0
+      @game_started_at     = Time.now
+      @game_ended_at       = nil
+      @ui_enabled          = SVM::Config['ui_enabled']
+      @sounds              = []
+      @target_card         = nil
     end
   end
 end
