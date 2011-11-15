@@ -188,7 +188,7 @@ module SpellekenVanMit
     # Draw the score upon game over.
     def draw_score
       if @game_set.hidden.size > 0
-        draw_text "Game over! Er waren nog #{@game_set.hidden.size} kaarten resterend.",
+        draw_text "Game over! Er bleven nog #{@game_set.hidden.size} kaarten over.",
           *SVM::Config['positions']['game_over']
       else
         draw_text 'Gewonnen!', *SVM::Config['positions']['you_won']
