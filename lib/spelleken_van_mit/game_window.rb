@@ -164,17 +164,18 @@ module SpellekenVanMit
 
     # Draw the game's UI.
     def draw_ui
-      draw_small_text "#{caption} v#{SVM::VERSION}", *SVM::Config['positions']['caption']
-      draw_text       "Resterende kaarten: #{@game_set.hidden.size}",
-        *SVM::Config['positions']['card_status']
-      draw_text       'Volgorde:', *SVM::Config['positions']['order_title']
-      draw_small_text '* Klavers', *SVM::Config['positions']['order_clubs']
-      draw_small_text '* Koeken',  *SVM::Config['positions']['order_diamonds']
-      draw_small_text '* Peikes',  *SVM::Config['positions']['order_spades']
-      draw_small_text '* Harten',  *SVM::Config['positions']['order_hearts']
+      positions = SVM::Config['positions']
+
+      draw_small_text "#{caption} v#{SVM::VERSION}", *positions['caption']
+      draw_text       "Resterende kaarten: #{@game_set.hidden.size}", *positions['card_status']
+      draw_text       'Volgorde:', *positions['order_title']
+      draw_small_text '* Klavers', *positions['order_clubs']
+      draw_small_text '* Koeken',  *positions['order_diamonds']
+      draw_small_text '* Peikes',  *positions['order_spades']
+      draw_small_text '* Harten',  *positions['order_hearts']
       if @bad_card_drawn_at && (@bad_card_drawn_at + 4) >= Time.now.to_i
         draw_small_text "Je hebt een 2 getrokken! Nog #{@hand_set.size} " \
-          'speelbare kaarten over.', *SVM::Config['positions']['bad_card']
+          'speelbare kaarten over.', *positions['bad_card']
       end
     end
 
