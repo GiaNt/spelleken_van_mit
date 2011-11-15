@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require_relative '../lib/spelleken_van_mit'
-exit 0 if defined?(Ocra)
 
 #                             resX resY fullscreen fps
 $window = SVM::GameWindow.new(905, 600, false,     24.to_fps)
