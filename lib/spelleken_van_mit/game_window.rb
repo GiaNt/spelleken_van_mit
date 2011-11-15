@@ -164,16 +164,17 @@ module SpellekenVanMit
 
     # Draw the game's UI.
     def draw_ui
-      draw_small_text "#{caption} v#{SVM::VERSION}",          *SVM::Config['positions']['caption']
-      draw_text       "Cards left: #{@game_set.hidden.size}", *SVM::Config['positions']['card_status']
-      draw_text       'Type order:', *SVM::Config['positions']['order_title']
-      draw_small_text '* Clubs',     *SVM::Config['positions']['order_clubs']
-      draw_small_text '* Diamonds',  *SVM::Config['positions']['order_diamonds']
-      draw_small_text '* Spades',    *SVM::Config['positions']['order_spades']
-      draw_small_text '* Hearts',    *SVM::Config['positions']['order_hearts']
+      draw_small_text "#{caption} v#{SVM::VERSION}", *SVM::Config['positions']['caption']
+      draw_text       "Resterende kaarten: #{@game_set.hidden.size}",
+        *SVM::Config['positions']['card_status']
+      draw_text       'Volgorde:', *SVM::Config['positions']['order_title']
+      draw_small_text '* Klavers', *SVM::Config['positions']['order_clubs']
+      draw_small_text '* Koeken',  *SVM::Config['positions']['order_diamonds']
+      draw_small_text '* Peikes',  *SVM::Config['positions']['order_spades']
+      draw_small_text '* Harten',  *SVM::Config['positions']['order_hearts']
       if @bad_card_drawn_at && (@bad_card_drawn_at + 4) >= Time.now.to_i
-        draw_small_text "You've drawn a bad card! #{@hand_set.size} " \
-          'playable cards remain.',  *SVM::Config['positions']['bad_card']
+        draw_small_text "Je hebt een 2 getrokken! Nog #{@hand_set.size} " \
+          'speelbare kaarten over.', *SVM::Config['positions']['bad_card']
       end
     end
 
@@ -186,12 +187,13 @@ module SpellekenVanMit
     # Draw the score upon game over.
     def draw_score
       if @game_set.hidden.size > 0
-        draw_text "Game over! There were #{@game_set.hidden.size} cards remaining.",
+        draw_text "Game over! Er waren nog #{@game_set.hidden.size} kaarten resterend.",
           *SVM::Config['positions']['game_over']
       else
-        draw_text 'You won!', *SVM::Config['positions']['you_won']
+        draw_text 'Gewonnen!', *SVM::Config['positions']['you_won']
       end
-      draw_text 'Press ESC to exit, or F2 to play again.', *SVM::Config['positions']['quit_or_restart']
+      draw_text 'Duw ESC om het spel te verlaten, of F2 om opnieuw te spelen.',
+        *SVM::Config['positions']['quit_or_restart']
     end
 
   private
