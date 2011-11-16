@@ -57,11 +57,11 @@ positions:
   - 308
   - 420
   game_over:
-  - 310
+  - 270
   - 290
   you_won:
-  - 300
+  - 360
   - 270
   quit_or_restart:
-  - 270
+  - 245
   - 310

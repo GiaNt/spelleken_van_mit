@@ -127,6 +127,14 @@ module SpellekenVanMit
       ended.to_i - @game_started_at.to_i
     end
 
+    def score
+      @score ||= begin
+        card_score  = @game_set.shown.size * 20
+        wrong_cards = @wrong_cards_clicked * 10
+        card_score - wrong_cards - time_elapsed
+      end
+    end
+
     # Make the next swappable card shake.
     # TODO: Fix the target card click detection in this case.
     #       Targets can't always be clicked because of the position change.
@@ -202,11 +210,10 @@ module SpellekenVanMit
     # Draw the score upon game over.
     def draw_score
       if @game_set.hidden.size > 0
-        draw_text "Game over! Er bleven nog #{@game_set.hidden.size} kaarten over.",
-          *SVM::Config['positions']['game_over']
+        draw_text "Game over! Er bleven nog #{@game_set.hidden.size} kaarten over. " \
+          "Score: #{score}", *SVM::Config['positions']['game_over']
       else
-        draw_text "Gewonnen! Tijd: #{time_elapsed} seconden. Aantal foute clicks: " \
-          "#{@wrong_cards_clicked}.", *SVM::Config['positions']['you_won']
+        draw_text "Gewonnen! Score: #{score}", *SVM::Config['positions']['you_won']
       end
       draw_text 'Duw ESC om het spel te verlaten, of F2 om opnieuw te spelen.',
         *SVM::Config['positions']['quit_or_restart']
@@ -292,6 +299,7 @@ module SpellekenVanMit
       @ui_enabled          = SVM::Config['ui_enabled']
       @sounds              = []
       @target_card         = nil
+      @score               = nil
     end
   end
 end
