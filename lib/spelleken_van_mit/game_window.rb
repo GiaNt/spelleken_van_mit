@@ -16,7 +16,7 @@ module SpellekenVanMit
       # 4 bad cards flipped == game over!
       if @hand_set.empty?
         @game_over       = true
-        @game_ended_at ||= Time.now
+        @game_ended_at ||= Time.now.to_i
       end
 
       if @hand_card
@@ -123,8 +123,8 @@ module SpellekenVanMit
 
     # Time elapsed since start.
     def time_elapsed
-      ended = @game_ended_at || Time.now
-      ended.to_i - @game_started_at.to_i
+      ended = @game_ended_at || Time.now.to_i
+      ended - @game_started_at
     end
 
     def score
@@ -294,7 +294,7 @@ module SpellekenVanMit
       @game_over           = false
       @bad_card_drawn_at   = nil
       @wrong_cards_clicked = 0
-      @game_started_at     = Time.now
+      @game_started_at     = Time.now.to_i
       @game_ended_at       = nil
       @ui_enabled          = SVM::Config['ui_enabled']
       @sounds              = []
