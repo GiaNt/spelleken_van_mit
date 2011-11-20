@@ -7,14 +7,14 @@ require_relative '../lib/spelleken_van_mit'
 #   * svm.game_window.bootstrapped
 #
 #     # Called when the game window has finished bootstrap
-#     SVM::Event.on 'svm.game_window.bootstrapped' do |card|
+#     SVM::Event.on 'svm.game_window.bootstrapped'
 #       # Do something when the game window has bootstrapped
 #     end
 #
 #   * svm.game_window.restarted
 #
 #     # Called when the game is being restarted
-#     SVM::Event.on 'svm.game_window.restarted' do |card|
+#     SVM::Event.on 'svm.game_window.restarted' do
 #       # Do something when the game is restarted
 #     end
 #
