@@ -102,8 +102,8 @@ module SpellekenVanMit
           draw_next_hand_card(card)
         else
           # Show the card.
-          SVM::Event.fire 'svm.game_window.card_shown', card
           card.show!
+          SVM::Event.fire 'svm.game_window.card_shown', card
           # The current card in hand is now this card.
           @hand_card = card
         end
