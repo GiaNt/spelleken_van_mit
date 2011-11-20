@@ -20,7 +20,7 @@ module SpellekenVanMit
       end
 
       if @hand_card
-        shake_target_cards if SVM::Config['shake_target_cards']
+        shake_target_cards  if SVM::Config['shake_target_cards']
         draw_next_hand_card if @hand_card.bad?
       end
 
@@ -78,6 +78,8 @@ module SpellekenVanMit
         # If no card was found, or this card is already shown, return.
         return if card.nil? or card.shown?
         d { ' was found and not already shown..' }
+
+        SVM::Event.fire 'svm.game_window.mousedown', card
 
         # Make sure the player makes a valid swap.
         unless @hand_card and @hand_card.can_be_swapped_with?(card)

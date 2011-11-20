@@ -63,6 +63,26 @@ module SpellekenVanMit
       File.join(ROOT, MEDIA_DIR, file)
     end
   end
+
+  class EventDispatcher
+    def initialize
+      clear_events!
+    end
+
+    def clear_events!
+      @events = Hash.new { |h, k| h[k] = [] }
+    end
+
+    def on(event, &block)
+      @events[event] << block
+    end
+
+    def fire(event, *args)
+      @events[event].each { |cbk| cbk.call(*args) }
+    end
+  end
+
+  Event = EventDispatcher.new
 end
 
 # Shortcut

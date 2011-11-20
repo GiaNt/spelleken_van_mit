@@ -164,6 +164,7 @@ module SpellekenVanMit
     # Finally, shuffles the whole set around to randomize it.
     def populate!
       @set.clear
+      SVM::Event.fire 'svm.card_set.before_populate', @set
 
       13.times do |identifier|
         add_card :club,    identifier
@@ -173,6 +174,8 @@ module SpellekenVanMit
       end
 
       @set.shuffle!
+      SVM::Event.fire 'svm.card_set.after_populate', @set
+      @set
     end
 
     # Toggles each of this cardset's cards visibility status.
@@ -206,7 +209,12 @@ module SpellekenVanMit
     #  +type+:       Symbol
     #  +identifier+: Integer
     def add_card(type, identifier)
-      @set.push Card.new(type, identifier)
+      card = Card.new(type, identifier)
+
+      @set << card
+      SVM::Event.fire 'svm.card_set.card_added', @set, card
+
+      card
     end
   end
 end
