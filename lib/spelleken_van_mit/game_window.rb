@@ -9,6 +9,7 @@ module SpellekenVanMit
       init_sounds
       init_fonts
       init_cardsets
+      SVM::Event.fire 'svm.game_window.boostrapped'
     end
 
     # Contains game logic. Called 60 times every second.
@@ -57,6 +58,7 @@ module SpellekenVanMit
         # Reset everything.
         init_game_values
         init_cardsets
+        SVM::Event.fire 'svm.game_window.restarted'
       # F3 pressed.
       when Gosu::Button::KbF3
         d { 'F3 pressed, toggling ui' + String::EOL }
@@ -79,7 +81,7 @@ module SpellekenVanMit
         return if card.nil? or card.shown?
         d { ' was found and not already shown..' }
 
-        SVM::Event.fire 'svm.game_window.mousedown', card
+        SVM::Event.fire 'svm.game_window.card_clicked', card
 
         # Make sure the player makes a valid swap.
         unless @hand_card and @hand_card.can_be_swapped_with?(card)
@@ -96,9 +98,11 @@ module SpellekenVanMit
         # A bad card was flipped!
         if card.bad?
           d { ' was bad!' }
+          SVM::Event.fire 'svm.game_window.bad_card_drawn'
           draw_next_hand_card(card)
         else
           # Show the card.
+          SVM::Event.fire 'svm.game_window.card_shown', card
           card.show!
           # The current card in hand is now this card.
           @hand_card = card

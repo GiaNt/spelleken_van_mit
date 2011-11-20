@@ -4,11 +4,39 @@ require_relative '../lib/spelleken_van_mit'
 ####
 # Available events
 #
-#   * svm.game_window.mousedown
+#   * svm.game_window.bootstrapped
+#
+#     # Called when the game window has finished bootstrap
+#     SVM::Event.on 'svm.game_window.bootstrapped' do |card|
+#       # Do something when the game window has bootstrapped
+#     end
+#
+#   * svm.game_window.restarted
+#
+#     # Called when the game is being restarted
+#     SVM::Event.on 'svm.game_window.restarted' do |card|
+#       # Do something when the game is restarted
+#     end
+#
+#   * svm.game_window.card_clicked
 #
 #     # Called when a card has been clicked
 #     SVM::Event.on 'svm.game_window.mouse_down' do |card|
 #       # Do something when card is clicked
+#     end
+#
+#   * svm.game_window.card_shown
+#
+#     # Called when a card is set to show
+#     SVM::Event.on 'svm.game_window.card_shown' do |card|
+#       # Do something when a card is set to show
+#     end
+#
+#   * svm.game_window.bad_card_drawn
+#
+#     # Called when a bad (2) card was drawn
+#     SVM::Event.on 'svm.game_window.bad_card_drawn' do |card|
+#       # Do something when a bad card was drawn
 #     end
 #
 #   * svm.card_set.before_populate
