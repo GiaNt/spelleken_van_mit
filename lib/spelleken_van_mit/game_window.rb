@@ -84,8 +84,8 @@ module SpellekenVanMit
           else
             # Show the card.
             card.show!
-
             SVM::Event.fire 'svm.game_window.card_shown', card
+
             # The current card in hand is now this card.
             @hand_card = card
             reset_hand_card_position
