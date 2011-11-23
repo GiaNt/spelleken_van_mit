@@ -9,7 +9,7 @@ module SpellekenVanMit
       init_sounds
       init_fonts
       init_cardsets
-      SVM::Event.fire 'svm.game_window.boostrapped'
+      SVM::Event.fire 'svm.game_window.bootstrapped'
     end
 
     # Contains game logic. Called 60 times every second.
