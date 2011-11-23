@@ -28,7 +28,7 @@ module SpellekenVanMit
       attr_reader :shown_image
 
       # Mapping of card identifiers to their names.
-      MAPPING = %w.2 3 4 5 6 7 8 9 10 jack queen king ace.
+      MAPPING = %w[2 3 4 5 6 7 8 9 10 jack queen king ace]
 
       # The image for the back of a card.
       def self.hidden_image
