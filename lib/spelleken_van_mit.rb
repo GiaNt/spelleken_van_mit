@@ -86,6 +86,7 @@ SVM = SpellekenVanMit
 require_relative 'spelleken_van_mit/window'
 require_relative 'spelleken_van_mit/card_set'
 
-SVM::Event.on 'svm.window.bad_card_drawn' do |card|
-  puts card.inspect
+SVM::Event.on 'svm.window.bootstrapped' do
+  $stdout.puts "Welkom bij het #{SVM::CAPTION} v#{SVM::VERSION}. Enjoy!"
+  $stdout.puts SVM::Config if SVM::Config['debug']
 end

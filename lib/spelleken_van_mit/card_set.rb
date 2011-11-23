@@ -96,6 +96,10 @@ module SpellekenVanMit
         self.pos_y = ary.last
       end
 
+      def pos
+        [@pos_x, @pos_y]
+      end
+
       # Set this card's x position and also store its dimensions in the hash.
       #
       #   +new_x+: Integer

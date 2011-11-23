@@ -4,8 +4,6 @@ require_relative '../lib/spelleken_van_mit'
 #                         resX resY fullscreen fps
 $window = SVM::Window.new(905, 600, false,     SVM::Config['fps'].to_fps)
 begin
-  $stdout.puts "Welkom bij het #{SVM::CAPTION} v#{SVM::VERSION}. Enjoy!"
-  $stdout.puts SVM::Config if SVM::Config['debug']
   $window.bootstrap
   $window.show
 rescue Interrupt
