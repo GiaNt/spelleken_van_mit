@@ -1,6 +1,6 @@
 module SpellekenVanMit
-  ### SVM::GameWindow
-  class GameWindow < Gosu::Window
+  ### SVM::Window
+  class Window < Gosu::Window
     # Set up the basic interface and generate the necessary objects.
     def bootstrap
       self.caption = SVM::CAPTION

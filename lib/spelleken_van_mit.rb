@@ -88,5 +88,5 @@ end
 # Shortcut
 SVM = SpellekenVanMit
 
-require_relative 'spelleken_van_mit/game_window'
+require_relative 'spelleken_van_mit/window'
 require_relative 'spelleken_van_mit/card_set'
