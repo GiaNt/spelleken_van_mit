@@ -28,7 +28,7 @@ end
 ### SVM
 module SpellekenVanMit
   ROOT        = File.expand_path('../../', __FILE__)
-  VERSION     = '0.3.0'
+  VERSION     = '0.4.0'
   CAPTION     = 'Spelleken van mit'
   IMAGE_DIR   = 'images'
   MEDIA_DIR   = 'media'

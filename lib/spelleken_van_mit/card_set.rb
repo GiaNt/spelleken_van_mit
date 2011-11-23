@@ -90,6 +90,12 @@ module SpellekenVanMit
         other.within?(*@destination)
       end
 
+      # Shortcut
+      def set_pos(ary)
+        self.pos_x = ary.first
+        self.pos_y = ary.last
+      end
+
       # Set this card's x position and also store its dimensions in the hash.
       #
       #   +new_x+: Integer

@@ -21,6 +21,11 @@ module SpellekenVanMit
       end
 
       if @hand_card
+        if @dragging
+          @hand_card.pos_x = mouse_x - 35
+          @hand_card.pos_y = mouse_y - 48
+        end
+
         shake_target_cards  if SVM::Config['shake_target_cards']
         draw_next_hand_card if @hand_card.bad?
       end
@@ -44,14 +49,63 @@ module SpellekenVanMit
     #
     #   +button_id+: Integer
     def button_up(button_id)
-      close and exit if button_id == Gosu::Button::KbEscape
+      case button_id
+      when Gosu::Button::MsLeft
+        # Don't do anything if we aren't dragging our card.
+        return unless @dragging
+
+        card = @game_set.detect { |c| c.within?(mouse_x, mouse_y) }
+
+        begin
+          # If no card was found, or this card is already shown, return.
+          if card.nil?
+            reset_hand_card_position
+            return
+          end
+
+          # Make sure the player makes a valid swap.
+          if card.shown? || (@hand_card && !@hand_card.can_be_swapped_with?(card))
+            @wrong_cards_clicked += 1
+            reset_hand_card_position
+            return
+          end
+          d { ' can be swapped..' }
+
+          # Swap the cards' position with the card in hand if
+          # this card was not already shown.
+          swap_card_with_hand(card)
+          d { ' was swapped..' }
+
+          # A bad card was flipped!
+          if card.bad?
+            d { ' was bad!' }
+            SVM::Event.fire 'svm.game_window.bad_card_drawn', card
+            draw_next_hand_card(card)
+          else
+            # Show the card.
+            card.show!
+
+            SVM::Event.fire 'svm.game_window.card_shown', card
+            # The current card in hand is now this card.
+            @hand_card = card
+            reset_hand_card_position
+            @hand_card
+          end
+        ensure
+          @target_card = nil
+          @dragging = false
+        end
+      when Gosu::Button::KbEscape
+        close and exit
+      end
+    ensure
     end
 
     # Called on button down.
     #
     #   +button_id+: Integer
     def button_down(button_id)
-      case @last_button = button_id
+      case button_id
       # F2 pressed.
       when Gosu::Button::KbF2
         d { 'F2 pressed, restarting!' + String::EOL }
@@ -74,40 +128,7 @@ module SpellekenVanMit
         @backmusic.playing? ? @backmusic.pause : @backmusic.play(true)
       # Left mouse clicked.
       when Gosu::Button::MsLeft
-        card = @game_set.detect { |c| c.within?(mouse_x, mouse_y) }
-        d { String::EOL + (card || 'no card was clicked').to_s }
-
-        # If no card was found, or this card is already shown, return.
-        return if card.nil? or card.shown?
-        d { ' was found and not already shown..' }
-
-        SVM::Event.fire 'svm.game_window.card_clicked', card
-
-        # Make sure the player makes a valid swap.
-        unless @hand_card and @hand_card.can_be_swapped_with?(card)
-          @wrong_cards_clicked += 1
-          return
-        end
-        d { ' can be swapped..' }
-
-        # Swap the cards' position with the card in hand if
-        # this card was not already shown.
-        swap_card_with_hand(card)
-        d { ' was swapped..' }
-
-        # A bad card was flipped!
-        if card.bad?
-          d { ' was bad!' }
-          SVM::Event.fire 'svm.game_window.bad_card_drawn'
-          draw_next_hand_card(card)
-        else
-          # Show the card.
-          card.show!
-          SVM::Event.fire 'svm.game_window.card_shown', card
-          # The current card in hand is now this card.
-          @hand_card = card
-        end
-        @target_card = nil
+        @dragging = true if @hand_card.within?(mouse_x, mouse_y)
       end
     end
 
@@ -155,6 +176,11 @@ module SpellekenVanMit
       @sounds.reject! { |sound| !sound.playing? && !sound.paused? }
     end
 
+    # Reset the hand card's position back to its original one.
+    def reset_hand_card_position
+      @hand_card.set_pos(@hand_position)
+    end
+
     # Swap to next hand card.
     #
     #   +card+: SVM::CardSet::Card
@@ -164,8 +190,10 @@ module SpellekenVanMit
 
       # Unveil the next card in the hand row.
       card ? @hand_set.delete(card) : @hand_set.shift
-      @hand_card = @hand_set.first
-      @hand_card.show! if @hand_card
+      if @hand_card = @hand_set.first
+        @hand_position = [@hand_card.pos_x, @hand_card.pos_y]
+        @hand_card.show!
+      end
     end
 
     # Swap a card's SVM::Config['positions'] with another, and change them around in the sets.
@@ -194,7 +222,7 @@ module SpellekenVanMit
 
       draw_small_text "#{caption} v#{SVM::VERSION}", *positions['caption']
       draw_text       "Resterende kaarten: #{@game_set.hidden.size}. Tijd: " \
-        "#{time_elapsed} seconden. Foute clicks: #{@wrong_cards_clicked}",
+        "#{time_elapsed} seconden. Fouten: #{@wrong_cards_clicked}",
         *positions['card_status']
       draw_text       'Volgorde:', *positions['order_title']
       draw_small_text '* Klavers', *positions['order_clubs']
@@ -268,6 +296,7 @@ module SpellekenVanMit
       end
 
       @hand_card = @hand_set.first
+      @hand_position = [@hand_card.pos_x, @hand_card.pos_y]
       @hand_card.show!
     end
 
@@ -306,6 +335,7 @@ module SpellekenVanMit
       @sounds              = []
       @target_card         = nil
       @score               = nil
+      @hand_card           = nil
     end
   end
 end
