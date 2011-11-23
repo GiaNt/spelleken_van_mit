@@ -27,23 +27,19 @@ end
 
 ### SVM
 module SpellekenVanMit
-  ROOT        = File.expand_path('../../', __FILE__)
-  VERSION     = '0.4.0'
-  CAPTION     = 'Spelleken van mit'
-  IMAGE_DIR   = 'images'
-  MEDIA_DIR   = 'media'
-  CONFIG_FILE = 'config.yml'
-
+  ROOT      = File.expand_path('../../', __FILE__)
+  VERSION   = '0.4.0'
+  CAPTION   = 'Spelleken van mit'
+  IMAGE_DIR = 'images'
+  MEDIA_DIR = 'media'
   # Configuration values.
-  Config      = YAML::load_file(File.join(ROOT, CONFIG_FILE))
+  Config    = YAML::load_file(File.join(ROOT, 'config.yml'))
 
   class << Config
     def to_s
-      str = '-- SVM::Config' + String::EOL
-      each do |option, value|
-        str << "   #{option} => #{value}" + String::EOL
+      inject '' do |str, (option, value)|
+        str << "  #{option}: #{value}" + String::EOL
       end
-      str
     end
   end
 
@@ -84,9 +80,12 @@ module SpellekenVanMit
 
   Event = EventDispatcher.new
 end
-
 # Shortcut
 SVM = SpellekenVanMit
 
 require_relative 'spelleken_van_mit/window'
 require_relative 'spelleken_van_mit/card_set'
+
+SVM::Event.on 'svm.window.bad_card_drawn' do |card|
+  puts card.inspect
+end

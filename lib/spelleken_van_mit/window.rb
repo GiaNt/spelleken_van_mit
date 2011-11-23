@@ -9,7 +9,7 @@ module SpellekenVanMit
       init_sounds
       init_fonts
       init_cardsets
-      SVM::Event.fire 'svm.game_window.bootstrapped'
+      SVM::Event.fire 'svm.window.bootstrapped'
     end
 
     # Contains game logic. Called 60 times every second.
@@ -75,12 +75,12 @@ module SpellekenVanMit
 
           # A bad card was flipped!
           if card.bad?
-            SVM::Event.fire 'svm.game_window.bad_card_drawn', card
+            SVM::Event.fire 'svm.window.bad_card_drawn', card
             draw_next_hand_card(card)
           else
             # Show the card.
             card.show!
-            SVM::Event.fire 'svm.game_window.card_shown', card
+            SVM::Event.fire 'svm.window.card_shown', card
 
             # The current card in hand is now this card.
             @hand_card = card
@@ -90,7 +90,7 @@ module SpellekenVanMit
         ensure
           @target_card = nil
           @dragging    = false
-          SVM::Event.fire 'svm.game_window.dragstop'
+          SVM::Event.fire 'svm.window.dragstop'
         end
       when Gosu::Button::KbEscape
         close and exit
@@ -108,7 +108,7 @@ module SpellekenVanMit
         # Reset everything.
         init_game_values
         init_cardsets
-        SVM::Event.fire 'svm.game_window.restarted'
+        SVM::Event.fire 'svm.window.restarted'
       # F3 pressed.
       when Gosu::Button::KbF3
         d { 'F3 pressed, toggling ui' + String::EOL }
@@ -126,7 +126,7 @@ module SpellekenVanMit
       when Gosu::Button::MsLeft
         if @hand_card.within?(mouse_x, mouse_y)
           @dragging = true
-          SVM::Event.fire 'svm.game_window.dragstart'
+          SVM::Event.fire 'svm.window.dragstart'
         end
       end
     end
@@ -199,10 +199,10 @@ module SpellekenVanMit
     #
     #   +card+: SVM::CardSet::Card
     def swap_card_with_hand(card)
-      this_pos_x, card.pos_x = card.pos_x, @hand_card.pos_x
-      this_pos_y, card.pos_y = card.pos_y, @hand_card.pos_y
-      @hand_card.pos_x = this_pos_x
-      @hand_card.pos_y = this_pos_y
+      #this_pos_x, card.pos_x = card.pos_x, @hand_card.pos_x
+      #this_pos_y, card.pos_y = card.pos_y, @hand_card.pos_y
+      @hand_card.pos_x = card.pos_x
+      @hand_card.pos_y = card.pos_y
 
       @game_set.delete(card)
       @game_set.push(@hand_card)
