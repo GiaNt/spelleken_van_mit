@@ -98,7 +98,6 @@ module SpellekenVanMit
       when Gosu::Button::KbEscape
         close and exit
       end
-    ensure
     end
 
     # Called on button down.
