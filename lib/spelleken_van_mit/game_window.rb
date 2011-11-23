@@ -166,7 +166,7 @@ module SpellekenVanMit
     #       Targets can't always be clicked because of the position change.
     def shake_target_cards
       if @target_card ||= @game_set.detect { |c| @hand_card.can_be_swapped_with?(c) }
-        Time.now.sec % 2 == 0 ? (@target_card.pos_x += 0.1) : (@target_card.pos_x -= 0.1)
+        Time.now.sec % 2 == 0 ? (@target_card.pos_x += 0.04) : (@target_card.pos_x -= 0.04)
       end
     end
 

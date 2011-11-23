@@ -23,8 +23,8 @@ shake_target_cards: false
 ui_enabled: true
 
 # Fonts to use
-font_name: 'Tahoma'
-small_font_name: 'Tahoma'
+font_name: Tahoma
+small_font_name: Tahoma
 
 # Text colors
 text_color: 0xffeeeeee
