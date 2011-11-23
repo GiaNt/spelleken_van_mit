@@ -55,7 +55,6 @@ module SpellekenVanMit
         return unless @dragging
 
         card = @game_set.detect { |c| c.within?(mouse_x, mouse_y) }
-
         begin
           # If no card was found, or this card is already shown, return.
           if card.nil?
@@ -69,16 +68,13 @@ module SpellekenVanMit
             reset_hand_card_position
             return
           end
-          d { ' can be swapped..' }
 
           # Swap the cards' position with the card in hand if
           # this card was not already shown.
           swap_card_with_hand(card)
-          d { ' was swapped..' }
 
           # A bad card was flipped!
           if card.bad?
-            d { ' was bad!' }
             SVM::Event.fire 'svm.game_window.bad_card_drawn', card
             draw_next_hand_card(card)
           else
@@ -93,7 +89,8 @@ module SpellekenVanMit
           end
         ensure
           @target_card = nil
-          @dragging = false
+          @dragging    = false
+          SVM::Event.fire 'svm.game_window.dragstop'
         end
       when Gosu::Button::KbEscape
         close and exit
@@ -127,7 +124,10 @@ module SpellekenVanMit
         @backmusic.playing? ? @backmusic.pause : @backmusic.play(true)
       # Left mouse clicked.
       when Gosu::Button::MsLeft
-        @dragging = true if @hand_card.within?(mouse_x, mouse_y)
+        if @hand_card.within?(mouse_x, mouse_y)
+          @dragging = true
+          SVM::Event.fire 'svm.game_window.dragstart'
+        end
       end
     end
 
