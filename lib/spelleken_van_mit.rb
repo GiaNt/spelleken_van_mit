@@ -90,3 +90,11 @@ SVM::Event.on 'svm.window.bootstrapped' do
   $stdout.puts "Welkom bij het #{SVM::CAPTION} v#{SVM::VERSION}. Enjoy!"
   $stdout.puts SVM::Config if SVM::Config['debug']
 end
+
+SVM::Event.on 'svm.window.dragstart' do
+  $stdout.print 'Dragging... '
+end
+
+SVM::Event.on 'svm.window.dragstop' do
+  $stdout.puts 'done.'
+end
