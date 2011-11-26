@@ -254,7 +254,7 @@ module SpellekenVanMit
       else
         draw_text "Gewonnen! Score: #{score}", *SVM::Config['positions']['you_won']
       end
-      draw_text 'Duw ESC om het spel te verlaten, of F2 om opnieuw te spelen.',
+      draw_text 'Druk op ESC om het spel te verlaten, of F2 om opnieuw te spelen.',
         *SVM::Config['positions']['quit_or_restart']
     end
 
