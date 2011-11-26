@@ -78,7 +78,9 @@ module SpellekenVanMit
 
       # Draw this card to the game board.
       def draw
-        (shown ? shown_image : self.class.hidden_image).draw pos_x, pos_y, ZOrder::GAME
+        (shown ? shown_image : self.class.hidden_image).draw(
+          pos_x, pos_y, ZOrder::GAME
+        )
       end
 
       # Can this card be swapped with another?
@@ -86,8 +88,7 @@ module SpellekenVanMit
       #
       #   +other+: SVM::CardSet::Card
       def can_be_swapped_with?(other)
-        return false unless other.is_a?(Card)
-        other.within?(*@destination)
+        other.is_a?(Card) ? other.within?(*@destination) : false
       end
 
       # Shortcut
@@ -96,6 +97,7 @@ module SpellekenVanMit
         self.pos_y = ary.last
       end
 
+      # Shortcut
       def pos
         [@pos_x, @pos_y]
       end

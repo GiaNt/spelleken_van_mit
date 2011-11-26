@@ -180,6 +180,11 @@ module SpellekenVanMit
       @sounds.reject! { |sound| !sound.playing? && !sound.paused? }
     end
 
+    # Shortcut
+    def positions
+      SVM::Config['positions']
+    end
+
     # Reset the hand card's position back to its original one.
     def reset_hand_card_position
       @hand_card.set_pos(@hand_position)
@@ -217,13 +222,11 @@ module SpellekenVanMit
 
     # Draw the game's background image.
     def draw_background
-      @background.draw *SVM::Config['positions']['background'], ZOrder::BACKGROUND
+      @background.draw *positions['background'], ZOrder::BACKGROUND
     end
 
     # Draw the game's UI.
     def draw_ui
-      positions = SVM::Config['positions']
-
       draw_small_text "#{caption} v#{SVM::VERSION}", *positions['caption']
       draw_text       "Resterende kaarten: #{@game_set.hidden.size}. Tijd: " \
         "#{time_elapsed} seconden. Fouten: #{@wrong_cards_clicked}",
@@ -249,12 +252,12 @@ module SpellekenVanMit
     def draw_score
       if @game_set.hidden.size > 0
         draw_text "Game over! Er bleven nog #{@game_set.hidden.size} kaarten over. " \
-          "Score: #{score}", *SVM::Config['positions']['game_over']
+          "Score: #{score}", *positions['game_over']
       else
-        draw_text "Gewonnen! Score: #{score}", *SVM::Config['positions']['you_won']
+        draw_text "Gewonnen! Score: #{score}", *positions['you_won']
       end
       draw_text 'Druk op ESC om het spel te verlaten, of F2 om opnieuw te spelen.',
-        *SVM::Config['positions']['quit_or_restart']
+        *positions['quit_or_restart']
     end
 
   private
