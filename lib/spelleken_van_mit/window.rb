@@ -21,7 +21,7 @@ module SpellekenVanMit
       end
 
       if @hand_card
-        if @dragging
+        if dragging?
           @hand_card.pos_x = mouse_x - 35
           @hand_card.pos_y = mouse_y - 48
         end
@@ -52,10 +52,11 @@ module SpellekenVanMit
       case button_id
       when Gosu::Button::MsLeft
         # Don't do anything if we aren't dragging our card.
-        return unless @dragging
+        return unless dragging?
 
-        card = @game_set.detect { |c| c.within?(mouse_x, mouse_y) }
         begin
+          card = @game_set.detect { |c| c.within?(mouse_x, mouse_y) }
+
           # If no card was found, or this card is already shown, return.
           if card.nil?
             reset_hand_card_position
@@ -143,6 +144,11 @@ module SpellekenVanMit
     # This game needs a visible cursor.
     def needs_cursor?
       true
+    end
+
+    # Are we currently dragging a card?
+    def dragging?
+      @dragging
     end
 
   protected
