@@ -86,7 +86,6 @@ module SpellekenVanMit
             # The current card in hand is now this card.
             @hand_card = card
             reset_hand_card_position
-            @hand_card
           end
         ensure
           @target_card = nil
