@@ -96,11 +96,13 @@ module SpellekenVanMit
         self.pos_x = ary.first
         self.pos_y = ary.last
       end
+      alias set_position set_pos
 
       # Shortcut
       def pos
         [@pos_x, @pos_y]
       end
+      alias position pos
 
       # Set this card's x position and also store its dimensions in the hash.
       #

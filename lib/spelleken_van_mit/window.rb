@@ -200,7 +200,7 @@ module SpellekenVanMit
       # Unveil the next card in the hand row.
       card ? @hand_set.delete(card) : @hand_set.shift
       if @hand_card = @hand_set.first
-        @hand_position = [@hand_card.pos_x, @hand_card.pos_y]
+        @hand_position = @hand_card.position
         @hand_card.show!
       end
     end
@@ -303,14 +303,14 @@ module SpellekenVanMit
       end
 
       @hand_card = @hand_set.first
-      @hand_position = [@hand_card.pos_x, @hand_card.pos_y]
+      @hand_position = @hand_card.position
       @hand_card.show!
     end
 
     # Initializes the background image.
     def init_background
       @background = Gosu::Image.new(
-      # window filename                          tileable posX posY srcX srcY
+      # window filename                     tileable posX posY srcX srcY
         self,  SVM.image('background.png'), true,    0,   0,   905, 600
       )
     end
