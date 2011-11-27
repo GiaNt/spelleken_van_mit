@@ -38,7 +38,7 @@ module SpellekenVanMit
       #draw_background
 
       unless @game_over
-        draw_ui if @ui_enabled
+        draw_ui
         draw_cards
       else
         draw_score
@@ -111,17 +111,13 @@ module SpellekenVanMit
         SVM::Event.fire 'svm.window.restarted'
       # F3 pressed.
       when Gosu::Button::KbF3
-        d { 'F3 pressed, toggling ui' + String::EOL }
-        @ui_enabled = !@ui_enabled
+        # NOTE: This is pretty haxy. Should probably remove.
+        d { 'F3 pressed, toggling all cards' + String::EOL }
+        @game_set.toggle!
       # F4 pressed.
       when Gosu::Button::KbF4
-        # NOTE: This is pretty haxy. Should probably remove.
-        d { 'F4 pressed, toggling all cards' + String::EOL }
-        @game_set.toggle!
-      # F5 pressed.
-      when Gosu::Button::KbF5
         if SVM::Config['background_music']
-          d { 'F5 pressed, toggling background music' + String::EOL }
+          d { 'F4 pressed, toggling background music' + String::EOL }
           @backmusic.playing? ? @backmusic.pause : @backmusic.play(true)
         end
       # Left mouse clicked.
@@ -342,7 +338,6 @@ module SpellekenVanMit
       @wrong_cards_clicked = 0
       @game_started_at     = Time.now.to_i
       @game_ended_at       = nil
-      @ui_enabled          = SVM::Config['ui_enabled']
       @sounds              = []
       @target_card         = nil
       @score               = nil

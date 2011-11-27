@@ -19,9 +19,6 @@ background_music: false
 shake_target_cards: false
 
 ##### UI
-# Draw UI at all?
-ui_enabled: true
-
 # Fonts to use
 font_name: Tahoma
 small_font_name: Tahoma
