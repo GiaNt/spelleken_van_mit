@@ -120,8 +120,10 @@ module SpellekenVanMit
         @game_set.toggle!
       # F5 pressed.
       when Gosu::Button::KbF5
-        d { 'F5 pressed, toggling background music' + String::EOL }
-        @backmusic.playing? ? @backmusic.pause : @backmusic.play(true)
+        if SVM::Config['background_music']
+          d { 'F5 pressed, toggling background music' + String::EOL }
+          @backmusic.playing? ? @backmusic.pause : @backmusic.play(true)
+        end
       # Left mouse clicked.
       when Gosu::Button::MsLeft
         if @hand_card.within?(mouse_x, mouse_y)
