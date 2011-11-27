@@ -78,9 +78,12 @@ module SpellekenVanMit
 
       # Draw this card to the game board.
       def draw
-        (shown ? shown_image : self.class.hidden_image).draw(
-          pos_x, pos_y, ZOrder::GAME
-        )
+        image.draw(pos_x, pos_y, ZOrder::GAME)
+      end
+
+      # This card's image instance.
+      def image
+        shown ? shown_image : self.class.hidden_image
       end
 
       # Can this card be swapped with another?
@@ -224,12 +227,10 @@ module SpellekenVanMit
     #  +type+:       Symbol
     #  +identifier+: Integer
     def add_card(type, identifier)
-      card = Card.new(type, identifier)
-
-      @set << card
-      SVM::Event.fire 'svm.card_set.card_added', @set, card
-
-      card
+      Card.new(type, identifier).tap do |card|
+        @set << card
+        SVM::Event.fire 'svm.card_set.card_added', @set, card
+      end
     end
   end
 end

@@ -91,10 +91,14 @@ SVM::Event.on 'svm.window.bootstrapped' do
   $stdout.puts SVM::Config if SVM::Config['debug']
 end
 
+SVM::Event.on 'svm.window.restarted' do
+  $stdout.puts 'Opnieuw opstarten...'
+end
+
 SVM::Event.on 'svm.window.dragstart' do
-  $stdout.print 'Dragging... '
+  $stdout.print 'Slepen... '
 end
 
 SVM::Event.on 'svm.window.dragstop' do
-  $stdout.puts 'done.'
+  $stdout.puts 'klaar.'
 end

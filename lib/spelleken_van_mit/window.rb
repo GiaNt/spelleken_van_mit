@@ -317,9 +317,11 @@ module SpellekenVanMit
 
     # Sets up soothing music.
     def init_sounds
-      @backmusic ||= Gosu::Song.new(self, SVM.media('backmusic.m4a'))
-      @backmusic.volume = SVM::Config['background_volume']
-      @backmusic.play(true) if SVM::Config['background_music']
+      if SVM::Config['background_music']
+        @backmusic ||= Gosu::Song.new(self, SVM.media('backmusic.m4a'))
+        @backmusic.volume = SVM::Config['background_volume']
+        @backmusic.play(true)
+      end
 
       @bad_card_sound ||= Gosu::Sample.new(self, SVM.media('beep.wav'))
     end
