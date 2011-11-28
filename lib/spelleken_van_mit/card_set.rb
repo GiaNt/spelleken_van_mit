@@ -1,6 +1,10 @@
 module SpellekenVanMit
   ### SVM::CardSet
   class CardSet
+    # Exception to raise when a card with no positions is being checked for
+    # dimensions.
+    class NotYetPositioned < StandardError; end
+
     ### SVM::CardSet::Card
     class Card
       # All four card types.
@@ -132,7 +136,8 @@ module SpellekenVanMit
       def within?(x, y)
         dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
       rescue NoMethodError
-        raise "Positions for this card (#{self}) need to be set manually first!"
+        raise NotYetPositioned,
+          "Positions for this card (#{self}) need to be set manually first!"
       end
 
       # Is the card a game breaker?
