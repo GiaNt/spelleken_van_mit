@@ -9,7 +9,7 @@ module SpellekenVanMit
       init_sounds
       init_fonts
       init_cardsets
-      SVM::Event.fire 'svm.window.bootstrapped'
+      SVM::Event.fire :after_bootstrap
     end
 
     # Contains game logic. Called 60 times every second.
@@ -76,12 +76,12 @@ module SpellekenVanMit
 
           # A bad card was flipped!
           if card.bad?
-            SVM::Event.fire 'svm.window.bad_card_drawn', card
+            SVM::Event.fire :bad_card_draw, card
             draw_next_hand_card(card)
           else
             # Show the card.
             card.show!
-            SVM::Event.fire 'svm.window.card_shown', card
+            SVM::Event.fire :card_show, card
 
             # The current card in hand is now this card.
             @hand_card = card
@@ -90,7 +90,7 @@ module SpellekenVanMit
         ensure
           @target_card = nil
           @dragging    = false
-          SVM::Event.fire 'svm.window.dragstop'
+          SVM::Event.fire :dragstop
         end
       when Gosu::Button::KbEscape
         close and exit
@@ -108,7 +108,7 @@ module SpellekenVanMit
         # Reset everything.
         init_game_values
         init_cardsets
-        SVM::Event.fire 'svm.window.restarted'
+        SVM::Event.fire :after_restart
       # F3 pressed.
       when Gosu::Button::KbF3
         # NOTE: This is pretty haxy. Should probably remove.
@@ -124,7 +124,7 @@ module SpellekenVanMit
       when Gosu::Button::MsLeft
         if @hand_card.within?(mouse_x, mouse_y)
           @dragging = true
-          SVM::Event.fire 'svm.window.dragstart'
+          SVM::Event.fire :dragstart
         end
       end
     end
