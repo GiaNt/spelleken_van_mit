@@ -1,6 +1,9 @@
 module SpellekenVanMit
   ### SVM::Window
   class Window < Gosu::Window
+    # The hidden card image.
+    attr_reader :hidden_card_image
+
     # Set up the basic interface and generate the necessary objects.
     def bootstrap
       self.caption = SVM::CAPTION
@@ -303,6 +306,8 @@ module SpellekenVanMit
       @hand_card = @hand_set.first
       @hand_position = @hand_card.position
       @hand_card.show!
+
+      @hidden_card_image = Gosu::Image.new(self, SVM.image('default.png'), false)
     end
 
     # Initializes the background image.

@@ -34,13 +34,6 @@ module SpellekenVanMit
       # Mapping of card identifiers to their names.
       MAPPING = %w[2 3 4 5 6 7 8 9 10 jack queen king ace]
 
-      # The image for the back of a card.
-      def self.hidden_image
-        @_hidden_image ||= Gosu::Image.new(
-          $window, SVM.image('default.png'), false
-        )
-      end
-
       # Initializes a new card.
       #
       #   +type+:       Symbol
@@ -82,12 +75,17 @@ module SpellekenVanMit
 
       # Draw this card to the game board.
       def draw
-        image.draw(pos_x, pos_y, ZOrder::GAME)
+        image.draw pos_x, pos_y, ZOrder::GAME
+      end
+
+      # The back image of this card. Same for every card.
+      def hidden_image
+        $window.hidden_card_image
       end
 
       # This card's image instance.
       def image
-        shown ? shown_image : self.class.hidden_image
+        shown ? shown_image : hidden_image
       end
 
       # Can this card be swapped with another?
