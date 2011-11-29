@@ -7,9 +7,6 @@ module SpellekenVanMit
 
     ### SVM::CardSet::Card
     class Card
-      # All four card types.
-      TYPES = [:club, :diamond, :spade, :heart]
-
       # The card's type. [:club, :diamond, :heart, :spade]
       attr_reader :type
 
@@ -30,6 +27,9 @@ module SpellekenVanMit
 
       # The shown image of this card. Corresponds with its identifier.
       attr_reader :shown_image
+
+      # All four card types.
+      TYPES = [:club, :diamond, :spade, :heart]
 
       # Mapping of card identifiers to their names.
       MAPPING = %w[2 3 4 5 6 7 8 9 10 jack queen king ace]
