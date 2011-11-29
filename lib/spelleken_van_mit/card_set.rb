@@ -1,10 +1,6 @@
 module SpellekenVanMit
   ### SVM::CardSet
   class CardSet
-    # Exception to raise when a card with no positions is being checked for
-    # dimensions.
-    class NotYetPositioned < StandardError; end
-
     ### SVM::CardSet::Card
     class Card
       # The card's type. [:club, :diamond, :heart, :spade]
@@ -39,6 +35,8 @@ module SpellekenVanMit
       #   +type+:       Symbol
       #   +identifier+: Integer
       def initialize(type, identifier)
+        raise SVM::InvalidCardType, type unless TYPES.include?(type)
+
         @type        = type
         @identifier  = identifier
         @dimensions  = {}
@@ -134,7 +132,7 @@ module SpellekenVanMit
       def within?(x, y)
         dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
       rescue NoMethodError
-        raise NotYetPositioned,
+        raise SVM::NotYetPositioned,
           "Positions for this card (#{self}) need to be set manually first!"
       end
 

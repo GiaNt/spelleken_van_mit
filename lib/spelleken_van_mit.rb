@@ -60,6 +60,16 @@ module SpellekenVanMit
     end
   end
 
+  # SVM Error class.
+  class Error < StandardError; end
+
+  # Error to raise when a card with no positions is being checked for
+  # dimensions.
+  class NotYetPositioned < StandardError; end
+
+  # Error to raise when a card is initialized with an invalid type.
+  class InvalidCardType < StandardError; end
+
   class EventDispatcher
     def initialize
       clear_events!
