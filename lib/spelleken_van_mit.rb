@@ -65,10 +65,25 @@ module SpellekenVanMit
 
   # Error to raise when a card with no positions is being checked for
   # dimensions.
-  class NotYetPositioned < StandardError; end
+  class NotYetPositioned < Error
+    def initialize(card)
+      super "Positions for this card (#{card}) must be set manually first."
+    end
+  end
 
   # Error to raise when a card is initialized with an invalid type.
-  class InvalidCardType < StandardError; end
+  class InvalidCardType < Error
+    def initialize(type)
+      super "Invalid card type: #{type}"
+    end
+  end
+
+  # Error to raise when a card is initialized with an invalid identifier.
+  class InvalidCardIdentifier < Error
+    def initialize(identifier)
+      super "Invalid card identifier: #{identifier}"
+    end
+  end
 
   class EventDispatcher
     def initialize

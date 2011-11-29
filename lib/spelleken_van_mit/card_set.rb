@@ -35,10 +35,12 @@ module SpellekenVanMit
       #   +type+:       Symbol
       #   +identifier+: Integer
       def initialize(type, identifier)
-        raise SVM::InvalidCardType, type unless TYPES.include?(type)
+        @type = type
+        raise SVM::InvalidCardType.new(@type) unless TYPES.include?(@type)
 
-        @type        = type
-        @identifier  = identifier
+        @identifier = identifier
+        raise SVM::InvalidCardIdentifier.new(@identifier) if name.nil?
+
         @dimensions  = {}
         @destination = [identifier * 75, (TYPES.index(type) + 1) * 100]
         @shown       = false
@@ -132,8 +134,7 @@ module SpellekenVanMit
       def within?(x, y)
         dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
       rescue NoMethodError
-        raise SVM::NotYetPositioned,
-          "Positions for this card (#{self}) need to be set manually first!"
+        raise SVM::NotYetPositioned.new(self)
       end
 
       # Is the card a game breaker?
