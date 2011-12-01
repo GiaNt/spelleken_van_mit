@@ -13,6 +13,7 @@ module SpellekenVanMit
       init_fonts
       init_cardsets
       SVM::Event.fire :after_bootstrap
+      at_exit { $stdout.puts "Score: #{score}" }
     end
 
     # Contains game logic. Called 60 times every second.
