@@ -28,8 +28,8 @@ end
 ### SVM
 module SpellekenVanMit
   ROOT      = File.expand_path('../../', __FILE__)
-  VERSION   = '0.4.1'
-  CAPTION   = 'Spelleken van mit'
+  VERSION   = '0.4.1'.freeze
+  CAPTION   = 'Spelleken van mit'.freeze
   IMAGE_DIR = 'images'
   MEDIA_DIR = 'media'
   # Configuration values.
