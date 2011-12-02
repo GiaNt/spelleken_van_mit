@@ -226,8 +226,8 @@ module SpellekenVanMit
 
     # Adds a card to the set.
     #
-    #  +type+:       Symbol
-    #  +identifier+: Integer
+    #   +type+:       Symbol
+    #   +identifier+: Integer
     def add_card(type, identifier)
       Card.new(type, identifier).tap do |card|
         @set << card
