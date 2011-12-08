@@ -36,10 +36,10 @@ module SpellekenVanMit
       #   +identifier+: Integer
       def initialize(type, identifier)
         @type = type
-        raise SVM::InvalidCardType.new(@type) unless TYPES.include?(@type)
+        raise SVM::InvalidCardType.new(type) unless TYPES.include?(type)
 
         @identifier = identifier
-        raise SVM::InvalidCardIdentifier.new(@identifier) if name.nil?
+        raise SVM::InvalidCardIdentifier.new(identifier) if name.nil?
 
         @dimensions  = {}
         @destination = [identifier * 75, (TYPES.index(type) + 1) * 100]
