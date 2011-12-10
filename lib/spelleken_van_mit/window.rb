@@ -68,7 +68,7 @@ module SpellekenVanMit
           end
 
           # Make sure the player makes a valid swap.
-          if card.shown? || (@hand_card && !@hand_card.can_be_swapped_with?(card))
+          if card.shown? or @hand_card && !@hand_card.swappable_with?(card)
             @wrong_cards_clicked += 1
             reset_hand_card_position
             return
@@ -172,7 +172,7 @@ module SpellekenVanMit
     # TODO: Fix the target card click detection in this case.
     #       Targets can't always be clicked because of the position change.
     def shake_target_cards
-      if @target_card ||= @game_set.detect { |c| @hand_card.can_be_swapped_with?(c) }
+      if @target_card ||= @game_set.detect { |c| @hand_card.swappable_with?(c) }
         Time.now.sec % 2 == 0 ? (@target_card.pos_x += 0.04) : (@target_card.pos_x -= 0.04)
       end
     end

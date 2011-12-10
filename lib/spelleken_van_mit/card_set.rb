@@ -92,7 +92,7 @@ module SpellekenVanMit
       # TODO: Improve this algorithm.
       #
       #   +other+: SVM::CardSet::Card
-      def can_be_swapped_with?(other)
+      def swappable_with?(other)
         other.is_a?(Card) ? other.within?(*@destination) : false
       end
 
