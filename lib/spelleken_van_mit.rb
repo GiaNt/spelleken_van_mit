@@ -18,6 +18,12 @@ class Integer #:nodoc:
   alias to_frames_per_second to_fps
 end
 
+class Object #:nodoc:
+  def presence
+    self unless (respond_to?(:empty?) ? empty? : !self)
+  end
+end
+
 String::EOL = "\r\n"
 
 ### ZOrder

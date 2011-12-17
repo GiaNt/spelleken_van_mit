@@ -10,11 +10,11 @@ SVM::Event.on :after_restart do
   $stdout.puts 'Opnieuw opstarten...'
 end
 
-SVM::Event.on :dragstart do
+SVM::Event.on :drag_start do
   $stdout.print 'Slepen... '
 end
 
-SVM::Event.on :dragstop do
+SVM::Event.on :drag_stop do
   $stdout.puts 'klaar.'
 end
 

@@ -4,6 +4,16 @@ module SpellekenVanMit
     # The hidden card image.
     attr_reader :hidden_card_image
 
+    # Shortcut to +SVM::Config+
+    def config
+      SVM::Config
+    end
+
+    # Shortcut to +SVM::Config['positions']+
+    def positions
+      config['positions']
+    end
+
     # Set up the basic interface and generate the necessary objects.
     def bootstrap
       self.caption = SVM::CAPTION
@@ -30,7 +40,7 @@ module SpellekenVanMit
           @hand_card.pos_y = mouse_y - 48
         end
 
-        shake_target_cards  if SVM::Config['shake_target_cards']
+        shake_target_cards  if config['shake_target_cards']
         draw_next_hand_card if @hand_card.bad?
       end
 
@@ -94,7 +104,7 @@ module SpellekenVanMit
         ensure
           @target_card = nil
           @dragging    = false
-          SVM::Event.fire :dragstop
+          SVM::Event.fire :drag_stop
         end
       when Gosu::Button::KbEscape
         close and exit
@@ -118,17 +128,11 @@ module SpellekenVanMit
         # NOTE: This is pretty haxy. Should probably remove.
         d { 'F3 pressed, toggling all cards' + String::EOL }
         @game_set.toggle!
-      # F4 pressed.
-      when Gosu::Button::KbF4
-        if SVM::Config['background_music']
-          d { 'F4 pressed, toggling background music' + String::EOL }
-          @backmusic.playing? ? @backmusic.pause : @backmusic.play(true)
-        end
       # Left mouse clicked.
       when Gosu::Button::MsLeft
         if @hand_card.within?(mouse_x, mouse_y)
           @dragging = true
-          SVM::Event.fire :dragstart
+          SVM::Event.fire :drag_start
         end
       end
     end
@@ -138,7 +142,7 @@ module SpellekenVanMit
     #   +sound+:     Gosu::Sample
     #   +frequency+: Float
     #   +volume+:    Float
-    def play_sound(sound, frequency = 1.0, volume = SVM::Config['sound_volume'])
+    def play_sound(sound, frequency = 1.0, volume = config['sound_volume'])
       @sounds << sound.play(frequency, volume)
     end
 
@@ -173,7 +177,8 @@ module SpellekenVanMit
     #       Targets can't always be clicked because of the position change.
     def shake_target_cards
       if @target_card ||= @game_set.detect { |c| @hand_card.swappable_with?(c) }
-        Time.now.sec % 2 == 0 ? (@target_card.pos_x += 0.04) : (@target_card.pos_x -= 0.04)
+        Time.now.sec % 2 == 0 ?
+          (@target_card.pos_x += 0.04) : (@target_card.pos_x -= 0.04)
       end
     end
 
@@ -182,14 +187,9 @@ module SpellekenVanMit
       @sounds.reject! { |sound| !sound.playing? && !sound.paused? }
     end
 
-    # Shortcut
-    def positions
-      SVM::Config['positions']
-    end
-
     # Reset the hand card's position back to its original one.
     def reset_hand_card_position
-      @hand_card.set_pos(@hand_position)
+      @hand_card.set_pos @hand_position
     end
 
     # Swap to next hand card.
@@ -253,8 +253,8 @@ module SpellekenVanMit
     # Draw the score upon game over.
     def draw_score
       if @game_set.hidden.size > 0
-        draw_text "Game over! Er bleven nog #{@game_set.hidden.size} kaarten over. " \
-          "Score: #{score}", *positions['game_over']
+        draw_text "Game over! Er bleven nog #{@game_set.hidden.size} " \
+          "kaarten over. Score: #{score}", *positions['game_over']
       else
         draw_text "Gewonnen! Score: #{score}", *positions['you_won']
       end
@@ -266,24 +266,24 @@ module SpellekenVanMit
 
     # Draws text using @font.
     #
-    #   +text+:    String
-    #   +pos_x+:   Integer
-    #   +pos_y+:   Integer
-    #   +color+:   Gosu::Color
-    #   +z_order+: Integer
-    def draw_text(text, pos_x, pos_y, color = SVM::Config['text_color'], z_order = ZOrder::UI)
-      @font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
+    #   +text+:  String
+    #   +x+:     Integer
+    #   +y+:     Integer
+    #   +color+: Gosu::Color
+    #   +z+:     Integer
+    def draw_text(text, x, y, color = config['text_color'], z = ZOrder::UI)
+      @font.draw text, x, y, z, 1.0, 1.0, color
     end
 
     # Draws text using @small_font.
     #
-    #   +text+:    String
-    #   +pos_x+:   Integer
-    #   +pos_y+:   Integer
-    #   +color+:   Gosu::Color
-    #   +z_order+: Integer
-    def draw_small_text(text, pos_x, pos_y, color = SVM::Config['small_text_color'], z_order = ZOrder::UI)
-      @small_font.draw text, pos_x, pos_y, z_order, 1.0, 1.0, color
+    #   +text+:  String
+    #   +x+:     Integer
+    #   +y+:     Integer
+    #   +color+: Gosu::Color
+    #   +z+:     Integer
+    def draw_small_text(text, x, y, color = config['small_text_color'], z = ZOrder::UI)
+      @small_font.draw text, x, y, z, 1.0, 1.0, color
     end
 
     # Initializes the CardSet for this game, splits it, and sets its cards'
@@ -321,20 +321,22 @@ module SpellekenVanMit
 
     # Sets up soothing music.
     def init_sounds
-      if SVM::Config['background_music']
-        @backmusic ||= Gosu::Song.new(self, SVM.media('backmusic.m4a'))
-        @backmusic.volume = SVM::Config['background_volume']
+      if config['background_music']
+        @backmusic = Gosu::Song.new(self, SVM.media('backmusic.m4a'))
+        @backmusic.volume = config['background_volume']
         @backmusic.play(true)
       end
 
-      @bad_card_sound ||= Gosu::Sample.new(self, SVM.media('beep.wav'))
+      @bad_card_sound = Gosu::Sample.new(self, SVM.media('beep.wav'))
     end
 
     # Initializes the global font.
     def init_fonts
-      default     = Gosu.default_font_name
-      @font       = Gosu::Font.new(self, SVM::Config['font_name'] || default, 18)
-      @small_font = Gosu::Font.new(self, SVM::Config['small_font_name'] || default, 14)
+      default = Gosu.default_font_name
+      @font = Gosu::Font.new(self,
+        config['font_name'].presence || default, 18)
+      @small_font = Gosu::Font.new(self,
+        config['small_font_name'].presence || default, 14)
     end
 
     # Initializes standard values.
@@ -348,6 +350,7 @@ module SpellekenVanMit
       @target_card         = nil
       @score               = nil
       @hand_card           = nil
+      @dragging            = false
     end
   end
 end

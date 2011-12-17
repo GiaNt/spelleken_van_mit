@@ -57,7 +57,7 @@ positions:
   - 308
   - 420
   game_over:
-  - 270
+  - 275
   - 290
   you_won:
   - 360
