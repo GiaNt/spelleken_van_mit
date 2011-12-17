@@ -17,21 +17,26 @@ module SpellekenVanMit
     # Set up the basic interface and generate the necessary objects.
     def bootstrap
       self.caption = SVM::CAPTION
-      #init_background
+
       init_game_values
+      #init_background
       init_sounds
       init_fonts
       init_cardsets
+
       SVM::Event.fire :after_bootstrap
       at_exit { $stdout.puts "Score: #{score}" }
     end
 
     # Contains game logic. Called 60 times every second.
     def update
+      cleanse_sounds
+      return if @game_over
+
       # 4 bad cards flipped == game over!
       if @hand_set.empty?
-        @game_over       = true
-        @game_ended_at ||= Time.now.to_i
+        @game_over     = true
+        @game_ended_at = Time.now.to_i
       end
 
       if @hand_card
@@ -43,8 +48,6 @@ module SpellekenVanMit
         shake_target_cards  if config['shake_target_cards']
         draw_next_hand_card if @hand_card.bad?
       end
-
-      cleanse_sounds
     end
 
     # Called after update, draws images and text.
@@ -64,6 +67,18 @@ module SpellekenVanMit
     #   +button_id+: Integer
     def button_up(button_id)
       case button_id
+      # F2 pressed.
+      when Gosu::Button::KbF2
+        d { 'F2 pressed, restarting!' + String::EOL }
+        # Reset everything.
+        init_game_values
+        init_cardsets
+        SVM::Event.fire :after_restart
+      # F3 pressed.
+      when Gosu::Button::KbF3
+        # NOTE: This is pretty haxy. Should probably remove.
+        d { 'F3 pressed, toggling all cards' + String::EOL }
+        @game_set.toggle!
       when Gosu::Button::MsLeft
         # Don't do anything if we aren't dragging our card.
         return unless dragging?
@@ -115,21 +130,8 @@ module SpellekenVanMit
     #
     #   +button_id+: Integer
     def button_down(button_id)
-      case button_id
-      # F2 pressed.
-      when Gosu::Button::KbF2
-        d { 'F2 pressed, restarting!' + String::EOL }
-        # Reset everything.
-        init_game_values
-        init_cardsets
-        SVM::Event.fire :after_restart
-      # F3 pressed.
-      when Gosu::Button::KbF3
-        # NOTE: This is pretty haxy. Should probably remove.
-        d { 'F3 pressed, toggling all cards' + String::EOL }
-        @game_set.toggle!
       # Left mouse clicked.
-      when Gosu::Button::MsLeft
+      if button_id == Gosu::Button::MsLeft
         if @hand_card.within?(mouse_x, mouse_y)
           @dragging = true
           SVM::Event.fire :drag_start
@@ -333,10 +335,8 @@ module SpellekenVanMit
     # Initializes the global font.
     def init_fonts
       default = Gosu.default_font_name
-      @font = Gosu::Font.new(self,
-        config['font_name'].presence || default, 18)
-      @small_font = Gosu::Font.new(self,
-        config['small_font_name'].presence || default, 14)
+      @font = Gosu::Font.new(self, config['font_name'].presence || default, 18)
+      @small_font = Gosu::Font.new(self, config['small_font_name'].presence || default, 14)
     end
 
     # Initializes standard values.

@@ -1,6 +1,6 @@
 ##### General
 # FPS to run in
-fps: 30
+fps: 60
 
 # Print debug messages?
 debug: false
