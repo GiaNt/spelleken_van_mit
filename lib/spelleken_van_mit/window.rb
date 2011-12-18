@@ -30,13 +30,15 @@ module SpellekenVanMit
 
     # Contains game logic. Called 60 times every second.
     def update
+      @tick_count += 1
+
       cleanse_sounds
       return if @game_over
 
       # 4 bad cards flipped == game over!
       if @hand_set.empty?
         @game_over     = true
-        @game_ended_at = Time.now.to_i
+        @game_ended_at = @tick_count
       end
 
       if @hand_card
@@ -45,7 +47,6 @@ module SpellekenVanMit
           @hand_card.pos_y = mouse_y - 48
         end
 
-        shake_target_cards  if config['shake_target_cards']
         draw_next_hand_card if @hand_card.bad?
       end
     end
@@ -117,7 +118,6 @@ module SpellekenVanMit
             reset_hand_card_position
           end
         ensure
-          @target_card = nil
           @dragging    = false
           SVM::Event.fire :drag_stop
         end
@@ -162,8 +162,8 @@ module SpellekenVanMit
 
     # Time elapsed since start.
     def time_elapsed
-      ended = @game_ended_at || Time.now.to_i
-      ended - @game_started_at
+      ended = @game_ended_at || @tick_count
+      ((ended - @game_started_at) / 60).to_i
     end
 
     def score
@@ -171,16 +171,6 @@ module SpellekenVanMit
         card_score  = @game_set.shown.size * 20
         wrong_cards = @wrong_cards_clicked * 10
         card_score - wrong_cards - time_elapsed
-      end
-    end
-
-    # Make the next swappable card shake.
-    # TODO: Fix the target card click detection in this case.
-    #       Targets can't always be clicked because of the position change.
-    def shake_target_cards
-      if @target_card ||= @game_set.detect { |c| @hand_card.swappable_with?(c) }
-        Time.now.sec % 2 == 0 ?
-          (@target_card.pos_x += 0.04) : (@target_card.pos_x -= 0.04)
       end
     end
 
@@ -198,7 +188,7 @@ module SpellekenVanMit
     #
     #   +card+: SVM::CardSet::Card
     def draw_next_hand_card(card = nil)
-      @bad_card_drawn_at = Time.now.to_i
+      @bad_card_drawn_at = @tick_count
       play_sound @bad_card_sound
 
       # Unveil the next card in the hand row.
@@ -233,14 +223,14 @@ module SpellekenVanMit
     def draw_ui
       draw_small_text "#{caption} v#{SVM::VERSION}", *positions['caption']
       draw_text       "Resterende kaarten: #{@game_set.hidden.size}. Tijd: " \
-        "#{time_elapsed} seconden. Fouten: #{@wrong_cards_clicked}",
+        "#{time_elapsed} seconden. Fouten: #{@wrong_cards_clicked}.",
         *positions['card_status']
       draw_text       'Volgorde:', *positions['order_title']
       draw_small_text '* Klavers', *positions['order_clubs']
       draw_small_text '* Koeken',  *positions['order_diamonds']
       draw_small_text '* Peikes',  *positions['order_spades']
       draw_small_text '* Harten',  *positions['order_hearts']
-      if @bad_card_drawn_at && (@bad_card_drawn_at + 4) >= Time.now.to_i
+      if @bad_card_drawn_at && (@bad_card_drawn_at + 4 * 60) >= @tick_count
         draw_small_text "Je hebt een 2 getrokken! Nog #{@hand_set.size} " \
           'speelbare kaarten over.', *positions['bad_card']
       end
@@ -341,13 +331,13 @@ module SpellekenVanMit
 
     # Initializes standard values.
     def init_game_values
+      @tick_count          = 0
       @game_over           = false
       @bad_card_drawn_at   = nil
       @wrong_cards_clicked = 0
-      @game_started_at     = Time.now.to_i
+      @game_started_at     = 0
       @game_ended_at       = nil
       @sounds              = []
-      @target_card         = nil
       @score               = nil
       @hand_card           = nil
       @dragging            = false

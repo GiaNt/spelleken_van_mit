@@ -13,11 +13,6 @@ sound_volume: 0.25
 background_volume: 0.025
 background_music: false
 
-##### Gameplay
-# Shake target cards?
-# WARNING: experimental
-shake_target_cards: false
-
 ##### UI
 # Fonts to use
 font_name: Tahoma
