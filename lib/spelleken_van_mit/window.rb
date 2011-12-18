@@ -4,19 +4,14 @@ module SpellekenVanMit
     # The hidden card image.
     attr_reader :hidden_card_image
 
-    # Shortcut to +SVM::Config+
-    def config
-      SVM::Config
-    end
-
     # Shortcut to +SVM::Config['positions']+
     def positions
-      config['positions']
+      Config['positions']
     end
 
     # Set up the basic interface and generate the necessary objects.
     def bootstrap
-      self.caption = SVM::CAPTION
+      self.caption = CAPTION
 
       init_game_values
       #init_background
@@ -74,7 +69,8 @@ module SpellekenVanMit
         # Reset everything.
         init_game_values
         init_cardsets
-        SVM::Event.fire :after_restart
+
+        Event.fire :after_restart
       # F3 pressed.
       when Gosu::Button::KbF3
         # NOTE: This is pretty haxy. Should probably remove.
@@ -106,20 +102,20 @@ module SpellekenVanMit
 
           # A bad card was flipped!
           if card.bad?
-            SVM::Event.fire :bad_card_draw, card
+            Event.fire :bad_card_draw, card
             draw_next_hand_card(card)
           else
             # Show the card.
             card.show!
-            SVM::Event.fire :card_show, card
+            Event.fire :card_show, card
 
             # The current card in hand is now this card.
             @hand_card = card
             reset_hand_card_position
           end
         ensure
-          @dragging    = false
-          SVM::Event.fire :drag_stop
+          @dragging = false
+          Event.fire :drag_stop
         end
       when Gosu::Button::KbEscape
         close and Kernel.exit(false)
@@ -134,7 +130,7 @@ module SpellekenVanMit
       if button_id == Gosu::Button::MsLeft
         if @hand_card.within?(mouse_x, mouse_y)
           @dragging = true
-          SVM::Event.fire :drag_start
+          Event.fire :drag_start
         end
       end
     end
@@ -145,7 +141,7 @@ module SpellekenVanMit
     #   +frequency+: Float
     #   +volume+:    Float
     def play_sound(sound, frequency = 1.0, volume = nil)
-      @sounds << sound.play(frequency, volume || config['sound_volume'])
+      @sounds << sound.play(frequency, volume || Config['sound_volume'])
     end
 
     # This game needs a visible cursor.
@@ -221,16 +217,16 @@ module SpellekenVanMit
 
     # Draw the game's UI.
     def draw_ui
-      draw_small_text "#{caption} v#{SVM::VERSION}", *positions['caption']
-      draw_text       "Resterende kaarten: #{@game_set.hidden.size}. Tijd: " \
-        "#{time_elapsed} seconden. Fouten: #{@wrong_cards_clicked}.",
+      draw_small_text "#{caption} v#{VERSION}", *positions['caption']
+      draw_text       "Resterende kaarten: #{@game_set.hidden.size}   Tijd: " \
+        "#{time_elapsed} seconden   Fouten: #{@wrong_cards_clicked}",
         *positions['card_status']
       draw_text       'Volgorde:', *positions['order_title']
       draw_small_text '* Klavers', *positions['order_clubs']
       draw_small_text '* Koeken',  *positions['order_diamonds']
       draw_small_text '* Peikes',  *positions['order_spades']
       draw_small_text '* Harten',  *positions['order_hearts']
-      if @bad_card_drawn_at && (@bad_card_drawn_at + 4 * 60) >= @tick_count
+      if @bad_card_drawn_at && (@bad_card_drawn_at + 5 * 60) >= @tick_count
         draw_small_text "Je hebt een 2 getrokken! Nog #{@hand_set.size} " \
           'speelbare kaarten over.', *positions['bad_card']
       end
@@ -270,7 +266,7 @@ module SpellekenVanMit
     #   +color+: Gosu::Color
     #   +z+:     Integer
     def draw_text(text, x, y, color = nil, z = ZOrder::UI)
-      @font.draw text, x, y, z, 1.0, 1.0, color || config['text_color']
+      @font.draw text, x, y, z, 1.0, 1.0, color || Config['text_color']
     end
 
     # Draws text using @small_font.
@@ -281,13 +277,13 @@ module SpellekenVanMit
     #   +color+: Gosu::Color
     #   +z+:     Integer
     def draw_small_text(text, x, y, color = nil, z = ZOrder::UI)
-      @small_font.draw text, x, y, z, 1.0, 1.0, color || config['small_text_color']
+      @small_font.draw text, x, y, z, 1.0, 1.0, color || Config['small_text_color']
     end
 
     # Initializes the CardSet for this game, splits it, and sets its cards'
     # positions.
     def init_cardsets
-      card_set = SVM::CardSet.new(self)
+      card_set = CardSet.new(self)
       card_set.populate!
 
       @game_set = card_set[0...48]
@@ -306,33 +302,33 @@ module SpellekenVanMit
       @hand_position = @hand_card.position
       @hand_card.show!
 
-      @hidden_card_image = Gosu::Image.new(self, SVM.image('default.png'), false)
+      @hidden_card_image = Gosu::Image.new(self, SVM::image('default.png'), false)
     end
 
     # Initializes the background image.
     def init_background
       @background = Gosu::Image.new(
       # window filename                     tileable posX posY srcX srcY
-        self,  SVM.image('background.png'), true,    0,   0,   905, 600
+        self,  SVM::image('background.png'), true,    0,   0,   905, 600
       )
     end
 
     # Sets up soothing music.
     def init_sounds
-      if config['background_music']
-        @backmusic = Gosu::Song.new(self, SVM.media('backmusic.m4a'))
-        @backmusic.volume = config['background_volume']
+      if Config['background_music']
+        @backmusic = Gosu::Song.new(self, SVM::media('backmusic.m4a'))
+        @backmusic.volume = Config['background_volume']
         @backmusic.play(true)
       end
 
-      @bad_card_sound = Gosu::Sample.new(self, SVM.media('beep.wav'))
+      @bad_card_sound = Gosu::Sample.new(self, SVM::media('beep.wav'))
     end
 
     # Initializes the global font.
     def init_fonts
       default = Gosu.default_font_name
-      @font = Gosu::Font.new(self, config['font_name'].presence || default, 18)
-      @small_font = Gosu::Font.new(self, config['small_font_name'].presence || default, 14)
+      @font = Gosu::Font.new(self, Config['font_name'].presence || default, 18)
+      @small_font = Gosu::Font.new(self, Config['small_font_name'].presence || default, 14)
     end
 
     # Initializes standard values.
@@ -343,7 +339,7 @@ module SpellekenVanMit
       @wrong_cards_clicked = 0
       @game_started_at     = 0
       @game_ended_at       = nil
-      @sounds              = []
+      @sounds              = Array.new
       @score               = nil
       @hand_card           = nil
       @dragging            = false

@@ -25,7 +25,7 @@ end
 String::EOL = "\r\n"
 
 ### SVM
-module SpellekenVanMit
+module SpellekenVanMit extend self
   ROOT      = File.expand_path('../../', __FILE__)
   VERSION   = '0.4.1'.freeze
   CAPTION   = 'Spelleken van mit'.freeze
@@ -44,14 +44,14 @@ module SpellekenVanMit
   # Returns the path to an image's filename, based on the root directory.
   #
   #   +file+: String
-  def self.image(file)
+  def image(file)
     File.join(ROOT, IMAGE_DIR, file)
   end
 
   # Returns the path to a media file's filename, based on the root directory.
   #
   #   +file+: String
-  def self.media(file)
+  def media(file)
     File.join(ROOT, MEDIA_DIR, file)
   end
 
@@ -107,3 +107,4 @@ SVM = SpellekenVanMit
 require_relative 'spelleken_van_mit/z_order'
 require_relative 'spelleken_van_mit/window'
 require_relative 'spelleken_van_mit/card_set'
+require_relative 'spelleken_van_mit/card'

@@ -15,8 +15,8 @@ background_music: false
 
 ##### UI
 # Fonts to use
-font_name: Tahoma
-small_font_name: Tahoma
+font_name: Courier
+small_font_name: Courier
 
 # Text colors
 text_color: 0xffeeeeee
@@ -28,7 +28,7 @@ positions:
   - 0
   - 0
   caption:
-  - 778
+  - 693
   - 582
   card_status:
   - 5
@@ -49,14 +49,14 @@ positions:
   - 105
   - 530
   bad_card:
-  - 308
+  - 228
   - 420
   game_over:
-  - 275
+  - 215
   - 290
   you_won:
-  - 360
+  - 260
   - 270
   quit_or_restart:
-  - 245
+  - 155
   - 310
