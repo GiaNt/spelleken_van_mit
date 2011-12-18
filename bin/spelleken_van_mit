@@ -18,15 +18,16 @@ SVM::Event.on :drag_stop do
   $stdout.puts 'klaar.'
 end
 
-#                         resX resY fullscreen fps
-$window = SVM::Window.new(905, 600, false,     SVM::Config['fps'].to_fps)
+#                        resX resY fullscreen fps
+window = SVM::Window.new(905, 600, false,     SVM::Config['fps'].to_fps)
 begin
-  $window.bootstrap
-  $window.show
+  window.bootstrap
+  window.show
 rescue Interrupt
   $stderr.puts String::EOL + 'Quitting...'
   exit 1
 ensure
-  $window.close
+  window.close
   $stdout.puts String::EOL
+  Kernel.exit(false)
 end

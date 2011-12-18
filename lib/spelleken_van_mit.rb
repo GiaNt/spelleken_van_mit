@@ -2,8 +2,6 @@ require 'gosu'
 require 'yaml'
 
 # The game window. Needs to be set externally!
-$window = nil
-
 def d
   if block_given? && SVM::Config['debug']
     $stdout.print yield
@@ -26,11 +24,6 @@ end
 
 String::EOL = "\r\n"
 
-### ZOrder
-module ZOrder
-  BACKGROUND, GAME, UI = *0..2
-end
-
 ### SVM
 module SpellekenVanMit
   ROOT      = File.expand_path('../../', __FILE__)
@@ -41,30 +34,27 @@ module SpellekenVanMit
   # Configuration values.
   Config    = YAML::load_file(File.join(ROOT, 'config.yml'))
 
-  class << Config
-    def to_s
-      inject '' do |str, (option, value)|
-        str << "  #{option}: #{value}" + String::EOL
-      end
+  # Prettyprint config values.
+  def Config.to_s
+    inject '' do |str, (option, value)|
+      str << "  #{option}: #{value}" + String::EOL
     end
   end
 
-  ### SVM
-  class << self
-    # Returns the path to an image's filename, based on the root directory.
-    #
-    #   +file+: String
-    def image(file)
-      File.join(ROOT, IMAGE_DIR, file)
-    end
-
-    # Returns the path to a media file's filename, based on the root directory.
-    #
-    #   +file+: String
-    def media(file)
-      File.join(ROOT, MEDIA_DIR, file)
-    end
+  # Returns the path to an image's filename, based on the root directory.
+  #
+  #   +file+: String
+  def self.image(file)
+    File.join(ROOT, IMAGE_DIR, file)
   end
+
+  # Returns the path to a media file's filename, based on the root directory.
+  #
+  #   +file+: String
+  def self.media(file)
+    File.join(ROOT, MEDIA_DIR, file)
+  end
+
 
   # SVM Error class.
   class Error < StandardError; end
@@ -114,5 +104,6 @@ end
 # Shortcut
 SVM = SpellekenVanMit
 
+require_relative 'spelleken_van_mit/z_order'
 require_relative 'spelleken_van_mit/window'
 require_relative 'spelleken_van_mit/card_set'

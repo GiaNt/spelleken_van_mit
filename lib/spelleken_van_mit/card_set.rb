@@ -34,7 +34,9 @@ module SpellekenVanMit
       #
       #   +type+:       Symbol
       #   +identifier+: Integer
-      def initialize(type, identifier)
+      def initialize(window, type, identifier)
+        @window = window
+
         @type = type
         raise SVM::InvalidCardType.new(type) unless TYPES.include?(type)
 
@@ -45,7 +47,7 @@ module SpellekenVanMit
         @destination = [identifier * 75, (TYPES.index(type) + 1) * 100]
         @shown       = false
         @shown_image = Gosu::Image.new(
-          $window, SVM.image("#{type}s_#{identifier + 1}.png"), false
+          @window, SVM.image("#{type}s_#{identifier + 1}.png"), false
         )
       end
 
@@ -80,7 +82,7 @@ module SpellekenVanMit
 
       # The back image of this card. Same for every card.
       def hidden_image
-        $window.hidden_card_image
+        @window.hidden_card_image
       end
 
       # This card's image instance.
@@ -160,8 +162,9 @@ module SpellekenVanMit
     end
 
     # Initializes the cardset.
-    def initialize
-      @set = []
+    def initialize(window)
+      @window = window
+      @set    = []
     end
 
     # Retrieve a specific range of cards.
@@ -229,7 +232,7 @@ module SpellekenVanMit
     #   +type+:       Symbol
     #   +identifier+: Integer
     def add_card(type, identifier)
-      Card.new(type, identifier).tap do |card|
+      Card.new(@window, type, identifier).tap do |card|
         @set << card
         SVM::Event.fire :card_add, @set, card
       end

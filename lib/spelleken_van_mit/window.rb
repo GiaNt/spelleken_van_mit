@@ -122,7 +122,7 @@ module SpellekenVanMit
           SVM::Event.fire :drag_stop
         end
       when Gosu::Button::KbEscape
-        close and exit
+        close and Kernel.exit(false)
       end
     end
 
@@ -291,7 +291,7 @@ module SpellekenVanMit
     # Initializes the CardSet for this game, splits it, and sets its cards'
     # positions.
     def init_cardsets
-      card_set = SVM::CardSet.new
+      card_set = SVM::CardSet.new(self)
       card_set.populate!
 
       @game_set = card_set[0...48]
