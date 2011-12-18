@@ -1,6 +1,6 @@
 module SpellekenVanMit
   ### ZOrder
   module ZOrder
-    BACKGROUND, GAME, UI = *0..2
+    BACKGROUND, GAME, UI, INTERACT = *0..3
   end
 end

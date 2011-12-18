@@ -144,8 +144,8 @@ module SpellekenVanMit
     #   +sound+:     Gosu::Sample
     #   +frequency+: Float
     #   +volume+:    Float
-    def play_sound(sound, frequency = 1.0, volume = config['sound_volume'])
-      @sounds << sound.play(frequency, volume)
+    def play_sound(sound, frequency = 1.0, volume = nil)
+      @sounds << sound.play(frequency, volume || config['sound_volume'])
     end
 
     # This game needs a visible cursor.
@@ -239,7 +239,13 @@ module SpellekenVanMit
     # Draw all the cards.
     def draw_cards
       @game_set.each &:draw
-      @hand_set.each &:draw
+      @hand_set.each do |card|
+        if card == @hand_card && dragging?
+          card.draw(ZOrder::INTERACT)
+        else
+          card.draw
+        end
+      end
     end
 
     # Draw the score upon game over.
@@ -263,8 +269,8 @@ module SpellekenVanMit
     #   +y+:     Integer
     #   +color+: Gosu::Color
     #   +z+:     Integer
-    def draw_text(text, x, y, color = config['text_color'], z = ZOrder::UI)
-      @font.draw text, x, y, z, 1.0, 1.0, color
+    def draw_text(text, x, y, color = nil, z = ZOrder::UI)
+      @font.draw text, x, y, z, 1.0, 1.0, color || config['text_color']
     end
 
     # Draws text using @small_font.
@@ -274,8 +280,8 @@ module SpellekenVanMit
     #   +y+:     Integer
     #   +color+: Gosu::Color
     #   +z+:     Integer
-    def draw_small_text(text, x, y, color = config['small_text_color'], z = ZOrder::UI)
-      @small_font.draw text, x, y, z, 1.0, 1.0, color
+    def draw_small_text(text, x, y, color = nil, z = ZOrder::UI)
+      @small_font.draw text, x, y, z, 1.0, 1.0, color || config['small_text_color']
     end
 
     # Initializes the CardSet for this game, splits it, and sets its cards'

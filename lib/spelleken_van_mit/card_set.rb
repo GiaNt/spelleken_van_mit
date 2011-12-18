@@ -76,8 +76,8 @@ module SpellekenVanMit
       end
 
       # Draw this card to the game board.
-      def draw
-        image.draw pos_x, pos_y, ZOrder::GAME
+      def draw(z_order = ZOrder::GAME)
+        image.draw pos_x, pos_y, z_order
       end
 
       # The back image of this card. Same for every card.
