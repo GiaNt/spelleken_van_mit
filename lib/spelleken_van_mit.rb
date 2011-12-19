@@ -26,10 +26,10 @@ String::EOL = "\r\n"
 
 ### SVM
 module SpellekenVanMit extend self
-  ROOT      = File.expand_path('../../', __FILE__)
-  VERSION   = '0.5.0'.freeze
+  ROOT    = File.expand_path('../../', __FILE__)
+  VERSION = '0.5.0'.freeze
   # Configuration values.
-  Config    = YAML::load_file(File.join(ROOT, 'config.yml'))
+  Config  = YAML::load_file(File.join(ROOT, 'config.yml'))
 
   # Prettyprint config values.
   def Config.to_s
