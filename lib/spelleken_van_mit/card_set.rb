@@ -37,18 +37,15 @@ module SpellekenVanMit
     # Finally, shuffles the whole set around to randomize it.
     def populate!
       @set.clear
-      Event.fire :before_populate, @set
 
       13.times do |identifier|
-        add_card :club,    identifier
-        add_card :diamond, identifier
-        add_card :heart,   identifier
-        add_card :spade,   identifier
+        @set << Card.new(@window, :club,    identifier)
+        @set << Card.new(@window, :diamond, identifier)
+        @set << Card.new(@window, :heart,   identifier)
+        @set << Card.new(@window, :spade,   identifier)
       end
 
       @set.shuffle!
-      Event.fire :after_populate, @set
-      @set
     end
 
     # Toggles each of this cardset's cards visibility status.
@@ -73,19 +70,6 @@ module SpellekenVanMit
 
     def to_s
       "#<CardSet #{@set.inspect}>"
-    end
-
-  private
-
-    # Adds a card to the set.
-    #
-    #   +type+:       Symbol
-    #   +identifier+: Integer
-    def add_card(type, identifier)
-      Card.new(@window, type, identifier).tap do |card|
-        @set << card
-        Event.fire :card_add, @set, card
-      end
     end
   end
 end

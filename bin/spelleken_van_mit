@@ -1,26 +1,10 @@
 #!/usr/bin/env ruby
 require_relative '../lib/spelleken_van_mit'
 
-SVM::Event.on :after_bootstrap do
-  $stdout.puts "Welkom bij het #{SVM::CAPTION} v#{SVM::VERSION}. Enjoy!"
-  $stdout.puts SVM::Config if SVM::Config['debug']
-end
-
-SVM::Event.on :after_restart do
-  $stdout.puts 'Opnieuw opstarten...'
-end
-
-SVM::Event.on :drag_start do
-  $stdout.print 'Slepen... '
-end
-
-SVM::Event.on :drag_stop do
-  $stdout.puts 'klaar.'
-end
-
 #                        resX resY fullscreen fps
 window = SVM::Window.new(905, 600, false,     SVM::Config['fps'].to_fps)
 begin
+  $stdout.puts "Welkom bij het #{SVM::CAPTION} v#{SVM::VERSION}. Enjoy!"
   window.bootstrap
   window.show
 rescue Interrupt
@@ -29,5 +13,5 @@ rescue Interrupt
 ensure
   window.close
   $stdout.puts String::EOL
-  Kernel.exit(false)
+  exit 0
 end

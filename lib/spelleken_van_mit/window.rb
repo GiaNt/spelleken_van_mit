@@ -4,11 +4,6 @@ module SpellekenVanMit
     # The hidden card image.
     attr_reader :hidden_card_image
 
-    # Shortcut to +SVM::Config['positions']+
-    def positions
-      Config['positions']
-    end
-
     # Set up the basic interface and generate the necessary objects.
     def bootstrap
       self.caption = CAPTION
@@ -19,7 +14,6 @@ module SpellekenVanMit
       init_fonts
       init_cardsets
 
-      SVM::Event.fire :after_bootstrap
       at_exit { $stdout.puts "Score: #{score}" }
     end
 
@@ -33,7 +27,7 @@ module SpellekenVanMit
       # 4 bad cards flipped == game over!
       if @hand_set.empty?
         @game_over     = true
-        @game_ended_at = @tick_count
+        @game_ended_at = ticks
       end
 
       if @hand_card
@@ -58,6 +52,11 @@ module SpellekenVanMit
       end
     end
 
+    # Amount of ticks since start.
+    def ticks
+      @tick_count
+    end
+
     # Called on button up.
     #
     #   +button_id+: Integer
@@ -69,8 +68,6 @@ module SpellekenVanMit
         # Reset everything.
         init_game_values
         init_cardsets
-
-        Event.fire :after_restart
       # F3 pressed.
       when Gosu::Button::KbF3
         # NOTE: This is pretty haxy. Should probably remove.
@@ -102,12 +99,10 @@ module SpellekenVanMit
 
           # A bad card was flipped!
           if card.bad?
-            Event.fire :bad_card_draw, card
             draw_next_hand_card(card)
           else
             # Show the card.
             card.show!
-            Event.fire :card_show, card
 
             # The current card in hand is now this card.
             @hand_card = card
@@ -115,10 +110,9 @@ module SpellekenVanMit
           end
         ensure
           @dragging = false
-          Event.fire :drag_stop
         end
       when Gosu::Button::KbEscape
-        close and Kernel.exit(false)
+        close and exit 0
       end
     end
 
@@ -130,7 +124,6 @@ module SpellekenVanMit
       if button_id == Gosu::Button::MsLeft
         if @hand_card.within?(mouse_x, mouse_y)
           @dragging = true
-          Event.fire :drag_start
         end
       end
     end
@@ -158,7 +151,7 @@ module SpellekenVanMit
 
     # Time elapsed since start.
     def time_elapsed
-      ended = @game_ended_at || @tick_count
+      ended = @game_ended_at || ticks
       ((ended - @game_started_at) / 60).to_i
     end
 
@@ -184,7 +177,7 @@ module SpellekenVanMit
     #
     #   +card+: SVM::CardSet::Card
     def draw_next_hand_card(card = nil)
-      @bad_card_drawn_at = @tick_count
+      @bad_card_drawn_at = ticks
       play_sound @bad_card_sound
 
       # Unveil the next card in the hand row.
@@ -212,24 +205,27 @@ module SpellekenVanMit
 
     # Draw the game's background image.
     def draw_background
-      @background.draw *positions['background'], ZOrder::BACKGROUND
+      @background.draw *Config['positions']['background'], ZOrder::BACKGROUND
     end
 
     # Draw the game's UI.
     def draw_ui
-      draw_small_text "#{caption} v#{VERSION}", *positions['caption']
-      draw_text       "Resterende kaarten: #{@game_set.hidden.size}   Tijd: " \
+      draw_text "Resterende kaarten: #{@game_set.hidden.size}   Tijd: " \
         "#{time_elapsed} seconden   Fouten: #{@wrong_cards_clicked}",
-        *positions['card_status']
-      draw_text       'Volgorde:', *positions['order_title']
-      draw_small_text '* Klavers', *positions['order_clubs']
-      draw_small_text '* Koeken',  *positions['order_diamonds']
-      draw_small_text '* Peikes',  *positions['order_spades']
-      draw_small_text '* Harten',  *positions['order_hearts']
-      if @bad_card_drawn_at && (@bad_card_drawn_at + 5 * 60) >= @tick_count
+        *Config['positions']['card_status']
+      draw_text 'Volgorde:', *Config['positions']['order_title']
+
+      draw_small_text '* Klavers', *Config['positions']['order_clubs']
+      draw_small_text '* Koeken',  *Config['positions']['order_diamonds']
+      draw_small_text '* Peikes',  *Config['positions']['order_spades']
+      draw_small_text '* Harten',  *Config['positions']['order_hearts']
+
+      if @bad_card_drawn_at && (@bad_card_drawn_at + 5 * 60) >= ticks
         draw_small_text "Je hebt een 2 getrokken! Nog #{@hand_set.size} " \
-          'speelbare kaarten over.', *positions['bad_card']
+          'speelbare kaarten over.', *Config['positions']['bad_card']
       end
+
+      draw_small_text "#{caption} v#{VERSION}", *Config['positions']['caption']
     end
 
     # Draw all the cards.
@@ -248,12 +244,12 @@ module SpellekenVanMit
     def draw_score
       if @game_set.hidden.size > 0
         draw_text "Game over! Er bleven nog #{@game_set.hidden.size} " \
-          "kaarten over. Score: #{score}", *positions['game_over']
+          "kaarten over. Score: #{score}", *Config['positions']['game_over']
       else
-        draw_text "Gewonnen! Score: #{score}", *positions['you_won']
+        draw_text "Gewonnen! Score: #{score}", *Config['positions']['you_won']
       end
       draw_text 'Druk op ESC om het spel te verlaten, of F2 om opnieuw te spelen.',
-        *positions['quit_or_restart']
+        *Config['positions']['quit_or_restart']
     end
 
   private

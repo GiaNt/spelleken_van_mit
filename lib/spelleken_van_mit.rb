@@ -43,18 +43,17 @@ module SpellekenVanMit extend self
 
   # Returns the path to an image's filename, based on the root directory.
   #
-  #   +file+: String
-  def image(file)
-    File.join(ROOT, IMAGE_DIR, file)
+  #   +filename+: String
+  def image(filename)
+    File.join(ROOT, IMAGE_DIR, filename)
   end
 
   # Returns the path to a media file's filename, based on the root directory.
   #
-  #   +file+: String
-  def media(file)
-    File.join(ROOT, MEDIA_DIR, file)
+  #   +filename+: String
+  def media(filename)
+    File.join(ROOT, MEDIA_DIR, filename)
   end
-
 
   # SVM Error class.
   class Error < StandardError; end
@@ -80,26 +79,6 @@ module SpellekenVanMit extend self
       super "Invalid card identifier: #{identifier}"
     end
   end
-
-  class EventDispatcher
-    def initialize
-      clear_events!
-    end
-
-    def clear_events!
-      @events = Hash.new { |h, k| h[k] = [] }
-    end
-
-    def on(event, &block)
-      @events[event] << block
-    end
-
-    def fire(event, *args)
-      @events[event].each { |cbk| cbk.call(*args) }
-    end
-  end
-
-  Event = EventDispatcher.new
 end
 # Shortcut
 SVM = SpellekenVanMit
