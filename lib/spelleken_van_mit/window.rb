@@ -1,8 +1,23 @@
 module SpellekenVanMit
   ### SVM::Window
   class Window < Gosu::Window
+    # The window's height.
+    HEIGHT = 600
+    # The window's width.
+    WIDTH = 905
+    # Window title.
+    CAPTION = 'Spelleken van mit'.freeze
+
     # The hidden card image.
     attr_reader :hidden_card_image
+
+    def initialize(*)
+      super(WIDTH, HEIGHT, false, Config['fps'].to_fps)
+    end
+
+    def self.bootstrap
+      new.bootstrap
+    end
 
     # Set up the basic interface and generate the necessary objects.
     def bootstrap
@@ -15,6 +30,7 @@ module SpellekenVanMit
       init_cardsets
 
       at_exit { $stdout.puts "Score: #{score}" }
+      self
     end
 
     # Contains game logic. Called 60 times every second.
@@ -112,7 +128,7 @@ module SpellekenVanMit
           @dragging = false
         end
       when Gosu::Button::KbEscape
-        close and exit 0
+        close
       end
     end
 
@@ -147,20 +163,22 @@ module SpellekenVanMit
       @dragging
     end
 
-  protected
-
-    # Time elapsed since start.
-    def time_elapsed
-      ended = @game_ended_at || ticks
-      ((ended - @game_started_at) / 60).to_i
-    end
-
+    # Game score.
     def score
       @score ||= begin
         card_score  = @game_set.shown.size * 20
         wrong_cards = @wrong_cards_clicked * 10
         card_score - wrong_cards - time_elapsed
       end
+      @score < 0 ? 0 : @score
+    end
+
+  protected
+
+    # Time elapsed since start.
+    def time_elapsed
+      ended = @game_ended_at || ticks
+      ((ended - @game_started_at) / 60).to_i
     end
 
     # Remove lingering sounds from memory.

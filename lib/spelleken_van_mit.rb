@@ -27,10 +27,7 @@ String::EOL = "\r\n"
 ### SVM
 module SpellekenVanMit extend self
   ROOT      = File.expand_path('../../', __FILE__)
-  VERSION   = '0.4.1'.freeze
-  CAPTION   = 'Spelleken van mit'.freeze
-  IMAGE_DIR = 'images'
-  MEDIA_DIR = 'media'
+  VERSION   = '0.5.0'.freeze
   # Configuration values.
   Config    = YAML::load_file(File.join(ROOT, 'config.yml'))
 
@@ -45,14 +42,14 @@ module SpellekenVanMit extend self
   #
   #   +filename+: String
   def image(filename)
-    File.join(ROOT, IMAGE_DIR, filename)
+    ROOT + '/images/' + filename
   end
 
   # Returns the path to a media file's filename, based on the root directory.
   #
   #   +filename+: String
   def media(filename)
-    File.join(ROOT, MEDIA_DIR, filename)
+    ROOT + '/media/' + filename
   end
 
   # SVM Error class.
