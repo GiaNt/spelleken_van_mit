@@ -1,5 +1,6 @@
 require 'gosu'
 require 'yaml'
+require 'forwardable'
 
 # The game window. Needs to be set externally!
 def d
