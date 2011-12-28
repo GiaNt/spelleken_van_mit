@@ -2,19 +2,23 @@ module SpellekenVanMit
   ### SVM::CardSet
   class CardSet
     extend Forwardable
+    include Enumerable
 
     # The cardset's actual cardset.
     attr_accessor :set
 
-    # Array methods are to be called upon the set itself.
-    def_delegators :@set, :each, :each_with_index, :first, :last,
-                          :shift, :empty?, :detect, :select, :reject,
-                          :delete, :push, :size
+    # Call these methods on the actual set.
+    def_delegators :@set, :empty?, :delete, :push, :size
 
     # Initializes the cardset.
     def initialize(window)
       @window = window
       @set    = Array.new
+    end
+
+    # Make enumerable work.
+    def each
+      @set.each { |card| yield card }
     end
 
     # Retrieve a specific range of cards.
