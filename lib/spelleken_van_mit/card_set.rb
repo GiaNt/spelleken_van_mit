@@ -29,9 +29,9 @@ module SpellekenVanMit
     #   +cond+: Integer, Range
     def [](cond)
       if cond.is_a?(Range)
-        dup.tap { |d| d.set = @set[cond] }
+        return dup.tap { |d| d.set = @set[cond] }
       else
-        @set[cond]
+        return @set[cond]
       end
     end
 
@@ -64,12 +64,12 @@ module SpellekenVanMit
 
     # All hidden cards.
     def hidden
-      reject &:shown
+      return reject(&:shown)
     end
 
     # All shown cards.
     def shown
-      select &:shown
+      return select(&:shown)
     end
 
     def to_s

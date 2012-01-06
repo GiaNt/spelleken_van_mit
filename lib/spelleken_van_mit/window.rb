@@ -17,7 +17,7 @@ module SpellekenVanMit
     end
 
     def self.bootstrap
-      new.bootstrap
+      return new.bootstrap
     end
 
     # Set up the basic interface and generate the necessary objects.
@@ -29,7 +29,7 @@ module SpellekenVanMit
       init_cardsets
 
       at_exit { $stdout.puts "Score: #{score}" }
-      self
+      return self
     end
 
     # Contains game logic. Called 60 times every second.
@@ -69,7 +69,7 @@ module SpellekenVanMit
 
     # Amount of ticks since start.
     def ticks
-      @tick_count
+      return @tick_count
     end
 
     # Called on button up.
@@ -154,12 +154,12 @@ module SpellekenVanMit
 
     # This game needs a visible cursor.
     def needs_cursor?
-      true
+      return true
     end
 
     # Are we currently dragging a card?
     def dragging?
-      @dragging
+      return @dragging
     end
 
     # Game score.
@@ -169,7 +169,7 @@ module SpellekenVanMit
         wrong_cards = @wrong_cards_clicked * 10
         card_score - wrong_cards - time_elapsed
       end
-      @score < 0 ? 0 : @score
+      return @score < 0 ? 0 : @score
     end
 
   protected
@@ -177,7 +177,7 @@ module SpellekenVanMit
     # Time elapsed since start.
     def time_elapsed
       ended = @game_ended_at || ticks
-      ((ended - @game_started_at) / 60).to_i
+      return ((ended - @game_started_at) / 60).to_i
     end
 
     # Remove lingering sounds from memory.
@@ -187,7 +187,7 @@ module SpellekenVanMit
 
     # Reset the hand card's position back to its original one.
     def reset_hand_card_position
-      @hand_card.set_pos @hand_position
+      @hand_card.position = @hand_position
     end
 
     # Swap to next hand card.

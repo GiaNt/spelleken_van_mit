@@ -12,14 +12,14 @@ end
 
 class Integer #:nodoc:
   def to_fps
-    1000.to_f / self.to_f
+    return 1000.to_f / self.to_f
   end
   alias to_frames_per_second to_fps
 end
 
 class Object #:nodoc:
   def presence
-    self unless (respond_to?(:empty?) ? empty? : !self)
+    return self unless (respond_to?(:empty?) ? empty? : !self)
   end
 end
 
@@ -44,14 +44,14 @@ module SpellekenVanMit extend self
   #
   #   +filename+: String
   def image(filename)
-    ROOT + '/images/' + filename
+    return ROOT + '/images/' + filename
   end
 
   # Returns the path to a media file's filename, based on the root directory.
   #
   #   +filename+: String
   def media(filename)
-    ROOT + '/media/' + filename
+    return ROOT + '/media/' + filename
   end
 
   # SVM Error class.

@@ -53,7 +53,7 @@ module SpellekenVanMit
 
     # Card name, mapped by its identifier.
     def name
-      MAPPING[identifier]
+      return MAPPING[identifier]
     end
 
     # Toggle the card's visibility status.
@@ -70,7 +70,7 @@ module SpellekenVanMit
 
     # Is this card shown?
     def shown?
-      !!shown
+      return !!shown
     end
 
     # Draw this card to the game board.
@@ -80,12 +80,12 @@ module SpellekenVanMit
 
     # The back image of this card. Same for every card.
     def hidden_image
-      @window.hidden_card_image
+      return @window.hidden_card_image
     end
 
     # This card's image instance.
     def image
-      shown ? shown_image : hidden_image
+      return shown ? shown_image : hidden_image
     end
 
     # Can this card be swapped with another?
@@ -93,19 +93,19 @@ module SpellekenVanMit
     #
     #   +other+: SVM::CardSet::Card
     def swappable_with?(other)
-      other.is_a?(Card) ? other.within?(*@destination) : false
+      return other.is_a?(Card) ? other.within?(*@destination) : false
     end
 
     # Shortcut
-    def set_pos(ary)
+    def pos=(ary)
       self.pos_x = ary.first
       self.pos_y = ary.last
     end
-    alias set_position set_pos
+    alias position= pos=
 
     # Shortcut
     def pos
-      [@pos_x, @pos_y]
+      return [@pos_x, @pos_y]
     end
     alias position pos
 
@@ -132,14 +132,14 @@ module SpellekenVanMit
     #   +x+: Integer
     #   +y+: Integer
     def within?(x, y)
-      dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
+      return dim[:sx] <= x && dim[:ex] >= x && dim[:sy] <= y && dim[:ey] >= y
     rescue NoMethodError
       raise NotYetPositioned.new(self)
     end
 
     # Is the card a game breaker?
     def two?
-      identifier == 0
+      return identifier == 0
     end
     alias bad? two?
 
