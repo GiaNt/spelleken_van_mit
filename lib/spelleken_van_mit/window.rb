@@ -13,6 +13,7 @@ module SpellekenVanMit
 
     def initialize(*)
       super(WIDTH, HEIGHT, false, Config['fps'].to_fps)
+      self.caption = CAPTION
     end
 
     def self.bootstrap
@@ -21,8 +22,6 @@ module SpellekenVanMit
 
     # Set up the basic interface and generate the necessary objects.
     def bootstrap
-      self.caption = CAPTION
-
       init_game_values
       #init_background
       init_sounds
@@ -322,7 +321,7 @@ module SpellekenVanMit
     # Initializes the background image.
     def init_background
       @background = Gosu::Image.new(
-      # window filename                     tileable posX posY srcX srcY
+      # window filename                      tileable posX posY srcX srcY
         self,  SVM::image('background.png'), true,    0,   0,   905, 600
       )
     end
